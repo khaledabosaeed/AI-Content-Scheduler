@@ -1,5 +1,9 @@
 import { useResetMutation } from "@/entities/user/state/mutations";
+import { useMutation } from "@tanstack/react-query";
+import { resetPasswordUser } from "./libs/resetPasswordUser";
 
-export const useLogout = () => {
-  return useResetMutation();
+export const useRest = () => {
+   return useMutation({
+    mutationFn: resetPasswordUser,
+  });
 };

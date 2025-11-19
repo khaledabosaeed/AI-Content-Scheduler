@@ -1,5 +1,8 @@
-import { useForgetMutation } from "@/entities/user/state/mutations";
+import { useMutation } from "@tanstack/react-query";
+import { forgotPasswordUser } from "./libs/forgetPasswordUser";
 
-export const useLogout = () => {
-  return useForgetMutation();
+export const useForget = () => {
+  return useMutation({
+    mutationFn: forgotPasswordUser,
+  });
 };

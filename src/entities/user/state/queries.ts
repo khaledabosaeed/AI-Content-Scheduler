@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { userKeys } from "./keys";
-import { getCurrentUser } from "@/services/userService";
+import { getCurrentUser } from "@/features/user/libs/getCurrentUser"; 
 
 export const useUser = () => {
   return useQuery({
