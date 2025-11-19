@@ -1,9 +1,18 @@
+// app/page.tsx
+"use client"; // ← مهم جداً، يجعل الصفحة Client Component
+
+import LoginForm from "@/entities/user/ui/Login";
+import { useUser } from "@/entities/user/state/queries";
+import LandingPage from "./landingPage/page";
 
 export default function Page() {
+  const { data, isLoading } = useUser();
+
+  if (isLoading) return <p>Loading...</p>;
+
   return (
-    <>
-      <h1>Welcome  ي التيم والله </h1>
-      div
-    </>
+    <div>
+      <LandingPage/>
+    </div>
   );
 }
