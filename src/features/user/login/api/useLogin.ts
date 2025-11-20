@@ -1,10 +1,8 @@
 import { api } from "@/shared/api/api-client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { LoginCredentials } from "../libs/type";
 
-type LoginCredentials = {
-  email: string;
-  password: string;
-};
+
 
 type LoginMutationOptions = {
   onSuccess?: (

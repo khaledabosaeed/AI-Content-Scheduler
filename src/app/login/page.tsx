@@ -1,4 +1,4 @@
-import LoginForm from '@/entities/user/ui/Login';
+import LoginForm from '@/features/user/login/ui/Login';
 import React from 'react';
 
 function page() {

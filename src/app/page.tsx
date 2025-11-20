@@ -1,7 +1,7 @@
 // app/page.tsx
 "use client"; // ← مهم جداً، يجعل الصفحة Client Component
 
-import LoginForm from "@/entities/user/ui/Login";
+import LoginForm from "@/features/user/login/ui/Login";
 import { useUser } from "@/entities/user/state/queries";
 import LandingPage from "./landingPage/page";
 

@@ -1,25 +1,7 @@
 import { userKeys } from "@/entities/user/state/keys";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { registerUser } from "./libs/registerUser";
 import { api } from "@/shared/api/api-client";
-
-// export const useLogout = () => {
-//   const queryClient = useQueryClient();
-
-//   return useMutation({
-//     mutationFn: registerUser,
-//     onSuccess: (data: any) => {
-//       queryClient.setQueryData(userKeys.me(), data.user);
-//       queryClient.invalidateQueries(userKeys.all());
-//     },
-//   });
-// };
-
-type LoginCredentials = {
-  name: string;
-  email: string;
-  password: string;
-};
+import { LoginCredentials } from "../libs/type";
 
 type LoginMutationOptions = {
   onSuccess?: (
