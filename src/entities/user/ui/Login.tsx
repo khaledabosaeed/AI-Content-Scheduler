@@ -1,42 +1,67 @@
-"use client"
-import { useState } from "react";
-import { useLogin } from "@/features/user/login/useLogin";
+"use client";
 
-function LoginForm() {
-  const { mutate, isLoading } = useLogin();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as Yup from "yup";
+import { useLoginMutation } from "@/features/user/login/useLogin";
 
-  function handleSubmit(e: any) {
-    e.preventDefault();
-    alert(`done : email:${email} , password:${password}`)
-    mutate({ email, password });
-  }
+// 1. تعريف سكيم الفاليديشين باستخدام Yup
+const loginSchema = Yup.object({
+  email: Yup.string()
+    .email("Email is invalid")
+    .required("Email is required"),
+  password: Yup.string()
+    .min(6, "Password must be at least 6 characters")
+    .required("Password is required"),
+}).required();
+
+type LoginFormInputs = {
+  email: string;
+  password: string;
+};
+
+export default function LoginForm() {
+  const { register, handleSubmit, formState: { errors } } = useForm<LoginFormInputs>({
+    resolver: yupResolver(loginSchema),
+  });
+
+  const { mutate, isLoading, error, data } = useLoginMutation({
+    onSuccess: (data) => console.log("Login success:", data),
+    onError: (error) => console.error("Login failed:", error),
+  });
+
+  // 2. إرسال البيانات عند submit
+  const onSubmit = (values: LoginFormInputs) => {
+    mutate(values);
+  };
 
   return (
-   <form onSubmit={handleSubmit} className="flex flex-col gap-3 w-full max-w-sm">
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3 w-full max-w-sm">
       <input
         type="email"
         placeholder="Email"
         className="border p-2 rounded"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
+        {...register("email")}
       />
+      {errors.email && <p className="text-red-500">{errors.email.message}</p>}
+
       <input
         type="password"
         placeholder="Password"
         className="border p-2 rounded"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
+        {...register("password")}
       />
+      {errors.password && <p className="text-red-500">{errors.password.message}</p>}
+
       <button
         className="bg-black text-white py-2 rounded"
         disabled={isLoading}
       >
         {isLoading ? "Loading..." : "Login"}
       </button>
-    </form>  
-);
-}
 
-export default LoginForm;
+      {error && <p className="text-red-500">{(error as Error).message}</p>}
+      {data && <p className="text-green-500">Login successful!</p>}
+    </form>
+  );
+}

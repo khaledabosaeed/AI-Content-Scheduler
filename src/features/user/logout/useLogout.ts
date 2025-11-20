@@ -1,15 +1,24 @@
 import { userKeys } from "@/entities/user/state/keys";
+import { api } from "@/shared/api/api-client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { logoutUser } from "./libs/logoutUser";
 
-export const useLogout = () => {
-   const queryClient = useQueryClient();
 
+
+export const useLogoutMutation = () => {
+  const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: logoutUser,
-    onSuccess: () => {
-      queryClient.removeQueries(userKeys.me());
-      queryClient.invalidateQueries(userKeys.all);
+   mutationFn:async()=>{
+    const response = await api.post("auth/logout",{},{
+      requiresAuth: true,
+    });
+    return response;
+   },
+    onSuccess:()=>{
+      queryClient.setQueryData(userKeys.me(), null);
+      queryClient.invalidateQueries(userKeys.all());
     },
-  });
-};
+    onError:(error)=>{
+      console.error("Logout failed", error);
+    }
+  })
+}

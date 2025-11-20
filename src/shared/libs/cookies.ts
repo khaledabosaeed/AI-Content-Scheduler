@@ -5,7 +5,6 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { cookies } from 'next/headers';
 
 // اسم الكوكي التي تخزن JWT
 export const SESSION_COOKIE_NAME = 'session';
@@ -17,6 +16,26 @@ const COOKIE_OPTIONS = {
   sameSite: 'lax' as const, // حماية من CSRF
   maxAge: 60 * 60 * 24 * 7, // 7 أيام بالثواني
   path: '/', // متاحة في كل الصفحات
+};
+
+// Utility functions for managing cookies in a client-compatible way
+export const setCookie = (name: string, value: string, options = COOKIE_OPTIONS) => {
+  const cookieString = `${name}=${value}; Path=${options.path}; Max-Age=${options.maxAge}; SameSite=${options.sameSite};`;
+  if (options.secure) {
+    document.cookie = `${cookieString} Secure;`;
+  } else {
+    document.cookie = cookieString;
+  }
+};
+
+export const getCookie = (name: string): string | null => {
+  const cookies = document.cookie.split('; ');
+  const cookie = cookies.find((c) => c.startsWith(`${name}=`));
+  return cookie ? cookie.split('=')[1] : null;
+};
+
+export const deleteCookie = (name: string) => {
+  document.cookie = `${name}=; Path=/; Max-Age=0;`;
 };
 
 /**
@@ -67,10 +86,10 @@ export function getSessionToken(request: NextRequest): string | undefined {
  * 
  * @returns string | undefined - JWT token أو undefined
  */
-export async function getServerSessionToken(): Promise<string | undefined> {
-  const cookieStore = await cookies();
-  return cookieStore.get(SESSION_COOKIE_NAME)?.value;
-}
+// export async function getServerSessionToken(): Promise<string | undefined> {
+//   const cookieStore = await cookies();
+//   return cookieStore.get(SESSION_COOKIE_NAME)?.value;
+// }
 
 /**
  * قراءة JWT من الكوكي (من Client Side)
