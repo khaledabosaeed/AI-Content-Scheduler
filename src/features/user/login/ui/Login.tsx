@@ -1,19 +1,10 @@
 "use client";
 
 import { useForm } from "react-hook-form";
+import { useLoginMutation } from "@/features/user/login/api/useLogin";
+import { loginSchema } from "@/features/user/login/libs/validation";
 import { yupResolver } from "@hookform/resolvers/yup";
-import * as Yup from "yup";
-import { useLoginMutation } from "@/features/user/login/useLogin";
 
-// 1. تعريف سكيم الفاليديشين باستخدام Yup
-const loginSchema = Yup.object({
-  email: Yup.string()
-    .email("Email is invalid")
-    .required("Email is required"),
-  password: Yup.string()
-    .min(6, "Password must be at least 6 characters")
-    .required("Password is required"),
-}).required();
 
 type LoginFormInputs = {
   email: string;
