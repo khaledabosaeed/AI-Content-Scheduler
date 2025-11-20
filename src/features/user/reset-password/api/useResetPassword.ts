@@ -1,10 +1,8 @@
 import { api } from "@/shared/api/api-client";
 import { QueryClient, useMutation, useQueryClient } from "@tanstack/react-query";
+import { ResetPasswordPayload } from "../libs/type";
 
-type ResetPasswordPayload = {
-  token: string; // الكود المؤقت اللي جالك بالإيميل
-  newPassword: string;
-};
+
 
 export const useResetMutation = () => {
 

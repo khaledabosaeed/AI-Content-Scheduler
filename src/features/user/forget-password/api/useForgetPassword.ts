@@ -1,9 +1,8 @@
 import { api } from "@/shared/api/api-client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { ForgetPasswordPayload } from "../libs/type";
 
-type ForgetPasswordPayload = {
-  email: string;
-}
+
 
 export const useForgetPasswordMutation = () => {
   const queryClient = useQueryClient();
