@@ -122,7 +122,7 @@ export function refreshToken(token: string): string | null {
 
   // إزالة الحقول التي تضاف تلقائيًا
   const { iat, exp, ...payload } = decoded;
-  
+
   // إنشاء token جديد بنفس البيانات
   return createToken(payload);
 }
