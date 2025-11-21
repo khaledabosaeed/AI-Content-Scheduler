@@ -33,10 +33,10 @@ export const useRegisterMutation = ({
       return response;
     },
     onSuccess: (data, variables, context) => {
-      queryClient.setQueryData(["currentUser"], data.user);
+      queryClient.setQueryData(userKeys.me(), (old: unknown) => (data?.user ?? old) as unknown);
 
       // 2️⃣ إعادة fetch لأي query يعتمد على بيانات المستخدم
-      queryClient.invalidateQueries(["currentUser"]);
+      queryClient.invalidateQueries({ queryKey: userKeys.all() });
       if (onSuccess) {
         onSuccess(data, variables, context);
       }

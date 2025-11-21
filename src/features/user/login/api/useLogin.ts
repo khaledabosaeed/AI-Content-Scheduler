@@ -1,6 +1,7 @@
 import { api } from "@/shared/api/api-client";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { LoginCredentials } from "../libs/type";
+import { userKeys } from "@/entities/user/state/keys";
 
 
 
@@ -34,10 +35,10 @@ export const useLoginMutation = ({
     },
     onSuccess: (data, variables, context) => {
       // 1️⃣ تحديث الـ cache مباشرة
-      queryClient.setQueryData(["currentUser"], data.user);
+      queryClient.setQueryData(userKeys.me(), (old: unknown) => (data?.user ?? old) as unknown);
 
       // 2️⃣ إعادة fetch لأي query يعتمد على بيانات المستخدم
-      queryClient.invalidateQueries(["currentUser"]);
+      queryClient.invalidateQueries({ queryKey: userKeys.all() });
       if (onSuccess) {
         onSuccess(data, variables, context);
       }

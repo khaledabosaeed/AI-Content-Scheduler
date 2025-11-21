@@ -1,5 +1,6 @@
 import { api } from "@/shared/api/api-client";
 import { QueryClient, useMutation, useQueryClient } from "@tanstack/react-query";
+import { userKeys } from "@/entities/user/state/keys";
 
 type ResetPasswordPayload = {
   token: string; // الكود المؤقت اللي جالك بالإيميل
@@ -19,10 +20,10 @@ export const useResetMutation = () => {
     },
 
     onSuccess: (data) => {
-      queryClient.setQueryData(["currentUser"], data.user);
+      queryClient.setQueryData(userKeys.me(), (old: unknown) => (data?.user ?? old) as unknown);
 
       // 2️⃣ إعادة fetch لأي query يعتمد على بيانات المستخدم
-      queryClient.invalidateQueries(["currentUser"]);
+      queryClient.invalidateQueries({ queryKey: userKeys.all() });
 
       console.log("Password reset successfully!", data);
     },
