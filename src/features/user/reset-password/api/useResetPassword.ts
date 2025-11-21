@@ -1,12 +1,13 @@
 import { api } from "@/shared/api/api-client";
-import { QueryClient, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  QueryClient,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 import { ResetPasswordPayload } from "../libs/type";
 
-
-
 export const useResetMutation = () => {
-
-    const queryClient = useQueryClient();
+  const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (payload: ResetPasswordPayload) => {

@@ -4,15 +4,14 @@ import { useForm } from "react-hook-form";
 import { useLoginMutation } from "@/features/user/login/api/useLogin";
 import { loginSchema } from "@/features/user/login/libs/validation";
 import { yupResolver } from "@hookform/resolvers/yup";
-
-
-type LoginFormInputs = {
-  email: string;
-  password: string;
-};
+import { LoginCredentials } from "../libs/type";
 
 export default function LoginForm() {
-  const { register, handleSubmit, formState: { errors } } = useForm<LoginFormInputs>({
+  const {
+    register,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<LoginCredentials>({
     resolver: yupResolver(loginSchema),
   });
 
@@ -22,12 +21,15 @@ export default function LoginForm() {
   });
 
   // 2. إرسال البيانات عند submit
-  const onSubmit = (values: LoginFormInputs) => {
+  const onSubmit = (values: LoginCredentials) => {
     mutate(values);
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-3 w-full max-w-sm">
+    <form
+      onSubmit={handleSubmit(onSubmit)}
+      className="flex flex-col gap-3 w-full max-w-sm"
+    >
       <input
         type="email"
         placeholder="Email"
@@ -42,12 +44,11 @@ export default function LoginForm() {
         className="border p-2 rounded"
         {...register("password")}
       />
-      {errors.password && <p className="text-red-500">{errors.password.message}</p>}
+      {errors.password && (
+        <p className="text-red-500">{errors.password.message}</p>
+      )}
 
-      <button
-        className="bg-black text-white py-2 rounded"
-        disabled={isLoading}
-      >
+      <button className="bg-black text-white py-2 rounded" disabled={isLoading}>
         {isLoading ? "Loading..." : "Login"}
       </button>
 
