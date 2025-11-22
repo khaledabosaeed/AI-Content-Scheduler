@@ -7,7 +7,7 @@
 import jwt from 'jsonwebtoken';
 
 // المفتاح السري لتوقيع JWT - يجب أن يكون قوي ومخزن في .env
-const JWT_SECRET = process.env.JWT_SECRET || 'your-super-secret-jwt-key-change-this-in-production';
+const JWT_SECRET = process.env.JWT_SECRET || 'fjsaofjaso(*&*^fnsdiofn2654a#$2f84we89r425s34243&^';
 
 // مدة صلاحية التوكن (7 أيام)
 const JWT_EXPIRATION = '7d';
