@@ -64,10 +64,10 @@ export async function POST(req: NextRequest) {
     });
 
     // 6. تحديث آخر تسجيل دخول (اختياري)
-    await supabaseServer
-      .from('users')
-      .update({ last_login: new Date().toISOString() })
-      .eq('id', user.id);
+    // await supabaseServer
+    //   .from('users')
+    //   .update({ last_login: new Date().toISOString() })
+    //   .eq('id', user.id);
 
     // 7. إرجاع الاستجابة مع Cookie آمنة
     return createResponseWithSession(
