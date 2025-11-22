@@ -4,22 +4,20 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { registerSchema } from "../libs/validation";
 import { useRegisterMutation } from "../api/useRegister";
+import { LoginCredentials } from "../libs/type";
 
-type RegisterFormInputs = {
-  name: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-};
+
 
 export default function RegisterForm() {
-  const { register, handleSubmit, formState: { errors } } = useForm<RegisterFormInputs>({
+  const { register, handleSubmit, formState: { errors } } = useForm<LoginCredentials>({
     resolver: yupResolver(registerSchema),
   });
 
   const { mutate, isLoading, error, data } = useRegisterMutation();
 
-  const onSubmit = (values: RegisterFormInputs) => {
+  const onSubmit = (values: LoginCredentials) => {
+    const {...payload } = values
+    console.log(payload)
     mutate(values, {
       onSuccess: (data) => console.log("Register success:", data),
       onError: (err) => console.error("Register failed:", err),

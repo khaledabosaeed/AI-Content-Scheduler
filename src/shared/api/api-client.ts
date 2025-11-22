@@ -7,9 +7,13 @@ import { AuthError } from "@supabase/supabase-js";
 import { getAuthToken } from "./cookies";
 import { ValidationError, ApiError, NetworkError } from "./error";
 
+<<<<<<< HEAD
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL ||
   "/api/";
+=======
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "/api";
+>>>>>>> refactor-apiClient
 
 export interface ApiRequestOptions extends RequestInit {
   requiresAuth?: boolean;
@@ -29,7 +33,6 @@ export async function apiClient(
     "Content-Type": "application/json",
     ...(headers as Record<string, string>),
   };
-  
 
   // Add authorization token if required
   if (requiresAuth) {
@@ -65,11 +68,26 @@ async function handleResponse<T>(
       case 422:
         throw new ValidationError(endpoint, errorData.errors || {}, errorData);
       case 403:
-        throw new ApiError(403, errorData.message || "Forbidden", endpoint, errorData);
+        throw new ApiError(
+          403,
+          errorData.message || "Forbidden",
+          endpoint,
+          errorData
+        );
       case 404:
-        throw new ApiError(404, errorData.message || "Not Found", endpoint, errorData);
+        throw new ApiError(
+          404,
+          errorData.message || "Not Found",
+          endpoint,
+          errorData
+        );
       case 500:
-        throw new ApiError(500, errorData.message || "Server Error", endpoint, errorData);
+        throw new ApiError(
+          500,
+          errorData.message || "Server Error",
+          endpoint,
+          errorData
+        );
       default:
         throw new ApiError(
           response.status,
@@ -97,7 +115,9 @@ export const api = {
       return handleResponse<T>(response, endpoint);
     } catch (error) {
       if (error instanceof TypeError) {
-        throw new NetworkError('Network request failed. Please check your connection.');
+        throw new NetworkError(
+          "Network request failed. Please check your connection."
+        );
       }
       throw error;
     }
@@ -116,7 +136,9 @@ export const api = {
       return handleResponse<T>(response, endpoint);
     } catch (error) {
       if (error instanceof TypeError) {
-        throw new NetworkError('Network request failed. Please check your connection.');
+        throw new NetworkError(
+          "Network request failed. Please check your connection."
+        );
       }
       throw error;
     }
@@ -135,7 +157,9 @@ export const api = {
       return handleResponse<T>(response, endpoint);
     } catch (error) {
       if (error instanceof TypeError) {
-        throw new NetworkError('Network request failed. Please check your connection.');
+        throw new NetworkError(
+          "Network request failed. Please check your connection."
+        );
       }
       throw error;
     }
@@ -154,7 +178,9 @@ export const api = {
       return handleResponse<T>(response, endpoint);
     } catch (error) {
       if (error instanceof TypeError) {
-        throw new NetworkError('Network request failed. Please check your connection.');
+        throw new NetworkError(
+          "Network request failed. Please check your connection."
+        );
       }
       throw error;
     }
@@ -171,7 +197,9 @@ export const api = {
       return handleResponse<T>(response, endpoint);
     } catch (error) {
       if (error instanceof TypeError) {
-        throw new NetworkError('Network request failed. Please check your connection.');
+        throw new NetworkError(
+          "Network request failed. Please check your connection."
+        );
       }
       throw error;
     }

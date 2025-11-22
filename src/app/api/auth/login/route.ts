@@ -40,7 +40,7 @@ export async function POST(req: NextRequest) {
 
     if (dbError || !user) {
       return NextResponse.json(
-        { error: "البريد الإلكتروني أو كلمة المرور غير صحيحة" },
+        { error: "البريد الإلكتروني غير صحيحة" },
         { status: 401 }
       );
     }
@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
 
     if (!isPasswordValid) {
       return NextResponse.json(
-        { error: "البريد الإلكتروني أو كلمة المرور غير صحيحة" },
+        { error: " كلمة المرور غير صحيحة" },
         { status: 401 }
       );
     }

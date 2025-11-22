@@ -28,25 +28,24 @@ export const useLoginMutation = ({
     mutationFn: async (
       credentials: LoginCredentials & { rememberMe?: boolean }
     ) => {
-      const response = await api.post("auth/login", credentials);
+      const response = await api.post("/auth/login", credentials, {
+        requiresAuth: false, // 🔥🔥 هاي أهم خطوة
+      });
 
-      // const token = (response as any).data.token || (response as any).token;
       return response;
     },
-    onSuccess: (data, variables, context) => {
-      // 1️⃣ تحديث الـ cache مباشرة
-      queryClient.setQueryData(userKeys.me(), (old: unknown) => (data?.user ?? old) as unknown);
 
-      // 2️⃣ إعادة fetch لأي query يعتمد على بيانات المستخدم
+    onSuccess: (data, variables, context) => {
+      console.log("LOGIN RESPONSE DATA:", data);
+      queryClient.setQueryData(userKeys.me(), data?.user);
+
       queryClient.invalidateQueries({ queryKey: userKeys.all() });
-      if (onSuccess) {
-        onSuccess(data, variables, context);
-      }
+
+      onSuccess?.(data, variables, context);
     },
+
     onError: (error, variables, context) => {
-      if (onError) {
-        onError(error, variables, context);
-      }
+      onError?.(error, variables, context);
     },
   });
 };

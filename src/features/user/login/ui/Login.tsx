@@ -22,6 +22,8 @@ export default function LoginForm() {
 
   // 2. إرسال البيانات عند submit
   const onSubmit = (values: LoginCredentials) => {
+    const {...payload } = values
+    console.log(values)
     mutate(values);
   };
 
