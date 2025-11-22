@@ -45,9 +45,9 @@ export const POST = async (req: NextRequest) => {
     const passwordValidation = validatePasswordStrength(password);
     if (!passwordValidation.isValid) {
       return NextResponse.json(
-        { 
+        {
           error: "كلمة المرور ضعيفة",
-          details: passwordValidation.errors 
+          details: passwordValidation.errors
         },
         { status: 400 }
       );
@@ -77,7 +77,7 @@ export const POST = async (req: NextRequest) => {
       .insert({
         email,
         name: name || email.split('@')[0],
-        password_hash: hashedPassword,
+        password: hashedPassword,
         created_at: new Date().toISOString(),
       })
       .select('id, email, name, created_at')
