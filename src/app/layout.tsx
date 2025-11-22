@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import Provider from "./providers";
+import UserProvider from "./providers/UserProvider";
 // import "./styles/globals.css";
 
 
@@ -19,7 +19,7 @@ export default async function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="flex min-h-screen bg-gray-50 dark:bg-gray-900 content-transition">
-       <Provider>{children}</Provider>
+        <UserProvider>{children}</UserProvider> 
       </body>
     </html>
   );

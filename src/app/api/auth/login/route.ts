@@ -34,24 +34,24 @@ export async function POST(req: NextRequest) {
     // 3. البحث عن المستخدم في قاعدة البيانات
     const { data: user, error: dbError } = await supabaseServer
       .from('users')
-      .select('id, email, name, password_hash, created_at')
+      .select('id, email, name, password, created_at')
       .eq('email', email)
       .single();
 
     if (dbError || !user) {
       return NextResponse.json(
-        { error: "البريد الإلكتروني أو كلمة المرور غير صحيحة" },
+        { error: "البريد الإلكتروني غير صحيحة" },
         { status: 401 }
       );
     }
 
     // 4. التحقق من كلمة المرور
     // bcrypt.compare يقوم بمقارنة كلمة المرور مع الهاش
-    const isPasswordValid = await verifyPassword(password, user.password_hash);
+    const isPasswordValid = await verifyPassword(password, user.password);
 
     if (!isPasswordValid) {
       return NextResponse.json(
-        { error: "البريد الإلكتروني أو كلمة المرور غير صحيحة" },
+        { error: " كلمة المرور غير صحيحة" },
         { status: 401 }
       );
     }

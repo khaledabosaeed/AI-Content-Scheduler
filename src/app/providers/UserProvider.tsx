@@ -5,7 +5,7 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 
 const queryClient = new QueryClient();
 
-function Provider({ children }) {
+function UserProvider({ children }) {
   return (
     <QueryClientProvider client={queryClient}>
       {children}
@@ -14,4 +14,4 @@ function Provider({ children }) {
   );
 }
 
-export default Provider;
+export default UserProvider;

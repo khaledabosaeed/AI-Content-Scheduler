@@ -11,7 +11,7 @@ export default function LandingPage() {
       }}>Login</button>
       <button onClick={() => {
         alert("صفحة register عبال ما نعمل الUI")
-        // router.push("/register")
+        router.push("/register")
       }}>Register</button>
     </div>
   );
