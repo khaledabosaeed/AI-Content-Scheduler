@@ -6,8 +6,11 @@ import { loginSchema } from "@/features/user/login/libs/validation";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { LoginCredentials } from "../libs/type";
 import Link from "next/link";
+import { useState } from "react";
 
 export default function LoginForm() {
+  const [showPassword, setShowPassword] = useState(false);
+
   const {
     register,
     handleSubmit,
@@ -41,10 +44,10 @@ export default function LoginForm() {
               </svg>
             </div>
             <h1 className="text-4xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-              مرحباً بعودتك
+              Welcome Back
             </h1>
             <p className="text-text-secondary text-sm">
-              سجل دخولك إلى منصة جدولة المحتوى
+              Sign in to your content scheduling platform
             </p>
           </div>
 
@@ -54,7 +57,7 @@ export default function LoginForm() {
             {/* Email */}
             <div className="space-y-2">
               <label htmlFor="email" className="text-sm font-semibold text-foreground">
-                البريد الإلكتروني
+                Email Address
               </label>
               <input
                 id="email"
@@ -71,15 +74,34 @@ export default function LoginForm() {
             {/* Password */}
             <div className="space-y-2">
               <label htmlFor="password" className="text-sm font-semibold text-foreground">
-                كلمة المرور
+                Password
               </label>
-              <input
-                id="password"
-                type="password"
-                placeholder="أدخل كلمة المرور"
-                className="w-full px-4 py-4 bg-background border-2 border-border hover:border-primary/50 focus:border-primary rounded-xl focus:outline-none focus:ring-4 focus:ring-primary/20 transition-all duration-200 text-foreground placeholder:text-text-disabled"
-                {...register("password")}
-              />
+              <div className="relative">
+                <input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Enter your password"
+                  className="w-full px-4 py-4 bg-background border-2 border-border hover:border-primary/50 focus:border-primary rounded-xl focus:outline-none focus:ring-4 focus:ring-primary/20 transition-all duration-200 text-foreground placeholder:text-text-disabled"
+                  {...register("password")}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute left-4 top-1/2 -translate-y-1/2 text-text-secondary hover:text-foreground transition-colors"
+                >
+                  {showPassword ? (
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                      <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
+                    </svg>
+                  ) : (
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M3.707 2.293a1 1 0 00-1.414 1.414l14 14a1 1 0 001.414-1.414l-1.473-1.473A10.014 10.014 0 0019.542 10C18.268 5.943 14.478 3 10 3a9.958 9.958 0 00-4.512 1.074l-1.78-1.781zm4.261 4.26l1.514 1.515a2.003 2.003 0 012.45 2.45l1.514 1.514a4 4 0 00-5.478-5.478z" clipRule="evenodd" />
+                      <path d="M15.171 13.576l1.414 1.414A6.981 6.981 0 0018.528 11c-1.274-4.057-5.064-7-9.528-7a6.998 6.998 0 00-1.528.161l2.117 2.117a4 4 0 015.771 5.771z" />
+                    </svg>
+                  )}
+                </button>
+              </div>
               {errors.password && (
                 <p className="text-destructive text-sm">{errors.password.message}</p>
               )}
@@ -89,9 +111,9 @@ export default function LoginForm() {
             <button
               type="submit"
               disabled={isPending}
-              className="w-full py-4 px-6 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground font-bold rounded-xl shadow-xl shadow-primary/30 hover:shadow-2xl hover:shadow-primary/40 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02] active:scale-[0.98]"
+              className="w-full py-4 px-6 bg-gradient-to-r from-primary to-primary/80 hover:from-primary/90 hover:to-primary/70 text-primary-foreground font-bold rounded-xl shadow-xl shadow-primary/30 hover:shadow-2xl hover:shadow-primary/40 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02] active:scale-[0.98] mt-2"
             >
-              {isPending ? "جاري تسجيل الدخول..." : "تسجيل الدخول"}
+              {isPending ? "Signing in..." : "Sign In"}
             </button>
 
             {/* Messages */}
@@ -103,7 +125,7 @@ export default function LoginForm() {
 
             {data && (
               <div className="bg-primary/10 border-2 border-primary/30 rounded-xl p-4">
-                <p className="text-primary text-sm font-semibold">تم تسجيل الدخول بنجاح!</p>
+                <p className="text-primary text-sm font-semibold">Signed in successfully!</p>
               </div>
             )}
           </form>
@@ -115,7 +137,7 @@ export default function LoginForm() {
             </div>
             <div className="relative flex justify-center">
               <span className="px-4 bg-background-paper text-text-secondary font-medium text-sm">
-                ليس لديك حساب؟
+                Don't have an account?
               </span>
             </div>
           </div>
@@ -125,13 +147,13 @@ export default function LoginForm() {
             href="/register"
             className="block w-full text-center py-4 px-6 border-2 border-border hover:border-primary/60 hover:bg-primary/5 text-foreground font-semibold rounded-xl transition-all duration-300"
           >
-            إنشاء حساب جديد
+            Create New Account
           </Link>
         </div>
 
         {/* Footer */}
         <p className="text-center text-text-secondary text-sm mt-6">
-          ⚡ مدعوم بالذكاء الاصطناعي
+          ⚡ Powered by AI
         </p>
       </div>
     </div>

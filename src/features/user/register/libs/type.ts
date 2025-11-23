@@ -1,5 +1,6 @@
-export type LoginCredentials = {
-    name: string;
-      password: string;
-    email: string;
+export type RegisterFormInputs = {
+  name: string;
+  email: string;
+  password: string;
+  confirmPassword: string;
 };

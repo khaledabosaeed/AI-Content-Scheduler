@@ -33,14 +33,8 @@ export const POST = async (req: NextRequest) => {
     if (!passwordValidation.isValid) {
       console.warn("Weak password:", passwordValidation.errors);
       return NextResponse.json(
-<<<<<<< HEAD
-        {
-          error: "كلمة المرور ضعيفة",
-          details: passwordValidation.errors
-        },
-=======
+
         { error: "كلمة المرور ضعيفة", details: passwordValidation.errors },
->>>>>>> refactor-apiClient
         { status: 400 }
       );
     }
@@ -67,11 +61,7 @@ export const POST = async (req: NextRequest) => {
       .from("users")
       .insert({
         email,
-<<<<<<< HEAD
-        name: name || email.split('@')[0],
-=======
         name: name || email.split("@")[0],
->>>>>>> refactor-apiClient
         password: hashedPassword,
         created_at: new Date().toISOString(),
       })

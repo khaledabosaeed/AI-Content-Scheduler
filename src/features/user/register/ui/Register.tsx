@@ -5,23 +5,22 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { registerSchema } from "../libs/validation";
 import { useRegisterMutation } from "../api/useRegister";
 import Link from "next/link";
+import { useState } from "react";
+import { RegisterFormInputs } from "../libs/type";
 
-type RegisterFormInputs = {
-  name: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-};
 
 export default function RegisterForm() {
-  const { register, handleSubmit, formState: { errors } } = useForm<LoginCredentials>({
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const { register, handleSubmit, formState: { errors } } = useForm<RegisterFormInputs>({
     resolver: yupResolver(registerSchema),
   });
 
   const { mutate, isPending, error, data } = useRegisterMutation();
 
-  const onSubmit = (values: LoginCredentials) => {
-    const {...payload } = values
+  const onSubmit = (values: RegisterFormInputs) => {
+    const { ...payload } = values
     console.log(payload)
     mutate(values, {
       onSuccess: (data) => console.log("Register success:", data),
@@ -43,10 +42,10 @@ export default function RegisterForm() {
               </svg>
             </div>
             <h1 className="text-4xl font-bold bg-gradient-to-r from-secondary to-accent bg-clip-text text-transparent">
-              انضم إلينا
+              Join Us
             </h1>
             <p className="text-text-secondary text-sm">
-              ابدأ جدولة محتواك بسهولة
+              Start scheduling your content with ease
             </p>
           </div>
 
@@ -56,12 +55,12 @@ export default function RegisterForm() {
             {/* Name */}
             <div className="space-y-2">
               <label htmlFor="name" className="text-sm font-semibold text-foreground">
-                الاسم الكامل
+                Full Name
               </label>
               <input
                 id="name"
                 type="text"
-                placeholder="أحمد محمد"
+                placeholder="John Doe"
                 className="w-full px-4 py-4 bg-background border-2 border-border hover:border-secondary/50 focus:border-secondary rounded-xl focus:outline-none focus:ring-4 focus:ring-secondary/20 transition-all duration-200 text-foreground placeholder:text-text-disabled"
                 {...register("name")}
               />
@@ -73,7 +72,7 @@ export default function RegisterForm() {
             {/* Email */}
             <div className="space-y-2">
               <label htmlFor="email" className="text-sm font-semibold text-foreground">
-                البريد الإلكتروني
+                Email Address
               </label>
               <input
                 id="email"
@@ -90,15 +89,34 @@ export default function RegisterForm() {
             {/* Password */}
             <div className="space-y-2">
               <label htmlFor="password" className="text-sm font-semibold text-foreground">
-                كلمة المرور
+                Password
               </label>
-              <input
-                id="password"
-                type="password"
-                placeholder="كلمة مرور قوية"
-                className="w-full px-4 py-4 bg-background border-2 border-border hover:border-secondary/50 focus:border-secondary rounded-xl focus:outline-none focus:ring-4 focus:ring-secondary/20 transition-all duration-200 text-foreground placeholder:text-text-disabled"
-                {...register("password")}
-              />
+              <div className="relative">
+                <input
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Enter a strong password"
+                  className="w-full px-4 py-4 bg-background border-2 border-border hover:border-secondary/50 focus:border-secondary rounded-xl focus:outline-none focus:ring-4 focus:ring-secondary/20 transition-all duration-200 text-foreground placeholder:text-text-disabled"
+                  {...register("password")}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-text-secondary hover:text-foreground transition-colors"
+                >
+                  {showPassword ? (
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                      <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
+                    </svg>
+                  ) : (
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M3.707 2.293a1 1 0 00-1.414 1.414l14 14a1 1 0 001.414-1.414l-1.473-1.473A10.014 10.014 0 0019.542 10C18.268 5.943 14.478 3 10 3a9.958 9.958 0 00-4.512 1.074l-1.78-1.781zm4.261 4.26l1.514 1.515a2.003 2.003 0 012.45 2.45l1.514 1.514a4 4 0 00-5.478-5.478z" clipRule="evenodd" />
+                      <path d="M15.171 13.576l1.414 1.414A6.981 6.981 0 0018.528 11c-1.274-4.057-5.064-7-9.528-7a6.998 6.998 0 00-1.528.161l2.117 2.117a4 4 0 015.771 5.771z" />
+                    </svg>
+                  )}
+                </button>
+              </div>
               {errors.password && (
                 <p className="text-destructive text-sm">{errors.password.message}</p>
               )}
@@ -107,15 +125,34 @@ export default function RegisterForm() {
             {/* Confirm Password */}
             <div className="space-y-2">
               <label htmlFor="confirmPassword" className="text-sm font-semibold text-foreground">
-                تأكيد كلمة المرور
+                Confirm Password
               </label>
-              <input
-                id="confirmPassword"
-                type="password"
-                placeholder="أعد إدخال كلمة المرور"
-                className="w-full px-4 py-4 bg-background border-2 border-border hover:border-secondary/50 focus:border-secondary rounded-xl focus:outline-none focus:ring-4 focus:ring-secondary/20 transition-all duration-200 text-foreground placeholder:text-text-disabled"
-                {...register("confirmPassword")}
-              />
+              <div className="relative">
+                <input
+                  id="confirmPassword"
+                  type={showConfirmPassword ? "text" : "password"}
+                  placeholder="Re-enter your password"
+                  className="w-full px-4 py-4 bg-background border-2 border-border hover:border-secondary/50 focus:border-secondary rounded-xl focus:outline-none focus:ring-4 focus:ring-secondary/20 transition-all duration-200 text-foreground placeholder:text-text-disabled"
+                  {...register("confirmPassword")}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-text-secondary hover:text-foreground transition-colors"
+                >
+                  {showConfirmPassword ? (
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                      <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
+                      <path fillRule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clipRule="evenodd" />
+                    </svg>
+                  ) : (
+                    <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                      <path fillRule="evenodd" d="M3.707 2.293a1 1 0 00-1.414 1.414l14 14a1 1 0 001.414-1.414l-1.473-1.473A10.014 10.014 0 0019.542 10C18.268 5.943 14.478 3 10 3a9.958 9.958 0 00-4.512 1.074l-1.78-1.781zm4.261 4.26l1.514 1.515a2.003 2.003 0 012.45 2.45l1.514 1.514a4 4 0 00-5.478-5.478z" clipRule="evenodd" />
+                      <path d="M15.171 13.576l1.414 1.414A6.981 6.981 0 0018.528 11c-1.274-4.057-5.064-7-9.528-7a6.998 6.998 0 00-1.528.161l2.117 2.117a4 4 0 015.771 5.771z" />
+                    </svg>
+                  )}
+                </button>
+              </div>
               {errors.confirmPassword && (
                 <p className="text-destructive text-sm">{errors.confirmPassword.message}</p>
               )}
@@ -127,7 +164,7 @@ export default function RegisterForm() {
               disabled={isPending}
               className="w-full py-4 px-6 bg-gradient-to-r from-secondary to-secondary/80 hover:from-secondary/90 hover:to-secondary/70 text-secondary-foreground font-bold rounded-xl shadow-xl shadow-secondary/30 hover:shadow-2xl hover:shadow-secondary/40 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02] active:scale-[0.98] mt-2"
             >
-              {isPending ? "جاري إنشاء الحساب..." : "إنشاء حساب"}
+              {isPending ? "Creating account..." : "Create Account"}
             </button>
 
             {/* Messages */}
@@ -139,7 +176,7 @@ export default function RegisterForm() {
 
             {data && (
               <div className="bg-primary/10 border-2 border-primary/30 rounded-xl p-4">
-                <p className="text-primary text-sm font-semibold">تم إنشاء الحساب بنجاح!</p>
+                <p className="text-primary text-sm font-semibold">Account created successfully!</p>
               </div>
             )}
           </form>
@@ -151,7 +188,7 @@ export default function RegisterForm() {
             </div>
             <div className="relative flex justify-center">
               <span className="px-4 bg-background-paper text-text-secondary font-medium text-sm">
-                لديك حساب بالفعل؟
+                Already have an account?
               </span>
             </div>
           </div>
@@ -161,13 +198,13 @@ export default function RegisterForm() {
             href="/login"
             className="block w-full text-center py-4 px-6 border-2 border-border hover:border-secondary/60 hover:bg-secondary/5 text-foreground font-semibold rounded-xl transition-all duration-300"
           >
-            تسجيل الدخول
+            Sign In
           </Link>
         </div>
 
         {/* Footer */}
         <p className="text-center text-text-secondary text-sm mt-6">
-          بالتسجيل، أنت توافق على الشروط والأحكام
+          By registering, you agree to our Terms and Conditions
         </p>
       </div>
     </div>
