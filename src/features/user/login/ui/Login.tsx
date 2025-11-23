@@ -7,6 +7,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { LoginCredentials } from "../libs/type";
 import Link from "next/link";
 import { useState } from "react";
+import ChatInterface from "@/features/chat/ChatInterface";
 
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -157,5 +158,9 @@ export default function LoginForm() {
         </p>
       </div>
     </div>
+      {error && <p className="text-red-500">{(error as Error).message}</p>}
+      {data && <ChatInterface/>}
+    </form>
+>>>>>>> chat-branch
   );
 }
