@@ -5,6 +5,7 @@ import { useLoginMutation } from "@/features/user/login/api/useLogin";
 import { loginSchema } from "@/features/user/login/libs/validation";
 import { yupResolver } from "@hookform/resolvers/yup";
 import { LoginCredentials } from "../libs/type";
+import ChatInterface from "@/features/chat/ChatInterface";
 
 export default function LoginForm() {
   const {
@@ -55,7 +56,7 @@ export default function LoginForm() {
       </button>
 
       {error && <p className="text-red-500">{(error as Error).message}</p>}
-      {data && <p className="text-green-500">Login successful!</p>}
+      {data && <ChatInterface/>}
     </form>
   );
 }
