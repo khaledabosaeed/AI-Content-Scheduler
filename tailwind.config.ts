@@ -12,34 +12,46 @@ export default {
     theme: {
         extend: {
             colors: {
-                // Primary colors for both themes
+                background: {
+                    DEFAULT: 'hsl(var(--background))',
+                    paper: 'hsl(var(--paper))',
+                    elevated: 'hsl(var(--elevated))',
+                },
+                foreground: 'hsl(var(--foreground))',
                 primary: {
-                    DEFAULT: 'hsl(var(--primary))',  // Cyan for both light and dark
-                    light: '#22d3ee',   // Cyan-400
-                    dark: '#0891b2',    // Cyan-600
+                    DEFAULT: 'hsl(var(--primary))',
+                    foreground: 'hsl(var(--primary-foreground))',
                 },
                 secondary: {
-                    DEFAULT: '#ef4444', // Red-500 for both light and dark
-                    light: '#f87171',   // Red-400
-                    dark: '#dc2626',    // Red-600
+                    DEFAULT: 'hsl(var(--secondary))',
+                    foreground: 'hsl(var(--secondary-foreground))',
                 },
-                background: {
-                    default: 'hsl(var(--background))', // Background for both themes
-                    paper: 'hsl(var(--paper))',        // Card background for both themes
-                    elevated: 'hsl(var(--elevated))',   // Elevated surfaces
+                muted: {
+                    DEFAULT: 'hsl(var(--muted))',
+                    foreground: 'hsl(var(--muted-foreground))',
+                },
+                accent: {
+                    DEFAULT: 'hsl(var(--accent))',
+                    foreground: 'hsl(var(--accent-foreground))',
+                },
+                destructive: {
+                    DEFAULT: 'hsl(var(--destructive))',
+                    foreground: 'hsl(var(--destructive-foreground))',
                 },
                 text: {
-                    primary: 'hsl(var(--text-primary))',   // Main text color
-                    secondary: 'hsl(var(--text-secondary))', // Secondary text
-                    disabled: 'hsl(var(--text-disabled))', // Disabled text color
+                    primary: 'hsl(var(--text-primary))',
+                    secondary: 'hsl(var(--text-secondary))',
+                    disabled: 'hsl(var(--text-disabled))',
                 },
-                divider: 'hsl(var(--divider))', // Divider color
+                border: 'hsl(var(--border))',
+                input: 'hsl(var(--input))',
+                ring: 'hsl(var(--ring))',
+                divider: 'hsl(var(--divider))',
                 action: {
-                    hover: 'hsl(var(--action-hover))', // Hover state action
-                    selected: 'hsl(var(--action-selected))', // Selected state action
+                    hover: 'hsl(var(--action-hover))',
+                    selected: 'hsl(var(--action-selected))',
                 },
             },
-            // Use font family as defined in MUI theme
             fontFamily: {
                 sans: ['Roboto', 'Arial', 'sans-serif'],
             },

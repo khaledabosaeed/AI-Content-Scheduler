@@ -1,17 +1,17 @@
 import { userKeys } from "@/entities/user/state/keys";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { api } from "@/shared/api/api-client";
-import { LoginCredentials } from "../libs/type";
+import { RegisterFormInputs } from "../libs/type";
 
-type LoginMutationOptions = {
+type RegisterMutationOptions = {
   onSuccess?: (
     data: unknown,
-    variables: LoginCredentials,
+    variables: RegisterFormInputs     ,
     context: unknown
   ) => void;
   onError?: (
     error: Error,
-    variables: LoginCredentials,
+    variables: RegisterFormInputs,
     context: unknown
   ) => void;
 };
@@ -20,12 +20,12 @@ type LoginMutationOptions = {
 export const useRegisterMutation = ({
   onSuccess,
   onError,
-}: LoginMutationOptions = {}) => {
+}: RegisterMutationOptions = {}) => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (
-      credentials: LoginCredentials & { rememberMe?: boolean }
+      credentials: RegisterFormInputs & { rememberMe?: boolean }
     ) => {
       const response = await api.post("/auth/register", credentials, {
         requiresAuth: false,

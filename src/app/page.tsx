@@ -4,6 +4,7 @@
 import LoginForm from "@/features/user/login/ui/Login";
 import { useUser } from "@/entities/user/state/queries";
 import LandingPage from "./landingPage/page";
+import { ThemeToggle } from "@/shared/ui/ThemeToggle";
 
 export default function Page() {
   const { data, isLoading } = useUser();
@@ -12,7 +13,10 @@ export default function Page() {
 
   return (
     <div>
-      <LandingPage/>
+      <div className="flex justify-end mb-8">
+        <ThemeToggle />
+      </div>
+      <LandingPage />
     </div>
   );
 }
