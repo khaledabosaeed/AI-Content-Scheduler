@@ -9,7 +9,7 @@
 
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
-import { checkAuth } from "./src/shared/libs/auth-middleware";
+import { checkAuth } from "./src/shared/libs/auth/auth-middleware";
 
 // الصفحات المحمية (تحتاج تسجيل دخول)
 const PROTECTED_ROUTES = [

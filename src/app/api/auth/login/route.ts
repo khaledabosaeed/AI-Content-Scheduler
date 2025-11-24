@@ -12,11 +12,11 @@
  * 7. إرجاع بيانات المستخدم
  */
 
-import { supabaseServer } from "@/shared/libs/supabaseServer";
+import { supabaseServer } from "@/shared/libs/auth/supabaseServer";
 import { NextRequest, NextResponse } from "next/server";
-import { verifyPassword } from "@/shared/libs/passwordHash";
-import { createToken } from "@/shared/libs/jwt";
-import { createResponseWithSession } from "@/shared/libs/cookies";
+import { verifyPassword } from "@/shared/libs/auth/passwordHash";
+import { createToken } from "@/shared/libs/auth/jwt";
+import { createResponseWithSession } from "@/shared/libs/auth/cookies";
 
 export async function POST(req: NextRequest) {
   try {

@@ -158,9 +158,6 @@ export default function LoginForm() {
         </p>
       </div>
     </div>
-      {error && <p className="text-red-500">{(error as Error).message}</p>}
-      {data && <ChatInterface/>}
-    </form>
->>>>>>> chat-branch
+
   );
 }

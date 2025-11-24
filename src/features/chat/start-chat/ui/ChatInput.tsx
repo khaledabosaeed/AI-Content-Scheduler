@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
-import { useChatStore } from "@/shared/store/chat-store";
-import { useSendMessage } from "./useSendMessage";
+import { useChatStore } from "@/entities/chat";
+import { useSendMessage } from "../model/use-send-message";
 
 export default function ChatInput() {
   const [text, setText] = useState("");
