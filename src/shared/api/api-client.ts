@@ -8,9 +8,6 @@ import { getAuthToken } from "./cookies";
 import { ValidationError, ApiError, NetworkError } from "./error";
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "/api/";
-const API_BASE_URL =
-  process.env.NEXT_PUBLIC_API_URL ||
-  "/api/";
 
 export interface ApiRequestOptions extends RequestInit {
   requiresAuth?: boolean;
