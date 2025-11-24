@@ -3,7 +3,7 @@
  * للاستخدام في Client Components فقط
  */
 
-import { SESSION_COOKIE_NAME } from '../libs/cookies';
+import { SESSION_COOKIE_NAME } from '../libs/auth/cookies';
 
 /**
  * قراءة token من الكوكي (Client Side)

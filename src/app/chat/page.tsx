@@ -1,12 +1,5 @@
-import ChatInterface from '@/features/chat/ChatInterface';
-import React from 'react';
+import { ChatWidget } from "@/widgets/chat";
 
-function page() {
-  return (
-    <div>
-      <ChatInterface/>
-    </div>
-  );
+export default function ChatPage() {
+  return <ChatWidget />;
 }
-
-export default page;

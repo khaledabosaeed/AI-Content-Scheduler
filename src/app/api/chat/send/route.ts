@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { withAuth } from '@/shared/libs/auth-middleware';
+import { withAuth } from '@/shared/libs/auth/auth-middleware';
 import { generateContent } from '@/shared/libs/ai/gemini-client';
 
 export async function POST(req: NextRequest) {
