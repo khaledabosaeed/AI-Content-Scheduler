@@ -28,7 +28,7 @@ export const useLoginMutation = ({
     mutationFn: async (
       credentials: LoginCredentials & { rememberMe?: boolean }
     ) => {
-      const response = await api.post("/auth/login", credentials, {
+      const response = await api.post("auth/login", credentials, {
         requiresAuth: false, // 🔥🔥 هاي أهم خطوة
       });
 

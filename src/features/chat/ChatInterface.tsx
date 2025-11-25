@@ -1,13 +1,11 @@
 "use client";
 import { useEffect, useRef } from "react";
-import { useChatStore } from "@/shared/store/chat-store"
+import { useChatStore } from "@/shared/store/chat-store";
 import ChatInput from "./ChatInput";
 import MessageBubble from "./MessageBubble";
-
 export default function ChatInterface() {
   const { messages, clearMessages } = useChatStore();
   const chatEndRef = useRef<HTMLDivElement | null>(null);
-
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);

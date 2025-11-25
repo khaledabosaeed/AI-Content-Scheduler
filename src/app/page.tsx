@@ -1,18 +1,22 @@
-// app/page.tsx
-"use client"; // ← مهم جداً، يجعل الصفحة Client Component
+"use client";
 
-import LoginForm from "@/features/user/login/ui/Login";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 import { useUser } from "@/entities/user/state/queries";
-import LandingPage from "./landingPage/page";
 
-export default function Page() {
-  const { data, isLoading } = useUser();
+export default function LandingPage() {
+  const router = useRouter();
+  const { data: user, isLoading } = useUser();
+ console.log("LandingPage Rendered", user);
+  useEffect(() => {
+    if (!isLoading) {
+      if (user) {
+        router.replace("/chat"); // إذا مسجل دخول → اذهب للشات
+      } else {
+        router.replace("/login"); // إذا مش مسجل → اذهب للّوجين
+      }
+    }
+  }, [user, isLoading, router]);
 
-  if (isLoading) return <p>Loading...</p>;
-
-  return (
-    <div>
-      <LandingPage/>
-    </div>
-  );
+  return  // صفحة مؤقتة أثناء التحقق
 }

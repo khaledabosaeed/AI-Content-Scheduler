@@ -8,7 +8,7 @@ export const useForgetPasswordMutation = () => {
 
   return useMutation({
     mutationFn: async (payload: ForgetPasswordPayload) => {
-      const response = await api.post("/auth/forget-password", payload, {
+      const response = await api.post("auth/forget-password", payload, {
         requiresAuth: false,
       });
       return response;

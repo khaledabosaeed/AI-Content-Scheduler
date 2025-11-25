@@ -12,7 +12,7 @@ export const useResetMutation = () => {
 
   return useMutation({
     mutationFn: async (payload: ResetPasswordPayload) => {
-      const response = await api.post("/auth/reset-password", payload, {
+      const response = await api.post("auth/reset-password", payload, {
         requiresAuth: false,
       });
       return response;

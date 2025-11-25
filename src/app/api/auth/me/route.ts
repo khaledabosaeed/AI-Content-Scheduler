@@ -45,7 +45,7 @@ export async function GET(req: NextRequest) {
     // 3. جلب بيانات المستخدم من قاعدة البيانات
     const { data: user, error: dbError } = await supabaseServer
       .from('users')
-      .select('id, email, name, created_at, last_login')
+      .select('id, email, name, created_at')
       .eq('id', payload.userId)
       .single();
 
