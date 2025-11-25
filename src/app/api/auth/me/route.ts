@@ -18,7 +18,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getSessionToken } from "@/shared/libs/auth/cookies";
 import { verifyToken } from "@/shared/libs/auth/jwt";
-import { supabaseServer } from "@/shared/libs/suapa-base/supabaseServer";
+import { supabaseServer } from "@/shared/libs/suapabase/supabaseServer";
 
 export async function GET(req: NextRequest) {
   try {
