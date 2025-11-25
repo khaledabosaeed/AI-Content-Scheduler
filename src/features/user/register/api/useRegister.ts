@@ -27,7 +27,7 @@ export const useRegisterMutation = ({
     mutationFn: async (
       credentials: RegisterFormInputs & { rememberMe?: boolean }
     ) => {
-      const response = await api.post("/auth/register", credentials, {
+      const response = await api.post("auth/register", credentials, {
         requiresAuth: false,
       });
       console.log("REGISTER PAYLOAD:", response);

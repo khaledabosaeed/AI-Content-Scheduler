@@ -195,12 +195,8 @@ export default function LoginForm() {
           ⚡ Powered by AI
         </p>
       </div>
-<<<<<<< HEAD
+
       {error && <p className="text-red-500">{(error as Error).message}</p>}
     </div>
-=======
-    </div>
-
->>>>>>> b87c7325a6b2ea2c57dc95271addd2d8315f67e2
   );
 }

@@ -5,10 +5,10 @@ import MessageBubble from "./MessageBubble";
 import { ClearButton, ChatInput } from "@/features/chat";
 
 
+
 export default function ChatInterface() {
   const { messages } = useChatStore();
   const chatEndRef = useRef<HTMLDivElement | null>(null);
-
   useEffect(() => {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages]);
