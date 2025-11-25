@@ -1,7 +1,5 @@
-// app/page.tsx
-"use client"; // ← مهم جداً، يجعل الصفحة Client Component
+"use client";
 
-import LoginForm from "@/features/user/login/ui/Login";
 import { useUser } from "@/entities/user/state/queries";
 import LandingPage from "./landingPage/page";
 import { ThemeToggle } from "@/shared/ui/ThemeToggle";

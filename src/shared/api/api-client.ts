@@ -4,8 +4,8 @@
  * Handles all HTTP requests to the backend with authentication
  */
 import { AuthError } from "@supabase/supabase-js";
-import { getAuthToken } from "./cookies";
 import { ValidationError, ApiError, NetworkError } from "./error";
+import { getAuthToken } from "../libs/auth/cookies";
 
 const API_BASE_URL =
   process.env.NEXT_PUBLIC_API_URL ||
@@ -14,9 +14,7 @@ const API_BASE_URL =
 export interface ApiRequestOptions extends RequestInit {
   requiresAuth?: boolean;
 }
-/**
- * Enhanced fetch with automatic token injection
- */
+
 
 export async function apiClient(
   endpoint: string,

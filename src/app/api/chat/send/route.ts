@@ -16,7 +16,6 @@ export async function POST(req: NextRequest) {
           { status: 400 }
         );
       }
-
       // إرسال الرسالة للـ AI والحصول على رد
       const aiResponse = await generateContent(message.trim());
 
@@ -30,7 +29,7 @@ export async function POST(req: NextRequest) {
     } catch (error: any) {
       console.error('Chat API Error:', error);
       return NextResponse.json(
-        { 
+        {
           error: error.message || 'حدث خطأ أثناء المحادثة',
           details: process.env.NODE_ENV === 'development' ? error.stack : undefined
         },

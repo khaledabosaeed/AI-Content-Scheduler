@@ -45,10 +45,9 @@ export async function GET(req: NextRequest) {
     // 3. جلب بيانات المستخدم من قاعدة البيانات
     const { data: user, error: dbError } = await supabaseServer
       .from('users')
-      .select('id, email, name, created_at, last_login')
+      .select('id, email, name, created_at')
       .eq('id', payload.userId)
       .single();
-
     if (dbError || !user) {
       return NextResponse.json(
         { error: "المستخدم غير موجود" },
@@ -64,7 +63,6 @@ export async function GET(req: NextRequest) {
           email: user.email,
           name: user.name,
           createdAt: user.created_at,
-          lastLogin: user.last_login,
         },
       },
       { status: 200 }

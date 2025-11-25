@@ -2,8 +2,8 @@
 import { useEffect, useRef } from "react";
 import { useChatStore } from "@/entities/chat";
 import MessageBubble from "./MessageBubble";
-import ChatInput from "./start-chat/ui/ChatInput";
-import ClearButton from "./clear-chat/ui/ClearButton";
+import { ClearButton, ChatInput } from "@/features/chat";
+
 
 export default function ChatInterface() {
   const { messages } = useChatStore();
@@ -14,7 +14,7 @@ export default function ChatInterface() {
   }, [messages]);
 
   return (
-    <div className="flex flex-col h-[80vh] border rounded-lg overflow-hidden">
+    <div className="flex flex-col h-[80vh] border   rounded-lg overflow-hidden">
       <header className="p-3 bg-black text-white flex justify-between items-center">
         <h2 className="font-semibold">💬 محادثة AI</h2>
         <ClearButton />
