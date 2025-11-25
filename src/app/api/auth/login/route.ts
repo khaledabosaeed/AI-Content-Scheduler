@@ -12,7 +12,7 @@
  * 7. إرجاع بيانات المستخدم
  */
 
-import { supabaseServer } from "@/shared/libs/auth/supabaseServer";
+import { supabaseServer } from "@/shared/libs/suapa-base/supabaseServer";
 import { NextRequest, NextResponse } from "next/server";
 import { verifyPassword } from "@/shared/libs/auth/passwordHash";
 import { createToken } from "@/shared/libs/auth/jwt";

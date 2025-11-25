@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { withAuth } from "@/shared/libs/auth/auth-middleware";
-import { supabaseServer } from "@/shared/libs/auth/supabaseServer";
+import { supabaseServer } from "@/shared/libs/suapa-base/supabaseServer";
 
 
 export async function POST(req: NextRequest) {
