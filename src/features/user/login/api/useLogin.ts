@@ -38,10 +38,9 @@ export const useLoginMutation = ({
     onSuccess: (data, variables, context) => {
       console.log("LOGIN RESPONSE DATA:", data);
       queryClient.setQueryData(userKeys.me(), data?.user);
-
       queryClient.invalidateQueries({ queryKey: userKeys.all() });
-
       onSuccess?.(data, variables, context);
+
     },
 
     onError: (error, variables, context) => {

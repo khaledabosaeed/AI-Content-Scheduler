@@ -16,7 +16,8 @@ export class ApiError extends Error {
   ) {
     super(message);
     this.name = 'ApiError';
-    // Maintains proper stack trace for where error was thrown (V8 engines only)
+
+    // where error was thrown (V8 engines only)
     if (Error.captureStackTrace) {
       Error.captureStackTrace(this, ApiError);
     }
@@ -49,6 +50,7 @@ export class ValidationError extends ApiError {
  * Network Error
  * Fetch failed due to network issues (no internet, DNS, CORS, etc)
  */
+
 export class NetworkError extends Error {
   constructor(message: string = 'Network request failed. Please check your connection.') {
     super(message);

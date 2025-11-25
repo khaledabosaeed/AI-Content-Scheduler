@@ -12,7 +12,7 @@
  */
 
 import { NextRequest } from "next/server";
-import { createResponseWithoutSession } from "@/shared/libs/cookies";
+import { createResponseWithoutSession } from "@/shared/libs/auth/cookies";
 
 export const POST = async (req: NextRequest) => {
   try {

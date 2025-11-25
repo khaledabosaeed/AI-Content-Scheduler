@@ -3,11 +3,11 @@
  * مسؤول عن إنشاء حساب جديد للمستخدم
  */
 
-import { supabaseServer } from "@/shared/libs/supabaseServer";
+import { supabaseServer } from "@/shared/libs/suapa-base/supabaseServer";
 import { NextRequest, NextResponse } from "next/server";
-import { hashPassword, validatePasswordStrength } from "@/shared/libs/passwordHash";
-import { createToken } from "@/shared/libs/jwt";
-import { createResponseWithSession } from "@/shared/libs/cookies";
+import { hashPassword, validatePasswordStrength } from "@/shared/libs/auth/passwordHash";
+import { createToken } from "@/shared/libs/auth/jwt";
+import { createResponseWithSession } from "@/shared/libs/auth/cookies";
 
 export const POST = async (req: NextRequest) => {
   try {
