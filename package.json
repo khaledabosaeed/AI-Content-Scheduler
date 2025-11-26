@@ -36,6 +36,7 @@
     "react-toastify": "^11.0.5",
     "remixicon-react": "^1.0.0",
     "tailwindcss-animate": "^1.0.7",
+    "twitter-api-v2": "^1.28.0",
     "yup": "^1.7.1",
     "zod": "^4.1.12",
     "zustand": "^5.0.8"
