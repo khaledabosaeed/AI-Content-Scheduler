@@ -1,5 +1,5 @@
 import { NextResponse, NextRequest } from 'next/server';
-import { supabaseServer } from '@/shared/libs/auth/supabaseServer';
+import { supabaseServer } from '@/shared/libs/suapabase/supabaseServer';
 
 // GET: Fetch all users
 export async function GET() {

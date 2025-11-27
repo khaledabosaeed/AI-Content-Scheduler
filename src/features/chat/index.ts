@@ -9,6 +9,3 @@ export { useSaveAsPost } from "./save-as-post/model/use-save-as-post";
 // Feature: Clear Chat
 export { default as ClearButton } from "./clear-chat/ui/ClearButton";
 
-// Main Chat Interface
-export { default as ChatInterface } from "./ChatInterface";
-export { default as MessageBubble } from "./MessageBubble";

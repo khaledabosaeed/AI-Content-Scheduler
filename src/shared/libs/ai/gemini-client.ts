@@ -11,11 +11,19 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 /**
  * إرسال prompt للـ AI والحصول على رد
  */
+
 export async function generateContent(prompt: string): Promise<string> {
   try {
+    // select the model
     const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
+
+    // generate content
     const result = await model.generateContent(prompt);
+
+    // get the response
     const response = await result.response;
+
+    // get the text
     const text = response.text();
     return text;
   } catch (error: any) {
@@ -27,6 +35,7 @@ export async function generateContent(prompt: string): Promise<string> {
 /**
  * Prompts معدة مسبقاً لجودة أفضل
  */
+
 export const AIPrompts = {
   socialMediaPost: (topic: string, platform: "twitter" | "facebook") => {
     const charLimit = platform === "twitter" ? "280 حرف" : "500 حرف";

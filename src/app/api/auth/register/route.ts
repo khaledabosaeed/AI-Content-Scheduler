@@ -3,7 +3,7 @@
  * مسؤول عن إنشاء حساب جديد للمستخدم
  */
 
-import { supabaseServer } from "@/shared/libs/auth/supabaseServer";
+import { supabaseServer } from "@/shared/libs/suapabase/supabaseServer";
 import { NextRequest, NextResponse } from "next/server";
 import { hashPassword, validatePasswordStrength } from "@/shared/libs/auth/passwordHash";
 import { createToken } from "@/shared/libs/auth/jwt";

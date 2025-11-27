@@ -1,6 +1,6 @@
 "use client";
 import type { Message } from "@/entities/chat";
-import SaveButton from "./save-as-post/ui/SaveButton";
+import { SaveButton } from "@/features/chat";
 
 interface MessageBubbleProps {
   message: Message;

@@ -28,7 +28,7 @@ export const useLoginMutation = ({
     mutationFn: async (
       credentials: LoginCredentials & { rememberMe?: boolean }
     ) => {
-      const response = await api.post("/auth/login", credentials, {
+      const response = await api.post("auth/login", credentials, {
         requiresAuth: false, // 🔥🔥 هاي أهم خطوة
       });
 
@@ -38,10 +38,9 @@ export const useLoginMutation = ({
     onSuccess: (data, variables, context) => {
       console.log("LOGIN RESPONSE DATA:", data);
       queryClient.setQueryData(userKeys.me(), data?.user);
-
       queryClient.invalidateQueries({ queryKey: userKeys.all() });
-
       onSuccess?.(data, variables, context);
+
     },
 
     onError: (error, variables, context) => {

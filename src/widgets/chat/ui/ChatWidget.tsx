@@ -1,5 +1,6 @@
 "use client";
-import ChatInterface from "@/features/chat/ChatInterface";
+
+import ChatInterface from "./ChatInterface";
 
 /**
  * Chat Widget - The complete chat interface

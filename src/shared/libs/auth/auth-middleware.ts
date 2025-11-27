@@ -19,7 +19,6 @@ export function checkAuth(request: NextRequest): {
   user: JWTPayload | null;
   error?: string;
 } {
-  // قراءة Token من Cookie
   const token = getSessionToken(request);
 
   if (!token) {
@@ -30,7 +29,6 @@ export function checkAuth(request: NextRequest): {
     };
   }
 
-  // التحقق من صحة Token
   const payload = verifyToken(token);
 
   if (!payload) {
@@ -47,20 +45,12 @@ export function checkAuth(request: NextRequest): {
   };
 }
 
-/**
- * Middleware لحماية API Routes
- * يستخدم في API Routes التي تحتاج مصادقة
- * 
- * @param request - NextRequest
- * @param handler - الدالة التي ستنفذ إذا كان المستخدم مصادق
- * @returns NextResponse
- */
+
 export async function withAuth(
   request: NextRequest,
   handler: (req: NextRequest, user: JWTPayload) => Promise<NextResponse>
 ): Promise<NextResponse> {
   const { isAuthenticated, user, error } = checkAuth(request);
-
   if (!isAuthenticated || !user) {
     return NextResponse.json(
       { error: error || "غير مصرح" },
@@ -71,23 +61,9 @@ export async function withAuth(
   return handler(request, user);
 }
 
-/**
- * التحقق من صلاحيات المستخدم (اختياري - للاستخدام المستقبلي)
- * يمكن توسيعه لإضافة نظام أدوار (roles/permissions)
- */
-export function checkPermission(
-  user: JWTPayload,
-  requiredRole?: string
-): boolean {
-  // يمكن إضافة منطق للتحقق من الصلاحيات هنا
-  // مثال: user.role === requiredRole
-  return true;
-}
 
-/**
- * استخراج معلومات المستخدم من Request
- * يستخدم في API Routes لاستخراج المستخدم الحالي
- */
+// get the current user from the token
+
 export function getCurrentUser(request: NextRequest): JWTPayload | null {
   const token = getSessionToken(request);
   if (!token) {
@@ -95,4 +71,5 @@ export function getCurrentUser(request: NextRequest): JWTPayload | null {
   }
   return verifyToken(token);
 }
+
 
