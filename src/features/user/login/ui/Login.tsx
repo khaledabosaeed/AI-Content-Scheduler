@@ -7,7 +7,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { LoginCredentials } from "../libs/type";
 import Link from "next/link";
 import { useState } from "react";
-import ChatInterface from "@/features/chat/ChatInterface";
+import ChatInterface from "@/";
 
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -26,8 +26,6 @@ export default function LoginForm() {
   });
 
   const onSubmit = (values: LoginCredentials) => {
-    const { ...payload } = values;
-    console.log(values);
     mutate(values);
   };
 
@@ -39,18 +37,6 @@ export default function LoginForm() {
           {/* Logo & Header */}
           <div className="text-center space-y-3">
             <div className="inline-flex items-center justify-center w-20 h-20 rounded-3xl bg-gradient-to-br from-primary via-primary/90 to-primary/70 shadow-xl shadow-primary/30 mb-3">
-              <svg
-                className="w-10 h-10 text-primary-foreground"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M13 10V3L4 14h7v7l9-11h-7z"
-                />
               <svg
                 className="w-10 h-10 text-primary-foreground"
                 fill="none"
@@ -81,10 +67,6 @@ export default function LoginForm() {
                 htmlFor="email"
                 className="text-sm font-semibold text-foreground"
               >
-              <label
-                htmlFor="email"
-                className="text-sm font-semibold text-foreground"
-              >
                 Email Address
               </label>
               <input
@@ -98,18 +80,11 @@ export default function LoginForm() {
                 <p className="text-destructive text-sm">
                   {errors.email.message}
                 </p>
-                <p className="text-destructive text-sm">
-                  {errors.email.message}
-                </p>
               )}
             </div>
 
             {/* Password */}
             <div className="space-y-2">
-              <label
-                htmlFor="password"
-                className="text-sm font-semibold text-foreground"
-              >
               <label
                 htmlFor="password"
                 className="text-sm font-semibold text-foreground"
@@ -130,11 +105,7 @@ export default function LoginForm() {
                   className="absolute left-4 top-1/2 -translate-y-1/2 text-text-secondary hover:text-foreground transition-colors"
                 >
                   {showPassword ? (
-                    <svg
-                      className="w-5 h-5"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
+                    // eye icon
                     <svg
                       className="w-5 h-5"
                       fill="currentColor"
@@ -146,23 +117,9 @@ export default function LoginForm() {
                         d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
                         clipRule="evenodd"
                       />
-                      <path
-                        fillRule="evenodd"
-                        d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
-                        clipRule="evenodd"
-                      />
                     </svg>
                   ) : (
-                    <svg
-                      className="w-5 h-5"
-                      fill="currentColor"
-                      viewBox="0 0 20 20"
-                    >
-                      <path
-                        fillRule="evenodd"
-                        d="M3.707 2.293a1 1 0 00-1.414 1.414l14 14a1 1 0 001.414-1.414l-1.473-1.473A10.014 10.014 0 0019.542 10C18.268 5.943 14.478 3 10 3a9.958 9.958 0 00-4.512 1.074l-1.78-1.781zm4.261 4.26l1.514 1.515a2.003 2.003 0 012.45 2.45l1.514 1.514a4 4 0 00-5.478-5.478z"
-                        clipRule="evenodd"
-                      />
+                    // eye-off icon
                     <svg
                       className="w-5 h-5"
                       fill="currentColor"
@@ -215,11 +172,11 @@ export default function LoginForm() {
           {/* Divider */}
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t-2 border-border"></div>
+              <div className="w-full border-t-2 border-border" />
             </div>
             <div className="relative flex justify-center">
               <span className="px-4 bg-background-paper text-text-secondary font-medium text-sm">
-                Don't have an account?
+                Don&apos;t have an account?
               </span>
             </div>
           </div>
@@ -231,14 +188,16 @@ export default function LoginForm() {
           >
             Create New Account
           </Link>
+
+          {/* Footer */}
+          <p className="text-center text-text-secondary text-sm mt-6">
+            ⚡ Powered by AI
+          </p>
         </div>
 
-        {/* Footer */}
-        <p className="text-center text-text-secondary text-sm mt-6">
-          ⚡ Powered by AI
-        </p>
+        {/* خارج الكارد: ممكن تحطي الشات بعد اللوجين */}
+        {data && <ChatInterface />}
       </div>
     </div>
-
   );
 }
