@@ -8,10 +8,11 @@ import { LoginCredentials } from "../libs/type";
 import Link from "next/link";
 import { useState } from "react";
 import ChatInterface from "@/features/chat/ChatInterface";
+import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);
-
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -21,7 +22,7 @@ export default function LoginForm() {
   });
 
   const { mutate, isPending, error, data } = useLoginMutation({
-    onSuccess: (data) => console.log("Login success:", data),
+    onSuccess: (data) => router.push("/chat"),
     onError: (error) => console.error("Login failed:", error),
   });
 

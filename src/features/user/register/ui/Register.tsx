@@ -7,12 +7,13 @@ import { useRegisterMutation } from "../api/useRegister";
 import Link from "next/link";
 import { useState } from "react";
 import { RegisterFormInputs } from "../libs/type";
+import { useRouter } from "next/navigation";
 
 
 export default function RegisterForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-
+  const router = useRouter();
   const { register, handleSubmit, formState: { errors } } = useForm<RegisterFormInputs>({
     resolver: yupResolver(registerSchema),
   });
@@ -23,7 +24,7 @@ export default function RegisterForm() {
     const { ...payload } = values
     console.log(payload)
     mutate(values, {
-      onSuccess: (data) => console.log("Register success:", data),
+      onSuccess: (data) => router.push("/chat"),
       onError: (err) => console.error("Register failed:", err),
     });
   };
