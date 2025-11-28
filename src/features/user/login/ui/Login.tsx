@@ -7,7 +7,7 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { LoginCredentials } from "../libs/type";
 import Link from "next/link";
 import { useState } from "react";
-import ChatInterface from "@/features/chat/ChatInterface";
+import ChatInterface from "@/widgets/chat/ui/ChatInterface";
 import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
@@ -27,8 +27,6 @@ export default function LoginForm() {
   });
 
   const onSubmit = (values: LoginCredentials) => {
-    const { ...payload } = values;
-    console.log(values);
     mutate(values);
   };
 
@@ -108,6 +106,7 @@ export default function LoginForm() {
                   className="absolute left-4 top-1/2 -translate-y-1/2 text-text-secondary hover:text-foreground transition-colors"
                 >
                   {showPassword ? (
+                    // eye icon
                     <svg
                       className="w-5 h-5"
                       fill="currentColor"
@@ -121,6 +120,7 @@ export default function LoginForm() {
                       />
                     </svg>
                   ) : (
+                    // eye-off icon
                     <svg
                       className="w-5 h-5"
                       fill="currentColor"
@@ -173,11 +173,11 @@ export default function LoginForm() {
           {/* Divider */}
           <div className="relative">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t-2 border-border"></div>
+              <div className="w-full border-t-2 border-border" />
             </div>
             <div className="relative flex justify-center">
               <span className="px-4 bg-background-paper text-text-secondary font-medium text-sm">
-                Don't have an account?
+                Don&apos;t have an account?
               </span>
             </div>
           </div>
@@ -189,15 +189,16 @@ export default function LoginForm() {
           >
             Create New Account
           </Link>
+
+          {/* Footer */}
+          <p className="text-center text-text-secondary text-sm mt-6">
+            ⚡ Powered by AI
+          </p>
         </div>
 
-        {/* Footer */}
-        <p className="text-center text-text-secondary text-sm mt-6">
-          ⚡ Powered by AI
-        </p>
+        {/* خارج الكارد: ممكن تحطي الشات بعد اللوجين */}
+        {data && <ChatInterface />}
       </div>
-
-      {error && <p className="text-red-500">{(error as Error).message}</p>}
     </div>
   );
 }

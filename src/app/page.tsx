@@ -22,7 +22,7 @@ export default function Page() {
   if (isLoading) return <p>Loading...</p>;
 
   return (
-    <div>
+    <div>                                                                     
       <div className="flex justify-end mb-8">
         <ThemeToggle />
       </div>

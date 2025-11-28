@@ -1,7 +1,7 @@
 /**
  * Login API Route
  * مسؤول عن تسجيل دخول المستخدم
- * 
+ *
  * الخطوات:
  * 1. استقبال email + password
  * 2. البحث عن المستخدم في قاعدة البيانات
@@ -12,7 +12,7 @@
  * 7. إرجاع بيانات المستخدم
  */
 
-import { supabaseServer } from "@/shared/libs/suapa-base/supabaseServer";
+import { supabaseServer } from "@/shared/libs/suapabase/supabaseServer";
 import { NextRequest, NextResponse } from "next/server";
 import { verifyPassword } from "@/shared/libs/auth/passwordHash";
 import { createToken } from "@/shared/libs/auth/jwt";
@@ -30,9 +30,9 @@ export async function POST(req: NextRequest) {
     }
 
     const { data: user, error: dbError } = await supabaseServer
-      .from('users')
-      .select('id, email, name, password, created_at')
-      .eq('email', email)
+      .from("users")
+      .select("id, email, name, password, created_at")
+      .eq("email", email)
       .single();
 
     if (dbError || !user) {
@@ -71,10 +71,11 @@ export async function POST(req: NextRequest) {
       200
     );
   } catch (error) {
-    console.error('Login error:', error);
+    console.error("Login error:", error);
     return NextResponse.json(
       { error: "حدث خطأ أثناء تسجيل الدخول" },
       { status: 500 }
     );
   }
+
 }

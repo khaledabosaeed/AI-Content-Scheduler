@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { useChatStore } from "@/entities/chat";
 import { useSendMessage } from "../model/use-send-message";
+import Link from "next/link";
 
 export default function ChatInput() {
   const [text, setText] = useState("");
@@ -31,6 +32,11 @@ export default function ChatInput() {
       >
         Send
       </button>
+      <Link href="/dashboard">
+        <button className="bg-green-600 text-white px-4 py-2 rounded">
+          Go to dashboard
+        </button>
+      </Link>
 
       {error && <p className="text-red-600 text-xs">{error}</p>}
     </div>
