@@ -12,3 +12,4 @@ export async function publishTweet(content: string) {
   const tweet = await rwClient.v2.tweet(content);
   return tweet;
 }
+  

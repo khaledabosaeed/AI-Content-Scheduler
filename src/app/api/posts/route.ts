@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { withAuth } from "@/shared/libs/auth/auth-middleware";
-import { supabaseServer } from "@/shared/libs/auth/supabaseServer";
+import { supabaseServer } from "@/shared/libs/suapabase/supabaseServer";
 
 export async function GET(req: NextRequest) {
   return withAuth(req, async (req, user) => {
@@ -18,7 +18,6 @@ export async function GET(req: NextRequest) {
           { status: 500 }
         );
       }
-
       return NextResponse.json({ posts });
     } catch (err: any) {
       console.error(err);
