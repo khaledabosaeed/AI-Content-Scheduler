@@ -14,7 +14,7 @@
 
 import { supabaseServer } from "@/shared/libs/suapabase/supabaseServer";
 import { NextRequest, NextResponse } from "next/server";
-import { verifyPassword } from "@/shared/libs/auth/passwordHash";
+import { verifyPassword } from "@/shared/libs/auth/password-hash";
 import { createToken } from "@/shared/libs/auth/jwt";
 import { createResponseWithSession } from "@/shared/libs/auth/cookies";
 

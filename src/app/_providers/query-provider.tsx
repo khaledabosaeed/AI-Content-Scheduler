@@ -8,6 +8,8 @@ import { ThemeProvider } from "./theme-provider";
 const queryClient = new QueryClient();
 
 export default function QueryProvider({ children }: { children: React.ReactNode }) {
+  // add here the fetch for the user session if needed
+  // to make the first load clean and avoid flickering Y om Rooze 
   return (
     <ThemeProvider>
       <QueryClientProvider client={queryClient}>

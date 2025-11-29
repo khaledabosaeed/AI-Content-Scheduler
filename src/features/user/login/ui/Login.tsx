@@ -7,8 +7,8 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { LoginCredentials } from "../libs/type";
 import Link from "next/link";
 import { useState } from "react";
-import ChatInterface from "@/widgets/chat/ui/ChatInterface";
 import { useRouter } from "next/navigation";
+import ChatInterface from "@/widgets/chat/ui/ChatInterface";
 
 export default function LoginForm() {
   const [showPassword, setShowPassword] = useState(false);

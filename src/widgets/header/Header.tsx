@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useState, useEffect, useRef } from "react";
 import { Moon, Sun, Menu, X, ChevronDown } from "lucide-react";
-import { useTheme } from "@/app/providers/theme-provider";
 import { useUser } from "@/entities/user/state/queries";
 
 export default function Header() {
@@ -138,7 +137,6 @@ export default function Header() {
             </div>
           )}
         </div>
-
         
         </div>
       </div>
