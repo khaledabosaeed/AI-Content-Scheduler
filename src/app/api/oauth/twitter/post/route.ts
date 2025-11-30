@@ -20,7 +20,7 @@ export async function POST(request: NextRequest) {
         success: true,
         tweet,
       },
-      { status: 200 }
+      { status: 201 }
     );
   } catch (error: any) {
     console.error("Twitter post error:", {
