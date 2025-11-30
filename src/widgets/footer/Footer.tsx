@@ -5,7 +5,7 @@ export default function Footer() {
         <p className="text-sm">
           © {new Date().getFullYear()} AI Content Scheduler — All rights reserved.
         </p>
-        
+
       </div>
     </footer>
   );
