@@ -7,7 +7,6 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { LoginCredentials } from "../libs/type";
 import Link from "next/link";
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import ChatInterface from "@/widgets/chat/ui/ChatInterface";
 
 export default function LoginForm() {

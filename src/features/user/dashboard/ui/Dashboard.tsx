@@ -38,42 +38,67 @@ export default function DashboardPage() {
     fetchPosts();
   }, []);
 
-  const handleTweet = async (post: Post) => {
-    const confirmPublish = window.confirm(
-      "هل أنت متأكد إن تنشر على تويتر؟"
-    );
-    if (!confirmPublish) return;
+  // const handleTweet = async (post: Post) => {
+  //   const confirmPublish = window.confirm(
+  //     "هل أنت متأكد إن تنشر على تويتر؟"
+  //   );
+  //   if (!confirmPublish) return;
 
+  //   try {
+  //     setPublishingId(post.id);
+
+  //     const res = await fetch("/api/oauth/twitter/post", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({
+  //         content: post.content, // أهم حاجة
+  //         postId: post.id,
+  //         platform: post.platform,
+  //       }),
+  //     });
+
+  //     const data = await res.json();
+
+  //     if (!res.ok || data.success === false) {
+  //       throw new Error(data.error || "فشل في نشر البوست");
+  //     }
+
+  //     alert("تم نشر البوست على تويتر بنجاح ✅");
+  //   } catch (err: any) {
+  //     console.error(err);
+  //     alert(`حصل خطأ أثناء النشر: ${err.message || "خطأ غير متوقع"}`);
+  //   } finally {
+  //     setPublishingId(null);
+  //   }
+  // };
+
+  async function publishToFacebook(postId: string) {
     try {
-      setPublishingId(post.id);
+      setPublishingId(postId);
 
-      const res = await fetch("/api/oauth/twitter/post", {
+      const res = await fetch("/api/facebook/publish", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          content: post.content, // أهم حاجة
-          postId: post.id,
-          platform: post.platform,
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ postId }),
       });
 
       const data = await res.json();
 
-      if (!res.ok || data.success === false) {
-        throw new Error(data.error || "فشل في نشر البوست");
+      if (!res.ok) {
+        alert("خطأ أثناء النشر على الفيسبوك: " + data.error?.message);
+        return;
       }
 
-      alert("تم نشر البوست على تويتر بنجاح ✅");
-    } catch (err: any) {
+      alert("🎉 تم نشر البوست بنجاح على فيسبوك!");
+    } catch (err) {
       console.error(err);
-      alert(`حصل خطأ أثناء النشر: ${err.message || "خطأ غير متوقع"}`);
+      alert("حدث خطأ غير متوقع.");
     } finally {
       setPublishingId(null);
     }
-  };
-
+  }
 
   if (isLoading) {
     return (
@@ -84,7 +109,7 @@ export default function DashboardPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-gray-50 p-6 text-black">
       <div className="max-w-4xl mx-auto space-y-6">
         <div className="flex items-center justify-between">
           <h1 className="text-2xl font-semibold">
@@ -101,9 +126,7 @@ export default function DashboardPage() {
         {error && <p className="text-sm text-red-500">{error}</p>}
 
         {posts.length === 0 ? (
-          <p className="text-gray-500 text-sm">
-           لا يوجد بوستات لحتى الان 
-          </p>
+          <p className="text-gray-500 text-sm">لا يوجد بوستات لحتى الان</p>
         ) : (
           <div className="space-y-4">
             {posts.map((post) => (
@@ -140,11 +163,11 @@ export default function DashboardPage() {
 
                   <div className="space-x-2">
                     <button
-                      onClick={() => handleTweet(post)}
-                      disabled={publishingId === post.id}
-                      className="text-xs bg-slate-200 px-3 py-2 rounded disabled:opacity-50"
+                      onClick={() =>
+                        (window.location.href = "/api/oauth/facebook/login")
+                      }
                     >
-                      {publishingId === post.id ? "جارى النشر..." : "tweet"}
+                      ربط حساب فيسبوك
                     </button>
                   </div>
                 </div>
