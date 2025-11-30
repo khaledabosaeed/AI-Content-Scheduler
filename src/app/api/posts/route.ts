@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { withAuth } from "@/shared/libs/auth/auth-middleware";
-import { supabaseServer } from "@/shared/libs/auth/supabaseServer";
-
+import { supabaseServer } from "@/shared/libs/suapabase/supabaseServer";
 export async function GET(req: NextRequest) {
   return withAuth(req, async (req, user) => {
     try {
