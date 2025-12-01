@@ -5,7 +5,7 @@ import type { NextRequest } from "next/server";
 
 const PROTECTED_ROUTES = [
   '/dashboard',
-  '/chat',
+  // '/chat',
 ];
 
 const AUTH_ROUTES = [

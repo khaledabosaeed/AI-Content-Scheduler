@@ -30,7 +30,7 @@ export default function SaveButton({ message, prompt }: SaveButtonProps) {
             disabled={isSaving}
             className="mt-2 text-xs bg-black text-white px-3 py-1 rounded hover:bg-gray-800 disabled:opacity-50 transition-colors"
         >
-            {isSaving ? "جاري الحفظ..." : "💾 حفظ كمنشور"}
+            {isSaving ? "جاري الحفظ..." : "💾 save post"}
         </button>
     );
 }

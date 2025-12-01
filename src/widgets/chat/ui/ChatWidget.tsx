@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import ChatInterface from "./ChatInterface";
-import { ChatSideBar } from "./ChatSidebsr";
+import { ChatSideBar } from "./ChatSidebar";
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 
@@ -12,6 +12,8 @@ import { Menu, X } from "lucide-react";
  */
 export default function ChatWidget() {
     const [sidebarOpen, setSidebarOpen] = useState(false);
+    console.log(sidebarOpen);
+    
 
     return (
         <div className="flex h-screen overflow-hidden bg-white dark:bg-slate-950">
@@ -35,9 +37,8 @@ export default function ChatWidget() {
 
             {/* Sidebar - Right - Responsive */}
             <div
-                className={`fixed md:static right-0 top-0 h-screen w-64 bg-gradient-to-b from-gray-900 to-gray-950 dark:from-slate-950 dark:to-slate-950 border-l border-gray-800 dark:border-gray-800 transition-transform duration-300 ease-in-out z-40 ${
-                    sidebarOpen ? "translate-x-0" : "translate-x-full md:translate-x-0"
-                }`}
+                className={`fixed md:static right-0 top-0 h-screen w-64 bg-gradient-to-b from-gray-900 to-gray-950 dark:from-slate-950 dark:to-slate-950 border-l border-gray-800 dark:border-gray-800 transition-transform duration-300 ease-in-out z-40 ${sidebarOpen ? "translate-x-0" : "translate-x-full md:translate-x-0"
+                    }`}
             >
                 <ChatSideBar />
             </div>

@@ -1,7 +1,7 @@
 import { useChatStore } from "@/entities/chat";
 
 export function useSendMessage() {
-    const { addUserMessage, addAssistantMessage, setIsSending, setError } =
+    const { addUserMessage, appendAssistantMessage, setIsSending, setError } =
         useChatStore();
 
     const sendMessage = async (content: string) => {
@@ -12,17 +12,40 @@ export function useSendMessage() {
         setError(null);
 
         try {
+
             const res = await fetch("/api/chat/send", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({ message: content }),
             });
 
-            const data = await res.json();
+            if (!res.ok) {
+                const data = await res.json();
+                throw new Error(data.error || "Failed to send message");
+            }
 
-            if (!res.ok) throw new Error(data.error || "Failed to send message");
+            // start stream
+            const reader = res.body!.getReader();
+            const decoder = new TextDecoder();
 
-            addAssistantMessage(data.message);
+            while (true) {
+                const { value, done } = await reader.read();
+                if (done) break;
+
+                const chunk = decoder.decode(value);
+
+                // Split chunk into smaller pieces for smoother animation
+                // This creates the "typing" effect
+                for (let i = 0; i < chunk.length; i += 2) {
+                    const miniChunk = chunk.slice(i, i + 2);
+                    appendAssistantMessage(miniChunk);
+
+                    // Small delay to create typing effect
+                    // Adjust this value: smaller = faster, larger = slower
+                    await new Promise(resolve => setTimeout(resolve, 20));
+                }
+            }
+
         } catch (err: any) {
             setError(err.message);
             console.error("Send Message Error:", err);

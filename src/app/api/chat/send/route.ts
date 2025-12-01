@@ -1,40 +1,52 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { withAuth } from '@/shared/libs/auth/auth-middleware';
-import { generateContent } from '@/shared/libs/ai/gemini-client';
+import { generateContentStream } from '@/shared/libs/ai/gemini-client';
 
 export async function POST(req: NextRequest) {
   console.log(req)
-  return withAuth(req, async (req, user) => {
-    try {
-      const body = await req.json();
-      const { message } = body;
+  // return withAuth(req, async (req, user) => {
+  try {
+    const body = await req.json();
+    const { message } = body;
 
-      // التحقق من وجود الرسالة
-      if (!message || message.trim() === '') {
-        return NextResponse.json(
-          { error: 'الرسالة مطلوبة' },
-          { status: 400 }
-        );
-      }
-      // إرسال الرسالة للـ AI والحصول على رد
-      const aiResponse = await generateContent(message.trim());
-
-      // إرجاع النتيجة مباشرة (بدون حفظ)
-      return NextResponse.json({
-        success: true,
-        message: aiResponse,
-        timestamp: new Date().toISOString()
-      });
-
-    } catch (error: any) {
-      console.error('Chat API Error:', error);
+    // التحقق من وجود الرسالة
+    if (!message || message.trim() === '') {
       return NextResponse.json(
-        {
-          error: error.message || 'حدث خطأ أثناء المحادثة',
-          details: process.env.NODE_ENV === 'development' ? error.stack : undefined
-        },
-        { status: 500 }
+        { error: 'الرسالة مطلوبة' },
+        { status: 400 }
       );
     }
-  });
+    // إرسال الرسالة للـ AI والحصول على رد
+    const aiResponse = await generateContentStream(message.trim());
+
+
+    /***
+     * to get str from ReadableStream
+     * you can't use the NextResponse.json , josn will not work with ReadableStream
+     * and the steam must work with Response
+     */
+    // إرجاع النتيجة مباشرة (بدون حفظ)
+    // return NextResponse.json(aiResponse, {
+    //   headers: {
+    //     'Content-Type': 'text/event-stream',
+    //   },
+    // });
+
+    return new Response(aiResponse, {
+      headers: {
+        "Content-Type": "text/plain; charset=utf-8",
+        "Cache-Control": "no-cache, no-transform",
+      },
+    });
+
+  } catch (error: any) {
+    console.error('Chat API Error:', error);
+    return NextResponse.json(
+      {
+        error: error.message || 'حدث خطأ أثناء المحادثة',
+        details: process.env.NODE_ENV === 'development' ? error.stack : undefined
+      },
+      { status: 500 }
+    );
+  }
 }
