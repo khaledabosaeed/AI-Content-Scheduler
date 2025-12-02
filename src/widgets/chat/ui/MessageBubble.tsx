@@ -3,9 +3,22 @@ import type { Message } from "@/entities/chat";
 import { SaveButton } from "@/features/chat";
 import MessageActions from "./MessageActions";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { Bot, User } from "lucide-react";
+import { Bot, User, Copy, Check } from "lucide-react";
 import { useState } from "react";
 import { useChatStore } from "@/entities/chat";
+
+// Skeleton loading component for AI messages
+const SkeletonLoading = () => (
+  <div className="flex flex-col gap-3 py-2">
+    <p className="text-sm text-slate-500 dark:text-slate-400 animate-pulse font-medium">AI is thinking...</p>
+    <div className="flex flex-col gap-2.5">
+      <div className="h-3 bg-gray-300 dark:bg-gray-600 rounded-full w-3/4 animate-pulse"></div>
+      <div className="h-3 bg-gray-300 dark:bg-gray-600 rounded-full w-full animate-pulse"></div>
+      <div className="h-3 bg-gray-300 dark:bg-gray-600 rounded-full w-4/5 animate-pulse"></div>
+      <div className="h-3 bg-gray-300 dark:bg-gray-600 rounded-full w-2/3 animate-pulse"></div>
+    </div>
+  </div>
+);
 
 interface MessageBubbleProps {
   message: Message;
@@ -18,13 +31,14 @@ export default function MessageBubble({
 }: MessageBubbleProps) {
   const isAI = message.role === "assistant";
   const [showActions, setShowActions] = useState(false);
+  const [copied, setCopied] = useState(false);
   const { isSending, messages } = useChatStore();
 
   // Check if this is the last message and currently streaming
   const isLastMessage = messages[messages.length - 1]?.id === message.id;
   const isStreaming = isAI && isLastMessage && isSending;
 
-  // Format timestamp 
+  // Format timestamp
   const formatTime = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleTimeString("en-US", {
@@ -34,91 +48,124 @@ export default function MessageBubble({
     });
   };
 
+  // Copy to clipboard
+  const handleCopy = async () => {
+    try {
+      await navigator.clipboard.writeText(message.content);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch (err) {
+      console.error("Failed to copy:", err);
+    }
+  };
+
   return (
     <div
-      className={`w-full flex gap-3 ${ "justify-end"} animate-fadeIn group`}
+      className={`w-full animate-fadeIn group`}
       onMouseEnter={() => setShowActions(true)}
       onMouseLeave={() => setShowActions(false)}
     >
+      {isAI ? (
+        // AI Response - Full width with background
+        <div className="w-full bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 border-b border-slate-200 dark:border-slate-700 py-6">
+          <div className="max-w-4xl mx-auto px-4 md:px-6">
+            <div className="flex gap-4">
+              <div className="flex-shrink-0">
+                <Avatar className="w-10 h-10 shadow-md ring-2 ring-blue-100 dark:ring-blue-900/40" title="AI Assistant">
+                  <AvatarFallback className="bg-gradient-to-br from-blue-500 to-blue-600 text-white font-semibold">
+                    <Bot className="w-5 h-5" />
+                  </AvatarFallback>
+                </Avatar>
+              </div>
 
+              <div className="flex-1 flex flex-col gap-3">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-semibold text-slate-900 dark:text-slate-100">AI Assistant</h3>
+                  <div className="flex items-center gap-2">
+                    {isStreaming && (
+                      <span className="text-xs text-blue-500 animate-pulse font-medium">responding...</span>
+                    )}
+                    {!isStreaming && (
+                      <span className="text-sm text-slate-500 dark:text-slate-400">
+                        {formatTime(message.createdAt)}
+                      </span>
+                    )}
+                  </div>
+                </div>
 
-      <div className={`flex flex-col gap-1 max-w-[75%] md:max-w-[65%] `}>
-        <div
-          className={`
-            relative px-4 py-2.5 rounded-2xl shadow-sm transition-all duration-200
-            ${isAI
-              ? "bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-tl-md shadow-md"
-              : "bg-gradient-to-br from-blue-600 to-blue-500 dark:from-blue-600 dark:to-blue-700 text-white rounded-tr-md shadow-md"
-            }
-            hover:shadow-lg transform hover:-translate-y-0.5
-          `}
-        >
-          <p className="whitespace-pre-wrap break-words text-[15px] leading-relaxed font-normal">
-            {message.content}
-            {/* Typing cursor - shown only while streaming */}
-            {isStreaming && (
-              <span className="inline-block w-0.5 h-4 bg-blue-500 ml-0.5 animate-pulse"></span>
-            )}
-          </p>
+                <div className="text-slate-700 dark:text-slate-300 text-[15px] leading-relaxed whitespace-pre-wrap break-words">
+                  {!message.content ? (
+                    <SkeletonLoading />
+                  ) : (
+                    <>
+                      {message.content}
+                      {isStreaming && (
+                        <span className="inline-block w-0.5 h-5 bg-blue-500 ml-1 animate-pulse"></span>
+                      )}
+                    </>
+                  )}
+                </div>
 
-          {/* Timestamp - bottom right corner */}
-          {!isStreaming && (
-            <div
-              className={`
-                text-[10px] mt-1 flex items-center justify-end gap-1
-                ${isAI
-                  ? "text-gray-400 dark:text-gray-500"
-                  : "text-blue-100 dark:text-blue-200"
-                }
-              `}
-            >
-              <span className="font-medium">{formatTime(message.createdAt)}</span>
+                {/* Action Buttons - show on hover */}
+                {!isStreaming && (
+                  <div
+                    className={`
+                      flex gap-2 items-center transition-opacity duration-200 pt-2
+                      ${showActions ? "opacity-100" : "opacity-0"}
+                    `}
+                  >
+                    {/* <button
+                      onClick={handleCopy}
+                      className="p-1.5 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-md transition-colors"
+                      title={copied ? "Copied!" : "Copy"}
+                    >
+                      {copied ? (
+                        <Check className="w-4 h-4 text-green-500" />
+                      ) : (
+                        <Copy className="w-4 h-4 text-slate-600 dark:text-slate-400" />
+                      )}
+                    </button> */}
+                    <SaveButton
+                      message={message}
+                      prompt={previousMessage?.content}
+                    />
+                    <MessageActions
+                      messageId={message.id}
+                      content={message.content}
+                      isAI={isAI}
+                      prompt={previousMessage?.content}
+                    />
+                  </div>
+                )}
+              </div>
             </div>
-          )}
-        </div>
-
-        {/* Action Buttons - show on hover */}
-        {!isStreaming && (
-          <div
-            className={`
-              flex gap-1 items-center px-1 transition-opacity duration-200
-              ${showActions ? "opacity-100" : "opacity-0"}
-              ${isAI ? "justify-start" : "justify-end"}
-            `}
-          >
-            {isAI && (
-              <SaveButton
-                message={message}
-                prompt={previousMessage?.content}
-              />
-            )}
-            <MessageActions
-              messageId={message.id}
-              content={message.content}
-              isAI={isAI}
-              prompt={previousMessage?.content}
-            />
           </div>
-        )}
-      </div>
-            {isAI ? (
-        <div className="flex-shrink-0 mt-1">
-          <Avatar className="w-8 h-8 shadow-sm ring-2 ring-blue-100 dark:ring-blue-900/30" title="AI Assistant">
-            <AvatarFallback className="bg-gradient-to-br from-blue-500 to-blue-600 text-white">
-              <Bot className="w-4 h-4" />
-            </AvatarFallback>
-          </Avatar>
         </div>
-      ):(
-        <div className="flex-shrink-0 mt-1">
-          <Avatar className="w-8 h-8 shadow-sm ring-2 ring-green-100 dark:ring-green-900/30" title="You">
-            <AvatarFallback className="bg-gradient-to-br from-green-500 to-emerald-600 text-white">
-              <User className="w-4 h-4" />
-            </AvatarFallback>
-          </Avatar>
+      ) : (
+        // User Question - Right aligned with minimal styling
+        <div className="w-full px-4 md:px-6 py-6">
+          <div className="max-w-4xl mx-auto flex gap-4 justify-end">
+            <div className="flex-1 flex flex-col gap-2 max-w-xl items-end">
+              <div className="bg-blue-600 dark:bg-blue-700 text-white px-5 py-3 rounded-2xl rounded-br-none shadow-md">
+                <p className="text-[15px] leading-relaxed whitespace-pre-wrap break-words">
+                  {message.content}
+                </p>
+              </div>
+              <span className="text-xs text-slate-500 dark:text-slate-400 px-2">
+                {formatTime(message.createdAt)}
+              </span>
+            </div>
+
+            <div className="flex-shrink-0">
+              <Avatar className="w-10 h-10 shadow-md ring-2 ring-green-100 dark:ring-green-900/40" title="You">
+                <AvatarFallback className="bg-gradient-to-br from-green-500 to-emerald-600 text-white font-semibold">
+                  <User className="w-5 h-5" />
+                </AvatarFallback>
+              </Avatar>
+            </div>
+          </div>
         </div>
       )}
-
     </div>
   );
 }

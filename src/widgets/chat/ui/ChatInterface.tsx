@@ -3,7 +3,6 @@ import { useEffect, useRef } from "react";
 import { useChatStore } from "@/entities/chat";
 import { useSendMessage } from "@/features/chat/start-chat/model/use-send-message";
 import MessageBubble from "./MessageBubble";
-import TypingIndicator from "./TypingIndicator";
 import { ChatInput } from "@/features/chat";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { Sparkles } from "lucide-react";
@@ -73,7 +72,6 @@ export default function ChatInterface() {
                   previousMessage={i > 0 ? messages[i - 1] : null}
                 />
               ))}
-              {isSending && <TypingIndicator />}
               <div ref={chatEndRef} />
             </div>
           )}

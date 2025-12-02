@@ -16,8 +16,11 @@ export function useSendMessage() {
         addUserMessage(content);
         setIsSending(true);
 
-       const controller = new AbortController();
-    setController(controller);
+        // Create empty assistant message for skeleton loading
+        appendAssistantMessage("");
+
+        const controller = new AbortController();
+        setController(controller);
 
         try {
             const res = await fetch("/api/chat/send", {
