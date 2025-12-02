@@ -10,15 +10,28 @@ export default function DashboardPage() {
   const [error, setError] = useState<string | null>(null);
   const [publishingId, setPublishingId] = useState<string | null>(null);
 
+  //  أهم شيء: حالة ربط الفيسبوك
+  const [hasFacebook, setHasFacebook] = useState(false);
+
+  //  جلب حالة المستخدم (وربط فيسبوك)
+  const fetchUser = async () => {
+    try {
+      const res = await fetch("/api/auth/me");
+      if (!res.ok) return;
+      const data = await res.json();
+      setHasFacebook(!!data.hasFacebook);
+    } catch (err) {
+      console.error("fetchUser error:", err);
+    }
+  };
+
+  //  جلب البوستات
   const fetchPosts = async () => {
     try {
       setIsLoading(true);
       setError(null);
 
-      const res = await fetch("/api/posts", {
-        method: "GET",
-      });
-
+      const res = await fetch("/api/posts");
       const data = await res.json();
 
       if (!res.ok) {
@@ -36,45 +49,11 @@ export default function DashboardPage() {
 
   useEffect(() => {
     fetchPosts();
+    fetchUser();
   }, []);
 
-  // const handleTweet = async (post: Post) => {
-  //   const confirmPublish = window.confirm(
-  //     "هل أنت متأكد إن تنشر على تويتر؟"
-  //   );
-  //   if (!confirmPublish) return;
-
-  //   try {
-  //     setPublishingId(post.id);
-
-  //     const res = await fetch("/api/oauth/twitter/post", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify({
-  //         content: post.content, // أهم حاجة
-  //         postId: post.id,
-  //         platform: post.platform,
-  //       }),
-  //     });
-
-  //     const data = await res.json();
-
-  //     if (!res.ok || data.success === false) {
-  //       throw new Error(data.error || "فشل في نشر البوست");
-  //     }
-
-  //     alert("تم نشر البوست على تويتر بنجاح ✅");
-  //   } catch (err: any) {
-  //     console.error(err);
-  //     alert(`حصل خطأ أثناء النشر: ${err.message || "خطأ غير متوقع"}`);
-  //   } finally {
-  //     setPublishingId(null);
-  //   }
-  // };
-
-  async function publishToFacebook(postId: string) {
+  // 🔹 زر نشر على فيسبوك
+  const publishToFacebook = async (postId: string) => {
     try {
       setPublishingId(postId);
 
@@ -86,20 +65,22 @@ export default function DashboardPage() {
 
       const data = await res.json();
 
-      if (!res.ok) {
-        alert("خطأ أثناء النشر على الفيسبوك: " + data.error?.message);
+      if (!res.ok || data.success === false) {
+        alert("خطأ أثناء النشر على الفيسبوك: " + (data.error?.message || ""));
         return;
       }
 
       alert("🎉 تم نشر البوست بنجاح على فيسبوك!");
+      fetchPosts();
     } catch (err) {
       console.error(err);
       alert("حدث خطأ غير متوقع.");
     } finally {
       setPublishingId(null);
     }
-  }
+  };
 
+  // شاشة التحميل
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -115,6 +96,7 @@ export default function DashboardPage() {
           <h1 className="text-2xl font-semibold">
             الداشبورد – البوستات المحفوظة
           </h1>
+
           <button
             onClick={fetchPosts}
             className="px-3 py-2 text-sm rounded-md border bg-white"
@@ -123,10 +105,28 @@ export default function DashboardPage() {
           </button>
         </div>
 
+        {/* 🔹 بانر ربط فيسبوك لو الحساب مش مربوط */}
+        {!hasFacebook && (
+          <div className="bg-white border rounded-lg p-3 text-xs flex items-center justify-between">
+            <span>لم تقومي بربط حساب فيسبوك حتى الآن</span>
+            <button
+              onClick={() =>
+                (window.location.href = "/api/oauth/facebook/login")
+              }
+              className="px-3 py-1 rounded-md border bg-blue-50 text-blue-700"
+            >
+              ربط حساب فيسبوك
+            </button>
+          </div>
+        )}
+
         {error && <p className="text-sm text-red-500">{error}</p>}
 
+        {/* قائمة البوستات */}
         {posts.length === 0 ? (
-          <p className="text-gray-500 text-sm">لا يوجد بوستات لحتى الان</p>
+          <p className="text-gray-500 text-sm text-center mt-10">
+            لا يوجد بوستات محفوظة
+          </p>
         ) : (
           <div className="space-y-4">
             {posts.map((post) => (
@@ -162,13 +162,18 @@ export default function DashboardPage() {
                   </span>
 
                   <div className="space-x-2">
-                    <button
-                      onClick={() =>
-                        (window.location.href = "/api/oauth/facebook/login")
-                      }
-                    >
-                      ربط حساب فيسبوك
-                    </button>
+                    {/* 🔹 زر نشر على فيسبوك يظهر فقط لو الحساب مربوط */}
+                    {hasFacebook && (
+                      <button
+                        onClick={() => publishToFacebook(post.id)}
+                        disabled={publishingId === post.id}
+                        className="px-3 py-1 rounded-md bg-blue-600 text-white text-xs disabled:opacity-50"
+                      >
+                        {publishingId === post.id
+                          ? "جاري النشر..."
+                          : "نشر على فيسبوك"}
+                      </button>
+                    )}
                   </div>
                 </div>
               </div>

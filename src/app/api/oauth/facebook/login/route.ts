@@ -1,11 +1,11 @@
-// app/api/auth/facebook/login/route.ts
+//إنشاء رابط تسجيل الدخول في فيسبوك وإرجاع redirect للمستخدم إلى صفحة تسجيل الدخول الخاصة بفيسبوك.
+
 import { NextRequest, NextResponse } from "next/server";
 
 const APP_ID = process.env.FACEBOOK_APP_ID!;
 const REDIRECT_URI = process.env.FACEBOOK_REDIRECT_URI!;
 
-export async function GET(req: NextRequest) {
-  // الصلاحيات اللي نطلبها من فيسبوك
+export async function GET() {
   const scopes = [
     "public_profile",
     "email",
@@ -18,8 +18,9 @@ export async function GET(req: NextRequest) {
     `https://www.facebook.com/v18.0/dialog/oauth` +
     `?client_id=${APP_ID}` +
     `&redirect_uri=${encodeURIComponent(REDIRECT_URI)}` +
-    `&scope=${scopes}`;
+    `&scope=${encodeURIComponent(scopes)}` +
+    `&response_type=code` +
+    `&auth_type=rerequest`;
 
-  // نعمل redirect مباشرة لصفحة تسجيل الدخول تبعت فيسبوك
   return NextResponse.redirect(fbLoginUrl);
 }

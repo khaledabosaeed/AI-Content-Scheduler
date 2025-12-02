@@ -44,10 +44,11 @@ export async function GET(req: NextRequest) {
 
     // 3. جلب بيانات المستخدم من قاعدة البيانات
     const { data: user, error: dbError } = await supabaseServer
-      .from('users')
-      .select('id, email, name, created_at')
-      .eq('id', payload.userId)
+      .from("users")
+      .select("id, email, name, created_at")
+      .eq("id", payload.userId)
       .single();
+
     if (dbError || !user) {
       return NextResponse.json(
         { error: "المستخدم غير موجود" },
@@ -55,7 +56,34 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    // 4. إرجاع بيانات المستخدم
+    // 4. قراءة fb_token من الكوكي ومعرفة هل في ربط ولا لأ
+    const fbToken = req.cookies.get("fb_token")?.value;
+    const hasFacebook = !!fbToken;
+
+    let facebookProfile: any = null;
+
+    if (fbToken) {
+      try {
+        const fbRes = await fetch(
+          `https://graph.facebook.com/me?fields=id,name,picture&access_token=${fbToken}`
+        );
+
+        if (fbRes.ok) {
+          const fbData = await fbRes.json();
+          facebookProfile = {
+            id: fbData.id,
+            name: fbData.name,
+            picture: fbData.picture?.data?.url ?? null,
+          };
+        } else {
+          console.warn("Facebook token invalid or expired");
+        }
+      } catch (e) {
+        console.error("Error fetching Facebook profile:", e);
+      }
+    }
+
+    // 5. إرجاع بيانات المستخدم + حالة فيسبوك
     return NextResponse.json(
       {
         user: {
@@ -64,15 +92,16 @@ export async function GET(req: NextRequest) {
           name: user.name,
           createdAt: user.created_at,
         },
+        hasFacebook,
+        facebook: facebookProfile,
       },
       { status: 200 }
     );
   } catch (error) {
-    console.error('Get current user error:', error);
+    console.error("Get current user error:", error);
     return NextResponse.json(
       { error: "حدث خطأ أثناء جلب بيانات المستخدم" },
       { status: 500 }
     );
   }
 }
-
