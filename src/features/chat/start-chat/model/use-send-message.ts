@@ -16,7 +16,7 @@ export function useSendMessage() {
         addUserMessage(content);
         setIsSending(true);
 
-       const controller = new AbortError();
+       const controller = new AbortController();
     setController(controller);
 
         try {
