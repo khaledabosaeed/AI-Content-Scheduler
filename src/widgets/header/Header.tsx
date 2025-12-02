@@ -102,29 +102,40 @@ export default function Header() {
               Login
             </Link>
           ) : (
-            <div ref={dropdownRef} className="sm:relative sm:flex">
+            <div ref={dropdownRef} className="relative flex">
               <button
                 onClick={() => setUserMenuOpen(!userMenuOpen)}
-                className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-white text-indigo-600 rounded-md text-sm sm:text-base font-medium transition-all hover:shadow-md"
+                className="flex items-center gap-2 px-3 py-2 bg-white text-indigo-600 rounded-md text-sm sm:text-base font-medium hover:shadow-md transition"
               >
                 {user.name}
                 <ChevronDown className="w-4 h-4" />
               </button>
+
               {userMenuOpen && (
-                <ul className="absolute right-0 top-12 w-48 bg-white text-indigo-600 rounded-lg shadow-xl z-50 border border-gray-100">
-                  <li className="px-4 py-2 border-t border-indigo-200 hover:bg-indigo-50 cursor-pointer text-end transition">
-                    <Link href="/chat" className="text-sm">Chat</Link>
-                  </li>
-                  <li className="px-4 py-2 hover:bg-indigo-50 cursor-pointer text-end transition">
-                    <Link href="/dashboard" className="text-sm">Dashboard</Link>
-                  </li>
-                  <li
+                <div className="absolute right-0 top-12 w-48 bg-white text-indigo-600 rounded-lg shadow-xl z-50 border border-gray-100">
+                  <Link
+                    href="/chat"
+                    onClick={() => setUserMenuOpen(false)}
+                    className="block px-4 py-2 border-b border-indigo-200 hover:bg-indigo-50 text-end text-sm transition"
+                  >
+                    Chat
+                  </Link>
+
+                  <Link
+                    href="/dashboard"
+                    onClick={() => setUserMenuOpen(false)}
+                    className="block px-4 py-2 border-b hover:bg-indigo-50 text-end text-sm transition"
+                  >
+                    Dashboard
+                  </Link>
+
+                  <button
                     onClick={() => mutate()}
-                    className="px-4 py-2 hover:bg-indigo-50 cursor-pointer text-end transition text-red-600 font-medium"
+                    className="block w-full text-end px-4 py-2 text-red-600 font-medium hover:bg-indigo-50 transition text-sm"
                   >
                     Logout
-                  </li>
-                </ul>
+                  </button>
+                </div>
               )}
             </div>
           )}
