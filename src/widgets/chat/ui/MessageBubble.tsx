@@ -36,21 +36,13 @@ export default function MessageBubble({
 
   return (
     <div
-      className={`w-full flex gap-3 ${isAI ? "justify-start" : "justify-end"} animate-fadeIn group`}
+      className={`w-full flex gap-3 ${ "justify-end"} animate-fadeIn group`}
       onMouseEnter={() => setShowActions(true)}
       onMouseLeave={() => setShowActions(false)}
     >
-      {isAI && (
-        <div className="flex-shrink-0 mt-1">
-          <Avatar className="w-8 h-8 shadow-sm ring-2 ring-blue-100 dark:ring-blue-900/30" title="AI Assistant">
-            <AvatarFallback className="bg-gradient-to-br from-blue-500 to-blue-600 text-white">
-              <Bot className="w-4 h-4" />
-            </AvatarFallback>
-          </Avatar>
-        </div>
-      )}
 
-      <div className={`flex flex-col gap-1 max-w-[75%] md:max-w-[65%] ${isAI ? "" : "items-end"}`}>
+
+      <div className={`flex flex-col gap-1 max-w-[75%] md:max-w-[65%] `}>
         <div
           className={`
             relative px-4 py-2.5 rounded-2xl shadow-sm transition-all duration-200
@@ -109,8 +101,15 @@ export default function MessageBubble({
           </div>
         )}
       </div>
-
-      {!isAI && (
+            {isAI ? (
+        <div className="flex-shrink-0 mt-1">
+          <Avatar className="w-8 h-8 shadow-sm ring-2 ring-blue-100 dark:ring-blue-900/30" title="AI Assistant">
+            <AvatarFallback className="bg-gradient-to-br from-blue-500 to-blue-600 text-white">
+              <Bot className="w-4 h-4" />
+            </AvatarFallback>
+          </Avatar>
+        </div>
+      ):(
         <div className="flex-shrink-0 mt-1">
           <Avatar className="w-8 h-8 shadow-sm ring-2 ring-green-100 dark:ring-green-900/30" title="You">
             <AvatarFallback className="bg-gradient-to-br from-green-500 to-emerald-600 text-white">
@@ -119,6 +118,7 @@ export default function MessageBubble({
           </Avatar>
         </div>
       )}
+
     </div>
   );
 }
