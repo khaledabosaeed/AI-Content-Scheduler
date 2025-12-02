@@ -8,7 +8,7 @@ export function ThemeToggle() {
     return (
         <button
             onClick={toggleTheme}
-            className="relative p-2 rounded-lg bg-secondary hover:bg-accent transition-colors duration-200"
+            className="relative p-2 rounded-lg hover:bg-accent transition-colors duration-200"
             aria-label="Toggle theme"
             title={`Switch to ${theme === 'light' ? 'dark' : 'light'} mode`}
         >

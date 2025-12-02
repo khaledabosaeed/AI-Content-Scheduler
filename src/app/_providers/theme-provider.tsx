@@ -37,9 +37,12 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
     document.documentElement.classList.toggle("dark", newTheme === "dark");
   };
 
-  if (!mounted) return <>{children}</>; // prevent flash
-
-  return <ThemeContext.Provider value={{ theme, toggleTheme }}>{children}</ThemeContext.Provider>;
+  // Always wrap with provider, even during initial render
+ return mounted ? (
+  <ThemeContext.Provider value={{ theme, toggleTheme }}>
+    {children}
+  </ThemeContext.Provider>
+) : null;
 }
 
 export function useTheme() {

@@ -2,75 +2,118 @@
 
 import { FC } from "react";
 import { motion } from "framer-motion";
-import { container, item } from "../../../components/lib/animations";
-import { Card, CardContent } from "@/components/ui/card";
-import { CalendarCheck, Sparkles, BarChart3 } from "lucide-react";
+import { container, item } from "@/components/lib/animations";
+import { User, MessageCircle, CalendarCheck, Link2, Globe, Send } from "lucide-react";
+import { Instagram, Facebook, Twitter, Linkedin } from "lucide-react";
 
-const features = [
-  {
-    icon: <CalendarCheck className="h-10 w-10 text-blue-600" />,
-    title: "Connect Accounts",
-    desc: "Link all your social media accounts securely.",
-  },
-  {
-    icon: <Sparkles className="h-10 w-10 text-blue-600" />,
-    title: "Generate AI Content",
-    desc: "Create captions, hashtags, and posts automatically.",
-  },
-  {
-    icon: <BarChart3 className="h-10 w-10 text-blue-600" />,
-    title: "Schedule & Publish",
-    desc: "AI posts at the optimal times for engagement.",
-  },
-  {
-    icon: <BarChart3 className="h-10 w-10 text-blue-600" />,
-    title: "Analyze Results",
-    desc: "Track performance and get improvement tips.",
-  },
+const steps = [
+  { icon: User, title: "Login / Register" },
+  { icon: MessageCircle, title: "Chat with AI" },
+  { icon: Send, title: "Receive AI Response" },
+  { icon: CalendarCheck, title: "Set Scheduling" },
+  { icon: Link2, title: "Connect Social Platforms" },
+  { icon: Globe, title: "Publish" },
 ];
 
-const HowItWorksSection: FC = () => (
+const platforms = [
+  Instagram,
+  Facebook,
+  Twitter,
+  Linkedin,
+];
+
+const FunStepsSection: FC = () => (
   <motion.section
-    id="steps"
-    className="py-20 px-6 bg-white"
+    id="fun-steps"
+    className="relative py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 lg:px-8 min-h-screen flex flex-col justify-center items-center overflow-hidden"
+    style={{
+      backgroundColor: "hsl(var(--background))",
+      color: "hsl(var(--foreground))",
+      transition: "background-color 0.3s, color 0.3s",
+    }}
     initial="hidden"
     whileInView="show"
     viewport={{ once: true }}
     variants={container}
   >
-    <div className="max-w-6xl mx-auto text-center mb-10">
-      <motion.h3 variants={item} className="text-3xl font-bold mb-3">
-        How It Works
-      </motion.h3>
-      <motion.p variants={item} className="text-gray-600">
-        Step by step guide to automate your content scheduling.
+    {/* Title */}
+    <div className="max-w-5xl w-full text-center mb-12 sm:mb-14 md:mb-16 lg:mb-20">
+      <motion.h2
+        variants={item}
+        style={{ color: "hsl(var(--text-primary))", transition: "color 0.3s" }}
+        className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold mb-3 sm:mb-4 md:mb-6 tracking-tight"
+      >
+        How AI Scheduler Works
+      </motion.h2>
+      <motion.p
+        variants={item}
+        style={{ color: "hsl(var(--text-secondary))", transition: "color 0.3s" }}
+        className="text-base sm:text-lg md:text-xl mx-auto max-w-3xl leading-relaxed"
+      >
+        Follow the simple steps to schedule your content like a pro!
       </motion.p>
     </div>
 
-    <motion.div
-      variants={container}
-      className="grid md:grid-cols-4 gap-8 max-w-6xl mx-auto"
-    >
-      {features.map((feature, idx) => (
-        <motion.div
-          key={idx}
-          variants={item}
-          whileHover={{ scale: 1.05, y: -4 }}
-          transition={{ type: "spring", stiffness: 300 }}
-        >
-          <Card className="h-full flex flex-col shadow-md hover:shadow-lg transition-shadow duration-300">
-            <CardContent className="flex flex-col h-full justify-between items-center text-center p-6">
-              <div className="flex flex-col items-center">
-                <div className="mx-auto">{feature.icon}</div>
-                <p className="font-semibold text-lg mt-3">{feature.title}</p>
-              </div>
-              <p className="text-gray-600 text-sm mt-4">{feature.desc}</p>
-            </CardContent>
-          </Card>
-        </motion.div>
-      ))}
-    </motion.div>
+    {/* Steps */}
+    <div className="relative w-full max-w-6xl mx-auto px-2 py-8">
+      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-4 sm:gap-6">
+        {steps.map((step, idx) => {
+          const Icon = step.icon;
+          return (
+            <motion.div
+              key={idx}
+              variants={item}
+              whileHover={{ scale: 1.05 }}
+              className="flex flex-col items-center text-center"
+            >
+              <motion.div
+                className="w-14 sm:w-16 md:w-18 h-14 sm:h-16 md:h-18 rounded-full flex items-center justify-center shadow-lg mb-3 flex-shrink-0"
+                style={{
+                  backgroundColor: "hsl(var(--primary)/15)", // دائرة أيقونات بلون ثيم
+                  transition: "background-color 0.3s",
+                }}
+                whileHover={{ rotate: 5 }}
+              >
+                <Icon className="w-6 h-6" style={{ color: "hsl(var(--primary-foreground))", transition: "color 0.3s" }} />
+              </motion.div>
+
+              <p
+                className="font-semibold text-xs sm:text-sm md:text-base leading-tight"
+                style={{ color: "hsl(var(--text-primary))", transition: "color 0.3s" }}
+              >
+                {step.title}
+              </p>
+
+              {/* Social platform icons only at step 5 */}
+              {idx === 4 && (
+                <motion.div
+                  className="flex justify-center gap-2 mt-3 flex-wrap"
+                  initial={{ opacity: 0, y: 10 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 }}
+                >
+                  {platforms.map((PlatformIcon, i) => (
+                    <motion.div
+                      key={i}
+                      className="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-full shadow-md hover:shadow-lg hover:scale-110 transition-all duration-200"
+                      style={{
+                        backgroundColor: "hsl(var(--card))",
+                        color: "hsl(var(--primary))",
+                        transition: "background-color 0.3s, color 0.3s",
+                      }}
+                      whileHover={{ rotate: 10 }}
+                    >
+                      <PlatformIcon className="w-4 h-4" />
+                    </motion.div>
+                  ))}
+                </motion.div>
+              )}
+            </motion.div>
+          );
+        })}
+      </div>
+    </div>
   </motion.section>
 );
 
-export default HowItWorksSection;
+export default FunStepsSection;
