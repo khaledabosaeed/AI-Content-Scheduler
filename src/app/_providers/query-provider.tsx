@@ -6,9 +6,9 @@ import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { ThemeProvider } from "./theme-provider";
 import { useUser } from "@/entities/user/state/queries";
 
-const queryClient = new QueryClient();
 
 export default function QueryProvider({ children }: { children: React.ReactNode }) {
+    const queryClient = new QueryClient();
   // add here the fetch for the user session if needed
   // to make the first load clean and avoid flickering Y om Rooze 
   return (

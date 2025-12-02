@@ -1,5 +1,6 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
 
+
 // التحقق من وجود API Key
 if (!process.env.GEMINI_API_KEY) {
   throw new Error("GOOGLE_GEMINI_API_KEY is not set in environment variables");
@@ -9,23 +10,35 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
 
 /**
+ * 
+ * 
  * إرسال prompt للـ AI والحصول على رد
  */
 
-export async function generateContent(prompt: string): Promise<string> {
+export async function generateContentStream(prompt: string): Promise<ReadableStream> {
   try {
     // select the model
     const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" });
 
     // generate content
-    const result = await model.generateContent(prompt);
+    // to get the result in straming way !
+    const result = await model.generateContentStream(prompt);
 
-    // get the response
-    const response = await result.response;
 
-    // get the text
-    const text = response.text();
-    return text;
+    // get stream response from result
+
+    const stream = new ReadableStream({
+      async start(controller) {
+        for await (const chunk of result.stream) {
+          const text = chunk.text();
+          controller.enqueue(new TextEncoder().encode(text));
+        }
+        controller.close();
+      },
+    })
+    return stream;
+
+
   } catch (error: any) {
     console.error("Gemini API Error:", error);
     throw new Error(`فشل في الاتصال بالذكاء الاصطناعي: ${error.message}`);

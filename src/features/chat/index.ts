@@ -7,5 +7,4 @@ export { default as SaveButton } from "./save-as-post/ui/SaveButton";
 export { useSaveAsPost } from "./save-as-post/model/use-save-as-post";
 
 // Feature: Clear Chat
-export { default as ClearButton } from "./clear-chat/ui/clear-button";
 
