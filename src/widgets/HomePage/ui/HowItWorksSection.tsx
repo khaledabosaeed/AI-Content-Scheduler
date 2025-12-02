@@ -2,7 +2,7 @@
 
 import { FC } from "react";
 import { motion } from "framer-motion";
-import { container, item } from "@/components/lib/animations";
+import { container, item } from "@/shared/components/lib/animations";
 import { User, MessageCircle, CalendarCheck, Link2, Globe, Send } from "lucide-react";
 import { Instagram, Facebook, Twitter, Linkedin } from "lucide-react";
 

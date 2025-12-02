@@ -5,7 +5,7 @@ import {
   AccordionItem,
   AccordionTrigger,
   AccordionContent,
-} from '@/components/ui/accordion';
+} from '@/shared/components/ui/accordion';
 
 const FAQSection: FC = () => (
   <section

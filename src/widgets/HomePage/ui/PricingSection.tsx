@@ -1,10 +1,10 @@
 "use client";
 import { FC } from "react";
 import { motion } from "framer-motion";
-import { Card, CardHeader, CardContent, CardFooter } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+import { Card, CardHeader, CardContent, CardFooter } from "@/shared/components/ui/card";
+import { Button } from "@/shared/components/ui/button";
 import { Check } from "lucide-react";
-import { container, item } from "@/components/lib/animations";
+import { container, item } from "@/shared/components/lib/animations";
 
 const plans = [
   {

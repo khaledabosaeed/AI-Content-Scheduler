@@ -1,7 +1,7 @@
 "use client";
-import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Separator } from "@/components/ui/separator";
+import { Button } from "@/shared/components/ui/button";
+import { ScrollArea } from "@/shared/components/ui/scroll-area";
+import { Separator } from "@/shared/components/ui/separator";
 import { Plus, MessageSquarePlus, Settings, LayoutGrid } from "lucide-react";
 import { useChatStore } from "@/entities/chat";
 import Link from "next/link";

@@ -2,8 +2,8 @@
 
 import { FC } from "react";
 import { motion } from "framer-motion";
-import { Button } from "@/components/ui/button";
-import { container, item } from "@/components/lib/animations";
+import { Button } from "@/shared/components/ui/button";
+import { container, item } from "@/shared/components/lib/animations";
 import Image from "next/image";
 import Link from "next/link";
 

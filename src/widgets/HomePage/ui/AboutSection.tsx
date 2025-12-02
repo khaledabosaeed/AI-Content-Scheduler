@@ -2,7 +2,7 @@
 
 import { FC } from "react";
 import { motion } from "framer-motion";
-import { container, item } from "@/components/lib/animations";
+import { container, item } from "@/shared/components/lib/animations";
 import { Users, Zap, CalendarCheck } from "lucide-react";
 
 const aboutFeatures = [

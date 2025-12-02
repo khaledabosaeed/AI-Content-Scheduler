@@ -4,7 +4,7 @@ import { useChatStore } from "@/entities/chat";
 import { useSendMessage } from "@/features/chat/start-chat/model/use-send-message";
 import MessageBubble from "./MessageBubble";
 import { ChatInput } from "@/features/chat";
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { ScrollArea } from "@/shared/components/ui/scroll-area";
 import { Sparkles } from "lucide-react";
 
 export default function ChatInterface() {

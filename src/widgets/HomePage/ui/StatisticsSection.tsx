@@ -2,8 +2,8 @@
 
 import { FC } from "react";
 import { motion } from "framer-motion";
-import { container, item } from "@/components/lib/animations";
-import { Card, CardContent } from "@/components/ui/card";
+import { container, item } from "@/shared/components/lib/animations";
+import { Card, CardContent } from "@/shared/components/ui/card";
 import { Sparkles, CalendarCheck, BarChart3, Users } from "lucide-react";
 
 const stats = [

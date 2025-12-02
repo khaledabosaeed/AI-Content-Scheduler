@@ -2,9 +2,9 @@
 
 import { FC } from "react";
 import { motion } from "framer-motion";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent } from "@/shared/components/ui/card";
 import { Sparkles, CalendarCheck, BarChart3 } from "lucide-react";
-import { container, item } from "@/components/lib/animations";
+import { container, item } from "@/shared/components/lib/animations";
 
 const features = [
   {
