@@ -24,7 +24,7 @@ export default function MessageBubble({
   const isLastMessage = messages[messages.length - 1]?.id === message.id;
   const isStreaming = isAI && isLastMessage && isSending;
 
-  // Format timestamp
+  // Format timestamp 
   const formatTime = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleTimeString("en-US", {

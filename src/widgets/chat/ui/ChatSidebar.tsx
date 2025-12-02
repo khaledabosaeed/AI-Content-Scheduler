@@ -8,9 +8,9 @@ import Link from "next/link";
 import { useState } from "react";
 import { Menu, X } from "lucide-react";
 export const ChatSideBar = () => {
-    const { clearMessages, isSending, createNewSession, loadSession, currentSessionId } = useChatStore();
+    const {  clearMessages,isSending, createNewSession,chatHistory, loadSession, currentSessionId } = useChatStore();
     const [sidebarOpen, setSidebarOpen] = useState(false);
-
+    // const { chatHistory } = useChatStore();
     const handleNewChat = () => {
         // if (confirm("Are you sure you want to start a new chat? (Current chat will be saved to history)")) {
             clearMessages();
@@ -41,7 +41,7 @@ export const ChatSideBar = () => {
 
              {/* Chat History */}
             <ScrollArea className="flex-1">
-                {/* <div className="p-4 space-y-2">
+                <div className="p-4 space-y-2">
                     <p className="text-xs font-semibold text-gray-500 uppercase mb-4 ml-2">Recent Chats</p>
                     {chatHistory.length === 0 ? (
                         <p className="text-xs text-gray-500 text-center py-8">No chat history yet</p>
@@ -58,9 +58,9 @@ export const ChatSideBar = () => {
                                 <MessageSquarePlus className="w-4 h-4 flex-shrink-0 group-hover:text-blue-400 transition-colors" />
                                 <span className="truncate">{chat.title || "New Chat"}</span>
                             </button>
-                        ))">
+                        ))
                     )}
-                </div> */}
+                </div>
             </ScrollArea>
 
             <Separator className="bg-gray-800" />

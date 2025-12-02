@@ -48,7 +48,7 @@ export function checkAuth(request: NextRequest): {
 
 export async function withAuth(
   request: NextRequest,
-  handler: (req: NextRequest, user: JWTPayload) => Promise<NextResponse>
+  handler: (req: NextRequest, user: JWTPayload) => Promise<NextResponse | Response>
 ): Promise<NextResponse | Response> {
   const { isAuthenticated, user, error } = checkAuth(request);
   if (!isAuthenticated || !user) {

@@ -4,12 +4,12 @@ import { useChatStore } from "@/entities/chat";
 import { useSendMessage } from "../model/use-send-message";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { SendIcon } from "lucide-react";
+import { SendIcon, XIcon } from "lucide-react";
 
 export default function ChatInput() {
   const [text, setText] = useState("");
   const { isSending, error } = useChatStore();
-  const { sendMessage } = useSendMessage();
+  const { sendMessage, cancelOngoingRequest } = useSendMessage();
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   // Auto-resize textarea
@@ -58,20 +58,35 @@ export default function ChatInput() {
             rows={1}
             className="resize-none pr-12 md:pr-14 rounded-xl border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-slate-900 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-900 transition-all min-h-[44px] text-sm md:text-base"
           />
-          <Button
-            onClick={handleSend}
-            disabled={isSending || !text.trim()}
-            size="sm"
-            className="absolute bottom-2 right-2 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 dark:from-blue-600 dark:to-blue-700 text-white rounded-lg shadow-md hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed h-8 w-8 md:h-9 md:w-9 p-0"
-            title="Send (Ctrl + Enter)"
-          >
-            <SendIcon className="w-4 h-4" />
-          </Button>
+          {isSending ? (
+            <Button
+              onClick={cancelOngoingRequest}
+              disabled={!isSending}
+              size="sm"
+              className="absolute bottom-2 right-2 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 dark:from-blue-600 dark:to-blue-700 text-white rounded-lg shadow-md hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed h-8 w-8 md:h-9 md:w-9 p-0"
+              title="Cancel Ongoing Request"
+            >
+              <XIcon className="w-4 h-4" />
+            </Button>
+          ) :
+
+            <Button
+              onClick={handleSend}
+              disabled={isSending || !text.trim()}
+              size="sm"
+              className="absolute bottom-2 right-2 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 dark:from-blue-600 dark:to-blue-700 text-white rounded-lg shadow-md hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed h-8 w-8 md:h-9 md:w-9 p-0"
+              title="Send (Ctrl + Enter)"
+            >
+              <SendIcon className="w-4 h-4" />
+            </Button>
+          }
         </div>
 
         <p className="text-[10px] md:text-xs text-gray-400 dark:text-gray-600 text-center font-light">
           Press <kbd className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-800 rounded border border-gray-300 dark:border-gray-700 text-gray-600 dark:text-gray-400 font-mono text-[10px]">Ctrl</kbd> + <kbd className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-800 rounded border border-gray-300 dark:border-gray-700 text-gray-600 dark:text-gray-400 font-mono text-[10px]">Enter</kbd> to send
         </p>
+
+
       </div>
     </div>
   );

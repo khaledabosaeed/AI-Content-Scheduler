@@ -6,18 +6,24 @@ export const useChatStore = create<ChatState>()(
   persist(
     (set, get) => ({
       messages: [],
+
       isSending: false,
+
       error: null,
+
       currentSessionId: null,
+
       chatHistory: [],
 
       addUserMessage: (content) => {
+
         const state = get();
         set({
           messages: [
             ...state.messages,
             {
               id: crypto.randomUUID(),
+              // sessionId:1,
               role: "user",
               content,
               createdAt: new Date().toISOString(),
@@ -35,23 +41,6 @@ export const useChatStore = create<ChatState>()(
         get().updateCurrentSession(title);
       },
 
-      addAssistantMessage: (content) => {
-        const state = get();
-        set({
-          messages: [
-            ...state.messages,
-            {
-              id: crypto.randomUUID(),
-              role: "assistant",
-              content,
-              createdAt: new Date().toISOString(),
-            },
-          ],
-        });
-
-        // Update session with assistant's response
-        get().updateCurrentSession(content.slice(0, 30) + (content.length > 30 ? "..." : ""));
-      },
 
       clearMessages: () => {
         set({ messages: [], currentSessionId: null });
@@ -62,6 +51,7 @@ export const useChatStore = create<ChatState>()(
       setError: (value) => set({ error: value }),
 
       // Session management
+
       createNewSession: () => {
         const sessionId = crypto.randomUUID();
         const newSession: ChatSession = {
@@ -98,7 +88,7 @@ export const useChatStore = create<ChatState>()(
       appendAssistantMessage: (chunk: string) => {
         set((state) => {
           const messages = [...state.messages];
-          // لو لا توجد رسالة مساعد، ننشئ واحدة فارغة
+
           if (
             messages.length === 0 ||
             messages[messages.length - 1].role !== "assistant"
@@ -112,13 +102,19 @@ export const useChatStore = create<ChatState>()(
             return { messages };
           }
 
-          // تحديث آخر رسالة
           const last = messages[messages.length - 1];
           last.content += chunk;
 
           return { messages };
         });
       },
+
+      cencelOngoingRequest: () => {
+
+
+        console.log("Ongoing request cancelled");
+      },
+
       loadSession: (sessionId: string) => {
         // Note: In a real app, you'd load messages from a database
         // For now, we'll just switch to an empty session
