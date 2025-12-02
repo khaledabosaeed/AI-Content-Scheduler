@@ -13,6 +13,7 @@ export const useChatStore = create<ChatState>()(
 
       currentSessionId: null,
 
+      controller: null,
       chatHistory: [],
 
       addUserMessage: (content) => {
@@ -84,6 +85,7 @@ export const useChatStore = create<ChatState>()(
           ),
         });
       },
+      
 
       appendAssistantMessage: (chunk: string) => {
         set((state) => {
@@ -109,12 +111,6 @@ export const useChatStore = create<ChatState>()(
         });
       },
 
-      cencelOngoingRequest: () => {
-
-
-        console.log("Ongoing request cancelled");
-      },
-
       loadSession: (sessionId: string) => {
         // Note: In a real app, you'd load messages from a database
         // For now, we'll just switch to an empty session
@@ -123,7 +119,18 @@ export const useChatStore = create<ChatState>()(
           messages: [],
         });
       },
+      
+  setController: (c) => set({ controller: c }),
+
+    cancelOngoingRequest: () => {
+        const c = get().controller;
+        if (c) {
+          c.abort();
+          set({ controller: null, isSending: false });
+        }
+      },
     }),
+    
     {
       name: "chat-storage",
       partialize: (state) => ({

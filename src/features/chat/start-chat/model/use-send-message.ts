@@ -2,7 +2,7 @@ import { useChatStore } from "@/entities/chat";
 import { useRef } from "react";
 
 export function useSendMessage() {
-    const { addUserMessage, appendAssistantMessage, setIsSending, setError } =
+  const { addUserMessage, appendAssistantMessage, setIsSending, setError, setController, cancelOngoingRequest } =
         useChatStore();
 
     // to contoll in the requset and cancel it 
@@ -16,8 +16,8 @@ export function useSendMessage() {
         addUserMessage(content);
         setIsSending(true);
 
-        const controller = new AbortController();
-        controllerRef.current = controller;
+       const controller = new AbortError();
+    setController(controller);
 
         try {
             const res = await fetch("/api/chat/send", {
@@ -53,7 +53,7 @@ export function useSendMessage() {
                     await new Promise(resolve => setTimeout(resolve, 20));
                 }
             }
-            controllerRef.current = null;
+            setController(null);
         } catch (err: any) {
             if (err.name === "AbortError") {
                 return;
@@ -65,13 +65,7 @@ export function useSendMessage() {
             controllerRef.current = null;
         }
     };
-    const cancelOngoingRequest = () => {
-        const controller = controllerRef.current;
-        if (controller) {
-            controller.abort();
-            controllerRef.current = null;
-        }
-    };
+
 
     return { sendMessage, cancelOngoingRequest };
 }
