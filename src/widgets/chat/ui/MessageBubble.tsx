@@ -2,7 +2,7 @@
 import type { Message } from "@/entities/chat";
 import { SaveButton } from "@/features/chat";
 import MessageActions from "./MessageActions";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback } from "@/shared/components/ui/avatar";
 import { Bot, User, Copy, Check } from "lucide-react";
 import { useState } from "react";
 import { useChatStore } from "@/entities/chat";

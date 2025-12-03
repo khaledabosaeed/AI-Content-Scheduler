@@ -1,6 +1,6 @@
 "use client";
 import { useChatStore } from "@/entities/chat";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/shared/components/ui/button";
 import { Trash2 } from "lucide-react";
 
 export default function ClearButton() {

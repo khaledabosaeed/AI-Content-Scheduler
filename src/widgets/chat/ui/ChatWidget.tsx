@@ -3,7 +3,7 @@
 import { useState } from "react";
 import ChatInterface from "./ChatInterface";
 import { ChatSideBar } from "./ChatSidebar";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/shared/components/ui/button";
 import { Menu, X } from "lucide-react";
 
 /**

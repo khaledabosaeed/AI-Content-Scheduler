@@ -6,7 +6,7 @@ import { verifyToken } from "@/shared/libs/auth/jwt";
 
 export async function POST(req: NextRequest) {
   try {
-    //  user access token اللي خزّنّاه في الكوكي بعد اللوجين
+    // user access token اللي خزّنّاه في الكوكي بعد اللوجين
     const userToken = req.cookies.get("fb_token")?.value;
 
     if (!userToken) {
@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    //  تحقق من جلسة المستخدم
+    // تحقق من جلسة المستخدم
     const sessionToken = getSessionToken(req);
     if (!sessionToken) {
       return NextResponse.json(
@@ -25,6 +25,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // تفك تشفير الـ JWT وترجع الـ payload
     const payload = verifyToken(sessionToken);
     if (!payload) {
       return NextResponse.json(
@@ -44,7 +45,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    //  جب البوست من قاعدة البيانات
+    // جب البوست من قاعدة البيانات
     const { data: post, error: postError } = await supabaseServer
       .from("posts")
       .select("id, content, platform, status, user_id")
@@ -59,7 +60,7 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    //  جب صفحات المستخدم من /me/accounts باستخدام user token
+    // جب صفحات المستخدم من /me/accounts باستخدام user token
     const pagesRes = await fetch(
       `https://graph.facebook.com/me/accounts?access_token=${userToken}`
     );
@@ -86,10 +87,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // إما تختاري أول صفحة، أو صفحة معيّنة بـ env
-    const ENV_PAGE_ID = process.env.FACEBOOK_PAGE_ID;
-    const page =
-      (ENV_PAGE_ID && pages.find((p: any) => p.id === ENV_PAGE_ID)) || pages[0]; // لو ما حددنا ENV، ناخذ أول صفحة (Contant Ai عندك)
+    // اختيار أول صفحة من الصفحات
+    const page = pages[0];
 
     if (!page) {
       return NextResponse.json(
@@ -100,7 +99,8 @@ export async function POST(req: NextRequest) {
 
     const pageId = page.id;
     const pageAccessToken = page.access_token;
-    //)النشر على صفحة فيسبوك باستخدام page access token
+
+    // النشر على صفحة فيسبوك باستخدام page access token
     const graphUrl = `https://graph.facebook.com/${pageId}/feed`;
 
     const graphRes = await fetch(graphUrl, {
@@ -128,11 +128,11 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
-
+    //ننحدث حالة البوست في الداتا بيز
     await supabaseServer
       .from("posts")
       .update({
-        status: "published",
+        status: "published", // تحدثت ال status
         published_at: new Date().toISOString(),
         facebook_post_id: graphData.id,
       })

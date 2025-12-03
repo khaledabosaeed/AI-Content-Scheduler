@@ -2,8 +2,8 @@
 import { useState, useRef, useEffect } from "react";
 import { useChatStore } from "@/entities/chat";
 import { useSendMessage } from "../model/use-send-message";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
+import { Button } from "@/shared/components/ui/button";
+import { Textarea } from "@/shared/components/ui/textarea";
 import { SendIcon, XIcon } from "lucide-react";
 
 export default function ChatInput() {

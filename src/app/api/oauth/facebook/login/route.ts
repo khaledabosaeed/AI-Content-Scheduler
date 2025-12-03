@@ -6,6 +6,7 @@ const APP_ID = process.env.FACEBOOK_APP_ID!;
 const REDIRECT_URI = process.env.FACEBOOK_REDIRECT_URI!;
 
 export async function GET() {
+  //المتتطلبات الي حيطلبها التطبيق من المستخدم(الصلاحيات  )
   const scopes = [
     "public_profile",
     "email",
@@ -14,6 +15,7 @@ export async function GET() {
     "pages_read_engagement",
   ].join(",");
 
+  // حيتم انشاء رابط لتسجيل الدخول في فيسبوك
   const fbLoginUrl =
     `https://www.facebook.com/v18.0/dialog/oauth` +
     `?client_id=${APP_ID}` +

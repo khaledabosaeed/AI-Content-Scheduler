@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 import { Copy, RotateCw, Trash2, Check } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/shared/components/ui/button";
 import { useChatStore } from "@/entities/chat";
 import { useSendMessage } from "@/features/chat/start-chat/model/use-send-message";
 
