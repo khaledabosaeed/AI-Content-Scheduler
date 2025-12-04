@@ -25,6 +25,7 @@ async function PrefetchUserData() {
     // 🔹 تحويل الكاش إلى JSON يمكن إرساله للعميل
     const dehydratedState = dehydrate(queryClient);
     console.log("✅ User data prefetched successfully");
+    console.log(dehydratedState, "this is dehydratedState");
 
     return dehydratedState;
   } catch (error) {

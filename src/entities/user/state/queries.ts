@@ -24,7 +24,6 @@ export const useUser = () => {
     staleTime: 1000 * 60 * 5, // المستخدم مش رح يتغير كل دقيقة
     gcTime: 1000 * 60 * 10, // احفظ البيانات في الـ cache لـ 10 دقايق
     retry: 1, // حاول مرة واحدة عند الفشل
-    enabled: false, // أهم خطوة → منع refetch الأولي
     refetchOnWindowFocus: false,
     refetchOnReconnect: false,
     refetchOnMount: false, // مهم جداً حتى ما يعيد الفetch بعد hydration

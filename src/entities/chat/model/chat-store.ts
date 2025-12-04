@@ -2,6 +2,14 @@ import { create } from "zustand";
 import { ChatState, ChatSession } from "./types";
 import { persist } from "zustand/middleware";
 
+
+
+/***
+ * 
+ * OM ALNOOR you can use this store to manage chat state in your application.
+ *  
+ * 
+ */
 export const useChatStore = create<ChatState>()(
   persist(
     (set, get) => ({
@@ -14,6 +22,7 @@ export const useChatStore = create<ChatState>()(
       currentSessionId: null,
 
       controller: null,
+
       chatHistory: [],
 
       addUserMessage: (content) => {
@@ -42,7 +51,6 @@ export const useChatStore = create<ChatState>()(
         get().updateCurrentSession(title);
       },
 
-
       clearMessages: () => {
         set({ messages: [], currentSessionId: null });
       },
@@ -51,7 +59,6 @@ export const useChatStore = create<ChatState>()(
 
       setError: (value) => set({ error: value }),
 
-      // Session management
 
       createNewSession: () => {
         const sessionId = crypto.randomUUID();
@@ -67,6 +74,7 @@ export const useChatStore = create<ChatState>()(
           chatHistory: [newSession, ...state.chatHistory],
         }));
       },
+
 
       updateCurrentSession: (title: string) => {
         const state = get();
@@ -85,7 +93,7 @@ export const useChatStore = create<ChatState>()(
           ),
         });
       },
-      
+
 
       appendAssistantMessage: (chunk: string) => {
         set((state) => {
@@ -117,12 +125,13 @@ export const useChatStore = create<ChatState>()(
         set({
           currentSessionId: sessionId,
           messages: [],
+          chatHistory: [],
         });
       },
-      
-  setController: (c) => set({ controller: c }),
 
-    cancelOngoingRequest: () => {
+      setController: (c) => set({ controller: c }),
+
+      cancelOngoingRequest: () => {
         const c = get().controller;
         if (c) {
           c.abort();
@@ -130,7 +139,7 @@ export const useChatStore = create<ChatState>()(
         }
       },
     }),
-    
+
     {
       name: "chat-storage",
       partialize: (state) => ({
