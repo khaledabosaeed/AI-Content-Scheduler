@@ -27,6 +27,7 @@ export function createToken(payload: Omit<JWTPayload, 'iat' | 'exp'>): string {
   }
 }
 
+
 export function verifyToken(token: string): JWTPayload | null {
   try {
     const decoded = jwt.verify(token, JWT_SECRET) as JWTPayload;
@@ -44,25 +45,26 @@ export function verifyToken(token: string): JWTPayload | null {
 }
 
 
-export function decodeToken(token: string): JWTPayload | null {
-  try {
-    const decoded = jwt.decode(token) as JWTPayload;
-    return decoded;
-  } catch (error) {
-    console.error('Error decoding JWT token:', error);
-    return null;
-  }
-}
+// export function decodeToken(token: string): JWTPayload | null {
+//   try {
+//     const decoded = jwt.decode(token) as JWTPayload;
+//     return decoded;
+//   } catch (error) {
+//     console.error('Error decoding JWT token:', error);
+//     return null;
+//   }
+// }
 
-export function isTokenExpired(token: string): boolean {
-  const decoded = decodeToken(token);
-  if (!decoded || !decoded.exp) {
-    return true;
-  }
 
-  const currentTime = Math.floor(Date.now() / 1000);
-  return decoded.exp < currentTime;
-}
+// export function isTokenExpired(token: string): boolean {
+//   const decoded = decodeToken(token);
+//   if (!decoded || !decoded.exp) {
+//     return true;
+//   }
+
+//   const currentTime = Math.floor(Date.now() / 1000);
+//   return decoded.exp < currentTime;
+// }
 
 export function refreshToken(token: string): string | null {
   const decoded = verifyToken(token);

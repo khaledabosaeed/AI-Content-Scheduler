@@ -20,7 +20,7 @@ interface MessageActionsProps {
 export default function MessageActions({ messageId, content, isAI, prompt }: MessageActionsProps) {
     const [copied, setCopied] = useState(false);
     const { sendMessage } = useSendMessage();
-
+    
     const handleCopy = async () => {
         try {
             await navigator.clipboard.writeText(content);

@@ -6,7 +6,7 @@ import { RegisterFormInputs } from "../libs/type";
 type RegisterMutationOptions = {
   onSuccess?: (
     data: unknown,
-    variables: RegisterFormInputs     ,
+    variables: RegisterFormInputs,
     context: unknown
   ) => void;
   onError?: (

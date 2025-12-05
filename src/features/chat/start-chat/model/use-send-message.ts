@@ -2,24 +2,41 @@ import { useChatStore } from "@/entities/chat";
 import { useRef } from "react";
 
 export function useSendMessage() {
-  const { addUserMessage, appendAssistantMessage, setIsSending, setError, setController, cancelOngoingRequest } =
+
+    const { addUserMessage, appendAssistantMessage, setIsSending, setError, setController, cancelOngoingRequest } =
         useChatStore();
 
     // to contoll in the requset and cancel it 
     const controllerRef = useRef<AbortController | null>(null);
 
     const sendMessage = async (content: string) => {
+
+        const chats = async () => {
+            const data = await fetch("/api/chat/get-chat",{
+                method: "GET",
+            });
+            const res = await data.json();
+            console.log(res, "thisx is chats");
+            return res;
+        };
+
+        chats();
+
+
         if (!content.trim()) return;
 
         setError(null);
 
         addUserMessage(content);
+
         setIsSending(true);
 
         // Create empty assistant message for skeleton loading
+
         appendAssistantMessage("");
 
         const controller = new AbortController();
+
         setController(controller);
 
         try {
@@ -37,6 +54,7 @@ export function useSendMessage() {
 
             // start stream
             const reader = res.body!.getReader();
+
             const decoder = new TextDecoder();
 
             while (true) {
@@ -52,19 +70,23 @@ export function useSendMessage() {
                     appendAssistantMessage(miniChunk);
                     // Small delay to create typing effect
                     // Adjust this value: smaller = faster, larger = slower
-
                     await new Promise(resolve => setTimeout(resolve, 20));
                 }
             }
+
             setController(null);
         } catch (err: any) {
             if (err.name === "AbortError") {
                 return;
             }
+
             setError(err.message);
+
             console.error("Send Message Error:", err);
         } finally {
+
             setIsSending(false);
+
             controllerRef.current = null;
         }
     };

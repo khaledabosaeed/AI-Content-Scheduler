@@ -5,34 +5,52 @@ import { QueryClient, dehydrate } from "@tanstack/react-query";
 import { userKeys } from "@/entities/user/state/keys";
 import { fetchUserData } from "@/entities/user/state/queries";
 import { ThemeProvider } from "./_providers/theme-provider";
+import { Suspense } from "react";
 
 export const metadata: Metadata = {
   title: "AI Content Scheduler",
   description: "Schedule your AI-generated content effortlessly",
 };
 
+async function PrefetchUserData() {
+  const queryClient = new QueryClient();
+
+  try {
+    // 🔹 prefetch بيانات اليوزر من السيرفر قبل العرض
+    await queryClient.prefetchQuery({
+      queryKey: userKeys.me(),
+      queryFn: fetchUserData,
+    });
+
+    // 🔹 تحويل الكاش إلى JSON يمكن إرساله للعميل
+    const dehydratedState = dehydrate(queryClient);
+    console.log("✅ User data prefetched successfully");
+    console.log(dehydratedState, "this is dehydratedState");
+
+    return dehydratedState;
+  } catch (error) {
+    console.error("❌ Failed to prefetch user data:", error);
+    // إرجع undefined وليس throw - سيسمح بالمتابعة بدون بيانات اليوزر
+    return undefined;
+  }
+}
+
 export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const queryClient = new QueryClient();
-
-  // 🔹 prefetch بيانات اليوزر من السيرفر قبل العرض
-  await queryClient.prefetchQuery({
-    queryKey: userKeys.me(),
-    queryFn: fetchUserData,
-  });
-
-  // 🔹 تحويل الكاش إلى JSON يمكن إرساله للعميل
-  const dehydratedState = dehydrate(queryClient);
+  // ✅ انتظر جلب البيانات قبل العرض (يمنع Flicker)
+  const dehydratedState = await PrefetchUserData();
 
   return (
     <html lang="ar" dir="rtl" suppressHydrationWarning>
       <body className="w-full min-h-screen relative">
         <ThemeProvider>
           <QueryProvider dehydratedState={dehydratedState}>
-            <main>{children}</main>
+            <Suspense fallback={<div />}>
+              <main>{children}</main>
+            </Suspense>
           </QueryProvider>
         </ThemeProvider>
       </body>

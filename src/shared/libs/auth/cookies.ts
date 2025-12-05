@@ -34,9 +34,6 @@ export function getSessionToken(request: NextRequest): string | undefined {
   return request.cookies.get(SESSION_COOKIE_NAME)?.value;
 }
 
-
-
-
 export function hasSessionCookie(request: NextRequest): boolean {
   return request.cookies.has(SESSION_COOKIE_NAME);
 }
