@@ -3,6 +3,7 @@
 
 import { useEffect, useState } from "react";
 import type { Post } from "@/entities/user/type/Post";
+import { SaveButton } from "@/features/chat";
 
 export default function DashboardPage() {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -24,7 +25,6 @@ export default function DashboardPage() {
       console.error("fetchUser error:", err);
     }
   };
-
   //  جلب البوستات
   const fetchPosts = async () => {
     try {
@@ -77,6 +77,24 @@ export default function DashboardPage() {
       alert("حدث خطأ غير متوقع.");
     } finally {
       setPublishingId(null);
+    }
+  };
+
+  // دالة إلغاء الجدولة
+  const cancelSchedule = async (postId: string) => {
+    console.log("Cancelling schedule for postId:", postId);
+    try {
+      const res = await fetch(`/api/posts/${postId}/cancel-schedule`, {
+        method: "POST",
+      });
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.error || "فشل إلغاء الجدولة");
+
+      alert("تم إلغاء الجدولة بنجاح");
+      fetchPosts(); // تحديث البوستات
+    } catch (err: any) {
+      alert("❌ " + err.message);
     }
   };
 
@@ -151,15 +169,49 @@ export default function DashboardPage() {
                 <p className="text-sm whitespace-pre-wrap">{post.content}</p>
 
                 <div className="flex items-center justify-between pt-2 text-xs">
-                  <span
-                    className={`px-2 py-1 rounded-full border ${
-                      post.status === "published"
-                        ? "bg-emerald-50 text-emerald-700 border-emerald-200"
-                        : "bg-yellow-50 text-yellow-700 border-yellow-200"
-                    }`}
-                  >
-                    {post.status}
-                  </span>
+                  <div className="flex items-center gap-2">
+                    <span
+                      className={`flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium border ${
+                        post.status === "published"
+                          ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                          : post.status === "scheduled"
+                          ? "bg-indigo-50 text-indigo-700 border-indigo-200"
+                          : "bg-yellow-50 text-yellow-700 border-yellow-200"
+                      }`}
+                    >
+                      {post.status === "published" && "✅"}
+                      {post.status === "scheduled" && "⏰"}
+                      {post.status === "draft" && "📝"}
+                      {post.status === "published"
+                        ? "Published"
+                        : post.status === "scheduled"
+                        ? "Scheduled"
+                        : "Draft"}
+                    </span>
+
+                    {post.status === "draft" && (
+                      <SaveButton
+                        message={{ id: post.id, content: post.content }}
+                        prompt={post.prompt}
+                        buttonText="جدولة" // يظهر نص "جدولة"
+                      />
+                    )}
+
+                    {/* عرض تاريخ الجدولة */}
+                    {post.status === "scheduled" && post.scheduled_at && (
+                      <>
+                        <span className="text-xs text-gray-500">
+                          {new Date(post.scheduled_at).toLocaleString("en-GB")}
+                        </span>
+                        <button
+                          onClick={() => cancelSchedule(post.id)}
+                          className="text-xs text-red-600 hover:underline ml-2"
+                        >
+                          إلغاء الجدولة
+                        </button>
+                      </>
+                    )}
+                  </div>
 
                   <div className="space-x-2">
                     {/* 🔹 زر نشر على فيسبوك يظهر فقط لو الحساب مربوط */}

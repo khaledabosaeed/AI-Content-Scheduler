@@ -16,6 +16,7 @@ export function useSaveAsPost() {
         content,
         platform = "twitter",
         status = "draft",
+        scheduledAt,
     }: SaveAsPostParams) => {
         setIsSaving(true);
         setError(null);
@@ -24,9 +25,10 @@ export function useSaveAsPost() {
             const res = await fetch("/api/posts/from-chat", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ prompt, content, platform, status }),
+                body: JSON.stringify({ prompt, content, platform, status, scheduledAt }),
             });
-
+         
+            console.log(res);
             const data = await res.json();
 
             if (!res.ok) {
