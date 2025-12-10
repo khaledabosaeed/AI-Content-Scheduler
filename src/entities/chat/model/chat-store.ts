@@ -23,6 +23,7 @@ export const useChatStore = create<ChatState>()(
 
       //========== Setters بسيطة ==========//
       setMessages: (messages: Message[]) => set({ messages }),
+
       setChatHistory: (sessions: ChatSession[]) =>
         set({ chatHistory: sessions }),
 
@@ -59,15 +60,8 @@ export const useChatStore = create<ChatState>()(
           messages: [...state.messages, newMessage],
         });
 
-        // لو مفيش سيشن حالية نعمل واحدة جديدة
-        if (!state.currentSessionId) {
-          get().createNewSession();
-        }
-
-        // نحدِّث عنوان السيشن
-        const title =
-          content.length > 30 ? content.slice(0, 30) + "..." : content;
-        get().updateCurrentSession(title);
+        // ❗ ما منلعبش في السيشن هنا
+        // السيشن تتسجل فعليًا في Supabase من خلال saveCurrentSession
       },
 
       appendAssistantMessage: (chunk: string) => {
@@ -97,21 +91,17 @@ export const useChatStore = create<ChatState>()(
         set({ messages: [], currentSessionId: null });
       },
 
-      createNewSession: () => {
-        const sessionId = crypto.randomUUID();
-        const newSession: ChatSession = {
-          id: sessionId,
-          title: "New Chat",
-          lastMessage: "",
-          updatedAt: new Date().toISOString(),
-        };
+      //========== إدارة السيشن ==========//
 
-        set((state) => ({
-          currentSessionId: sessionId,
-          chatHistory: [newSession, ...state.chatHistory],
-        }));
+      createNewSession: () => {
+        set({
+          currentSessionId: null,
+          messages: [],
+          error: null,
+        });
       },
 
+      // حالياً مش أساسي، بس موجود لو حبيتي تعدلي العنوان محلياً
       updateCurrentSession: (title: string) => {
         const state = get();
         if (!state.currentSessionId) return;
@@ -130,7 +120,8 @@ export const useChatStore = create<ChatState>()(
         });
       },
 
-      // load the chat from the chat session (GET /api/chat/get-chat)
+      //========== تحميل محادثة من Supabase ==========//
+      // GET /api/chat/get-chat?sessionId=...
       loadSession: async (sessionId: string) => {
         set({
           isLoadingSession: true,
@@ -148,9 +139,19 @@ export const useChatStore = create<ChatState>()(
           }
 
           const data = await res.json();
-          // نتوقع { messages: Message[] }
+
+          //  نضمن إن كل رسالة ليها id مش null
+          const messages: Message[] = (data.messages ?? []).map(
+            (m: any, index: number) => ({
+              id: m.id ?? `msg-${data.sessionId}-${index}`,
+              role: m.role,
+              content: m.content,
+              createdAt: m.createdAt ?? new Date().toISOString(),
+            })
+          );
+
           set({
-            messages: data.messages ?? [],
+            messages,
             isLoadingSession: false,
           });
         } catch (err: any) {
@@ -162,31 +163,57 @@ export const useChatStore = create<ChatState>()(
         }
       },
 
-      // save to /api/chat/add-chat
+      //========== حفظ المحادثة في Supabase ==========//
+      // POST /api/chat/add-chat
       saveCurrentSession: async () => {
         const state = get();
         const { currentSessionId, messages, chatHistory } = state;
 
         if (messages.length === 0) return;
 
-        const lastMessage = messages[messages.length - 1].content;
+        // -------- 1) نحسب lastMessage عادي --------
+        const lastUserMessage = [...messages]
+          .reverse()
+          .find((m) => m.role === "user");
 
-        const currentSession = chatHistory.find(
-          (s) => s.id === currentSessionId
-        );
+        const lastAssistantMessage = [...messages]
+          .reverse()
+          .find((m) => m.role === "assistant");
 
-        const title =
-          currentSession?.title ??
-          (lastMessage.length > 30
-            ? lastMessage.slice(0, 30) + "..."
-            : lastMessage);
+        const lastMessage =
+          lastAssistantMessage?.content ??
+          lastUserMessage?.content ??
+          messages[messages.length - 1].content;
+
+        // -------- 2) نحدد الـ title --------
+        let title: string;
+
+        const existingSession = currentSessionId
+          ? chatHistory.find((s) => s.id === currentSessionId)
+          : null;
+
+        if (!currentSessionId || !existingSession) {
+          // ⭐ أول مرة نحفظ السيشن → نستخدم أول رسالة user كعنوان
+          const firstUserMessage =
+            messages.find((m) => m.role === "user") ?? messages[0];
+
+          const titleSource = firstUserMessage.content;
+
+          title =
+            titleSource.length > 30
+              ? titleSource.slice(0, 30) + "..."
+              : titleSource;
+        } else {
+          // ⭐ سيشن موجودة بالفعل → حافظ على نفس العنوان، لا تغيّره
+          title = existingSession.title;
+        }
 
         try {
           const res = await fetch("/api/chat/add-chat", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
-              sessionId: currentSessionId, // ممكن يكون null أول مرة
+              sessionId: currentSessionId, // null أول مرة → INSERT، بعدين → UPDATE
               title,
               lastMessage,
               messages,
@@ -198,39 +225,54 @@ export const useChatStore = create<ChatState>()(
           }
 
           const data = await res.json();
-          // نتوقع { id, title, lastMessage, updatedAt }
 
-          if (!currentSessionId) {
-            // سيشن جديدة
-            const newSession: ChatSession = {
-              id: data.id,
-              title: data.title,
-              lastMessage: data.lastMessage,
-              updatedAt: data.updatedAt,
-            };
+          const newSession: ChatSession = {
+            id: data.id,
+            title: data.title,
+            lastMessage: data.lastMessage,
+            updatedAt: data.updatedAt,
+          };
 
-            set((state) => ({
-              currentSessionId: data.id,
-              chatHistory: [newSession, ...state.chatHistory],
-            }));
-          } else {
-            // سيشن موجودة
-            set((state) => ({
-              chatHistory: state.chatHistory.map((s) =>
-                s.id === currentSessionId
-                  ? {
-                      ...s,
-                      title: data.title,
-                      lastMessage: data.lastMessage,
-                      updatedAt: data.updatedAt,
-                    }
-                  : s
-              ),
-            }));
-          }
+          set((state) => ({
+            currentSessionId: data.id,
+            chatHistory: [
+              newSession,
+              ...state.chatHistory.filter((s) => s.id !== data.id),
+            ],
+          }));
         } catch (err: any) {
           console.error("saveCurrentSession error:", err);
           set({ error: err?.message ?? "Failed to save chat session" });
+        }
+      },
+
+      //========== تحميل الهستوري من Supabase ==========//
+      // GET /api/chat/history
+      fetchChatHistory: async () => {
+        set({ isLoadingHistory: true, error: null });
+
+        try {
+          const res = await fetch("/api/chat/history");
+
+          if (!res.ok) throw new Error("Failed to load history");
+
+          const data = await res.json();
+          console.log("history data:", data);
+
+          const safeSessions = (data.sessions || []).filter(
+            (s: any) => s.id !== null && s.id !== undefined
+          );
+
+          set({
+            chatHistory: safeSessions,
+            isLoadingHistory: false,
+          });
+        } catch (err: any) {
+          console.error("History error:", err);
+          set({
+            isLoadingHistory: false,
+            error: err?.message ?? "Failed to load history",
+          });
         }
       },
 
@@ -249,8 +291,6 @@ export const useChatStore = create<ChatState>()(
       name: "chat-storage",
       partialize: (state) => ({
         chatHistory: state.chatHistory,
-        // تقدري تضيفي currentSessionId لو حابة تحفظي آخر سيشن
-        // currentSessionId: state.currentSessionId,
       }),
     }
   )

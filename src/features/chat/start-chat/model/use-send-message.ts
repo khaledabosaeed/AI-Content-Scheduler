@@ -2,95 +2,85 @@ import { useChatStore } from "@/entities/chat";
 import { useRef } from "react";
 
 export function useSendMessage() {
+  const {
+    addUserMessage,
+    appendAssistantMessage,
+    setIsSending,
+    setError,
+    setController,
+    cancelOngoingRequest,
+    saveCurrentSession,
+  } = useChatStore();
 
-    const { addUserMessage, appendAssistantMessage, setIsSending, setError, setController, cancelOngoingRequest } =
-        useChatStore();
+  // to control the request and cancel it
+  const controllerRef = useRef<AbortController | null>(null);
 
-    // to contoll in the requset and cancel it 
-    const controllerRef = useRef<AbortController | null>(null);
+  const sendMessage = async (content: string) => {
+    if (!content.trim()) return;
 
-    const sendMessage = async (content: string) => {
+    setError(null);
 
-        const chats = async () => {
-            const data = await fetch("/api/chat/get-chat",{
-                method: "GET",
-            });
-            const res = await data.json();
-            console.log(res, "thisx is chats");
-            return res;
-        };
+    addUserMessage(content);
 
-        chats();
+    setIsSending(true);
 
+    // Create empty assistant message for skeleton loading
+    appendAssistantMessage("");
 
-        if (!content.trim()) return;
+    const controller = new AbortController();
+    setController(controller);
+    controllerRef.current = controller;
 
-        setError(null);
+    try {
+      const res = await fetch("/api/chat/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: content }),
+        signal: controller.signal,
+      });
 
-        addUserMessage(content);
+      if (!res.ok) {
+        const data = await res.json().catch(() => null);
+        throw new Error(data?.error || "Failed to send message");
+      }
 
-        setIsSending(true);
+      // 2️⃣ start stream
+      const reader = res.body!.getReader();
+      const decoder = new TextDecoder();
 
-        // Create empty assistant message for skeleton loading
+      while (true) {
+        const { value, done } = await reader.read();
+        if (done) break;
 
-        appendAssistantMessage("");
+        const chunk = decoder.decode(value);
 
-        const controller = new AbortController();
-
-        setController(controller);
-
-        try {
-            const res = await fetch("/api/chat/send", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ message: content }),
-                signal: controller.signal,
-            });
-
-            if (!res.ok) {
-                const data = await res.json();
-                throw new Error(data.error || "Failed to send message");
-            }
-
-            // start stream
-            const reader = res.body!.getReader();
-
-            const decoder = new TextDecoder();
-
-            while (true) {
-                const { value, done } = await reader.read();
-                if (done) break;
-
-                const chunk = decoder.decode(value);
-
-                // Split chunk into smaller pieces for smoother animation
-                // This creates the "typing" effect
-                for (let i = 0; i < chunk.length; i += 2) {
-                    const miniChunk = chunk.slice(i, i + 2);
-                    appendAssistantMessage(miniChunk);
-                    // Small delay to create typing effect
-                    // Adjust this value: smaller = faster, larger = slower
-                    await new Promise(resolve => setTimeout(resolve, 20));
-                }
-            }
-
-            setController(null);
-        } catch (err: any) {
-            if (err.name === "AbortError") {
-                return;
-            }
-
-            setError(err.message);
-
-            console.error("Send Message Error:", err);
-        } finally {
-
-            setIsSending(false);
-
-            controllerRef.current = null;
+        // Split chunk into smaller pieces for smoother animation
+        for (let i = 0; i < chunk.length; i += 2) {
+          const miniChunk = chunk.slice(i, i + 2);
+          appendAssistantMessage(miniChunk);
+          await new Promise((resolve) => setTimeout(resolve, 20));
         }
-    };
+      }
+      console.log("✅ stream finished, saving session...");
 
+      if (saveCurrentSession) {
+        await saveCurrentSession();
+      }
+      console.log("✅ session saved to DB + store");
 
-    return { sendMessage, cancelOngoingRequest };
+      setController(null);
+      controllerRef.current = null;
+    } catch (err: any) {
+      if (err.name === "AbortError") {
+        return;
+      }
+
+      console.error("Send Message Error:", err);
+      setError(err.message || "Something went wrong");
+    } finally {
+      setIsSending(false);
+    }
+  };
+
+  return { sendMessage, cancelOngoingRequest };
 }
