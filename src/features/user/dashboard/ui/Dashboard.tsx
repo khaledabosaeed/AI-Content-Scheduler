@@ -16,7 +16,7 @@ export default function DashboardPage() {
   //  جلب حالة المستخدم (وربط فيسبوك)
   const fetchUser = async () => {
     try {
-      const res = await fetch("/api/auth/me");
+      const res = await fetch("/api/facebook/me");
       if (!res.ok) return;
       const data = await res.json();
       setHasFacebook(!!data.hasFacebook);

@@ -1,7 +1,7 @@
 /**
  * Get Current User API Route (Session Restore)
  * مسؤول عن استعادة جلسة المستخدم
- * 
+ *
  * الخطوات:
  * 1. قراءة Cookie الجلسة تلقائيًا
  * 2. استخراج JWT من الكوكي
@@ -9,7 +9,7 @@
  * 4. إذا كان صحيح وغير منتهي → استخراج user_id
  * 5. جلب بيانات المستخدم من قاعدة البيانات
  * 6. إرجاع بيانات المستخدم
- * 
+ *
  * استخدام:
  * - يستدعى عند فتح الموقع لاستعادة الجلسة
  * - يستدعى من Client Components للتحقق من الجلسة
@@ -56,34 +56,7 @@ export async function GET(req: NextRequest) {
       );
     }
 
-    // 4. قراءة fb_token من الكوكي ومعرفة هل في ربط ولا لأ
-    const fbToken = req.cookies.get("fb_token")?.value;
-    const hasFacebook = !!fbToken;
-
-    let facebookProfile: any = null;
-
-    if (fbToken) {
-      try {
-        const fbRes = await fetch(
-          `https://graph.facebook.com/me?fields=id,name,picture&access_token=${fbToken}`
-        );
-
-        if (fbRes.ok) {
-          const fbData = await fbRes.json();
-          facebookProfile = {
-            id: fbData.id,
-            name: fbData.name,
-            picture: fbData.picture?.data?.url ?? null,
-          };
-        } else {
-          console.warn("Facebook token invalid or expired");
-        }
-      } catch (e) {
-        console.error("Error fetching Facebook profile:", e);
-      }
-    }
-
-    // 5. إرجاع بيانات المستخدم + حالة فيسبوك
+    // 4. إرجاع بيانات المستخدم فقط
     return NextResponse.json(
       {
         user: {
@@ -92,8 +65,6 @@ export async function GET(req: NextRequest) {
           name: user.name,
           createdAt: user.created_at,
         },
-        hasFacebook,
-        facebook: facebookProfile,
       },
       { status: 200 }
     );
