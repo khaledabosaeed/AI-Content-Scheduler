@@ -66,7 +66,7 @@ export default {
 ,
     		fontFamily: {
     			sans: [
-    				'Roboto',
+    				'cursive',
     				'Arial',
     				'sans-serif'
     			]

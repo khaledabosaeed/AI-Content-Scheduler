@@ -26,16 +26,19 @@ const features = [
 
 const FeaturesSection: FC = () => (
   <motion.section
-    id="features"
-    className="relative py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 lg:px-8 transition-colors duration-500"
-    style={{
-      backgroundColor: "hsl(var(--background))",
-      color: "hsl(var(--foreground))",
-    }}
-    initial="hidden"
-    whileInView="show"
-    viewport={{ once: true, amount: 0.2 }}
-    variants={container}
+      id="features"
+  className="relative 
+        min-h-screen           
+        w-full 
+        flex flex-col 
+        justify-center 
+        items-center 
+        px-4 sm:px-6 lg:px-8"
+  style={{ backgroundColor: "hsl(var(--background))", color: "hsl(var(--foreground))" }}
+  initial="hidden"
+  whileInView="show"
+  viewport={{ once: true, amount: 0.2 }}
+  variants={container}
     aria-labelledby="features-heading"
   >
     <div className="max-w-6xl mx-auto text-center mb-12 sm:mb-14 md:mb-16 lg:mb-20">

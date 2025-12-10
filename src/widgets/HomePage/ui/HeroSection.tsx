@@ -9,11 +9,12 @@ import Link from "next/link";
 
 const HeroSection: FC = () => (
   <motion.section
-    initial="hidden"
-    animate="show"
-    variants={container}
-    style={{ backgroundColor: "hsl(var(--accent))" }}
-    className="relative py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 lg:px-8 min-h-screen flex items-center justify-center text-foreground transition-colors duration-500"
+      id="hero"
+     initial="hidden"
+  animate="show"
+  variants={container}
+  style={{ backgroundColor: "hsl(var(--accent))" }}
+  className="relative py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-8 min-h-screen flex items-center justify-center text-foreground transition-colors duration-500"
   >
     <div className="container mx-auto relative z-10">
       <div className="grid grid-cols-1 md:grid-cols-2 gap-8 sm:gap-10 md:gap-12 lg:gap-16 items-center">
@@ -37,7 +38,7 @@ const HeroSection: FC = () => (
             }}
           >
             <Image
-              src="/Chat bot-rafiki (2).png"
+              src="/Chat bot-rafiki (3).png"
               alt="AI Content Illustration"
               fill
               className="object-contain drop-shadow-2xl"
@@ -82,7 +83,7 @@ const HeroSection: FC = () => (
               <Button
                 variant="default"
                 size="lg"
-                className="w-full sm:w-auto bg-primary text-primary-foreground hover:opacity-90 font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+                className="w-full sm:w-auto bg-primary border-primary-foreground border-2 border-solid text-primary-foreground hover:opacity-90 font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
               >
                 Get Started
               </Button>
