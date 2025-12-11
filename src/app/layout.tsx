@@ -6,6 +6,7 @@ import { userKeys } from "@/entities/user/state/keys";
 import { fetchUserData } from "@/entities/user/state/queries";
 import { ThemeProvider } from "./_providers/theme-provider";
 import { Suspense } from "react";
+import { getUserServer } from "@/shared/api/getUserclient";
 
 export const metadata: Metadata = {
   title: "AI Content Scheduler",
@@ -19,14 +20,14 @@ async function PrefetchUserData() {
     // 🔹 prefetch بيانات اليوزر من السيرفر قبل العرض
     await queryClient.prefetchQuery({
       queryKey: userKeys.me(),
-      queryFn: fetchUserData,
+      queryFn: getUserServer,
     });
 
     // 🔹 تحويل الكاش إلى JSON يمكن إرساله للعميل
     const dehydratedState = dehydrate(queryClient);
     console.log("✅ User data prefetched successfully");
-    console.log(dehydratedState, "this is dehydratedState");
-
+    console.log(JSON.stringify(dehydratedState, null, 2), "this is dehydratedState");
+    console.log("📊 Query State:", dehydratedState.queries[0]?.state);
     return dehydratedState;
   } catch (error) {
     console.error("❌ Failed to prefetch user data:", error);
