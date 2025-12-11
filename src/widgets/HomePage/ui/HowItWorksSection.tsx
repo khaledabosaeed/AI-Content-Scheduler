@@ -3,7 +3,14 @@
 import { FC } from "react";
 import { motion } from "framer-motion";
 import { container, item } from "@/shared/components/lib/animations";
-import { User, MessageCircle, CalendarCheck, Link2, Globe, Send } from "lucide-react";
+import {
+  User,
+  MessageCircle,
+  CalendarCheck,
+  Link2,
+  Globe,
+  Send,
+} from "lucide-react";
 import { Instagram, Facebook, Twitter, Linkedin } from "lucide-react";
 
 const steps = [
@@ -15,17 +22,18 @@ const steps = [
   { icon: Globe, title: "Publish" },
 ];
 
-const platforms = [
-  Instagram,
-  Facebook,
-  Twitter,
-  Linkedin,
-];
+const platforms = [Instagram, Facebook, Twitter, Linkedin];
 
 const FunStepsSection: FC = () => (
   <motion.section
     id="fun-steps"
-    className="relative py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 lg:px-8 min-h-screen flex flex-col justify-center items-center overflow-hidden"
+    className="relative 
+        min-h-screen           
+        w-full 
+        flex flex-col 
+        justify-center 
+        items-center 
+        px-4 sm:px-6 lg:px-8"
     style={{
       backgroundColor: "hsl(var(--background))",
       color: "hsl(var(--foreground))",
@@ -47,7 +55,10 @@ const FunStepsSection: FC = () => (
       </motion.h2>
       <motion.p
         variants={item}
-        style={{ color: "hsl(var(--text-secondary))", transition: "color 0.3s" }}
+        style={{
+          color: "hsl(var(--text-secondary))",
+          transition: "color 0.3s",
+        }}
         className="text-base sm:text-lg md:text-xl mx-auto max-w-3xl leading-relaxed"
       >
         Follow the simple steps to schedule your content like a pro!
@@ -74,12 +85,21 @@ const FunStepsSection: FC = () => (
                 }}
                 whileHover={{ rotate: 5 }}
               >
-                <Icon className="w-6 h-6" style={{ color: "hsl(var(--primary-foreground))", transition: "color 0.3s" }} />
+                <Icon
+                  className="w-6 h-6"
+                  style={{
+                    color: "hsl(var(--primary-foreground))",
+                    transition: "color 0.3s",
+                  }}
+                />
               </motion.div>
 
               <p
                 className="font-semibold text-xs sm:text-sm md:text-base leading-tight"
-                style={{ color: "hsl(var(--text-primary))", transition: "color 0.3s" }}
+                style={{
+                  color: "hsl(var(--text-primary))",
+                  transition: "color 0.3s",
+                }}
               >
                 {step.title}
               </p>

@@ -49,17 +49,19 @@ const plans = [
 
 const PricingSection: FC = () => (
   <motion.section
-    id="pricing"
-    className="relative py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 lg:px-8"
-    style={{
-      backgroundColor: "hsl(var(--background))",
-      color: "hsl(var(--foreground))",
-      transition: "background-color 0.3s, color 0.3s",
-    }}
-    initial="hidden"
-    whileInView="show"
-    viewport={{ once: true }}
-    variants={container}
+      id="pricing"
+  className="relative 
+        min-h-screen           
+        w-full 
+        flex flex-col 
+        justify-center 
+        items-center 
+        px-4 sm:px-6 lg:px-8"
+  style={{ backgroundColor: "hsl(var(--background))", color: "hsl(var(--foreground))" }}
+  initial="hidden"
+  animate="show"
+  exit="exit"
+  variants={container}
   >
     <div className="max-w-6xl mx-auto text-center mb-12 sm:mb-14 md:mb-16 lg:mb-20">
       <motion.h2

@@ -13,6 +13,7 @@ export async function fetchUserData(): Promise<UserData> {
   const response = await api.get<UserData>("/auth/me", {
     credentials: "include", // مهم جدًا لإرسال الكوكيز
   });
+  
   console.log("Fetched user data:", response);
   return response;
 }

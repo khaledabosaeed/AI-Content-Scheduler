@@ -34,8 +34,9 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "src/shared/api/api-client.jsx",
-    ".next/dev/types/**/*.ts"
-  ],
+    ".next/dev/types/**/*.ts",
+    "src/shared/libs/bullmq/queue.js", "src/shared/libs/bullmq/worker.js" 
+ ],
   "exclude": [
     "node_modules"
   ]

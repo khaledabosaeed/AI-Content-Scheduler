@@ -34,17 +34,19 @@ const testimonials = [
 
 const TestimonialsSection: FC = () => (
   <motion.section
-    id="testimonials"
-    className="relative py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 lg:px-8 w-full"
-    style={{
-      backgroundColor: "hsl(var(--background))",
-      color: "hsl(var(--foreground))",
-      transition: "background-color 0.3s, color 0.3s",
-    }}
-    initial="hidden"
-    whileInView="show"
-    viewport={{ once: true }}
-    variants={container}
+      id="testimonials"
+  className="relative 
+        min-h-screen           
+        w-full 
+        flex flex-col 
+        justify-center 
+        items-center 
+        px-4 sm:px-6 lg:px-8"
+  style={{ backgroundColor: "hsl(var(--background))", color: "hsl(var(--foreground))" }}
+  initial="hidden"
+  whileInView="show"
+  viewport={{ once: true }}
+  variants={container}
   >
     {/* Section Title */}
     <div className="max-w-6xl mx-auto text-center mb-12 sm:mb-14 md:mb-16 lg:mb-20">

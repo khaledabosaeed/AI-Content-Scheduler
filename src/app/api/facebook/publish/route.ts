@@ -1,155 +1,99 @@
-// app/api/facebook/publish/route.ts
-import { NextRequest, NextResponse } from "next/server";
+// app/api/facebook/publishAll/route.ts
+import { NextResponse } from "next/server";
 import { supabaseServer } from "@/shared/libs/suapabase/supabaseServer";
-import { getSessionToken } from "@/shared/libs/auth/cookies";
-import { verifyToken } from "@/shared/libs/auth/jwt";
 
-export async function POST(req: NextRequest) {
+const SECRET_KEY = process.env.PUBLISH_SECRET; // set this in .env
+
+export async function POST(req: Request) {
   try {
-    // user access token اللي خزّنّاه في الكوكي بعد اللوجين
-    const userToken = req.cookies.get("fb_token")?.value;
-
-    if (!userToken) {
+    //  Check for secret header
+    const secret = req.headers.get("x-publish-secret");
+    if (!secret || secret !== SECRET_KEY) {
       return NextResponse.json(
-        { error: { message: "لا يوجد Facebook access token في الكوكي" } },
+        { error: "Unauthorized - invalid secret" },
         { status: 401 }
       );
     }
 
-    // تحقق من جلسة المستخدم
-    const sessionToken = getSessionToken(req);
-    if (!sessionToken) {
-      return NextResponse.json(
-        { error: { message: "غير مصرح - لا توجد جلسة" } },
-        { status: 401 }
-      );
-    }
-
-    // تفك تشفير الـ JWT وترجع الـ payload
-    const payload = verifyToken(sessionToken);
-    if (!payload) {
-      return NextResponse.json(
-        { error: { message: "جلسة غير صالحة أو منتهية" } },
-        { status: 401 }
-      );
-    }
-
-    // اقرأ postId من body
-    const body = await req.json();
-    const { postId } = body;
-
-    if (!postId) {
-      return NextResponse.json(
-        { error: { message: "postId مفقود" } },
-        { status: 400 }
-      );
-    }
-
-    // جب البوست من قاعدة البيانات
-    const { data: post, error: postError } = await supabaseServer
+    // Fetch all scheduled posts <= now
+    const { data: posts, error } = await supabaseServer
       .from("posts")
-      .select("id, content, platform, status, user_id")
-      .eq("id", postId)
-      .eq("user_id", payload.userId) // تأكد إنه بوست هذا المستخدم
-      .single();
-
-    if (postError || !post) {
-      return NextResponse.json(
-        { error: { message: "البوست غير موجود" } },
-        { status: 404 }
-      );
+      .select(
+        `
+        id,
+        content,
+        platform,
+        user_id,
+        status,
+        scheduled_at,
+        users(facebook_access_token)
+      `
+      )
+      .eq("status", "scheduled")
+      .lte("scheduled_at", new Date().toISOString());
+ 
+    if (error) throw error;
+    if (!posts || posts.length === 0) {
+      return NextResponse.json({
+        message: "No scheduled posts to publish now",
+      });
     }
 
-    // جب صفحات المستخدم من /me/accounts باستخدام user token
-    const pagesRes = await fetch(
-      `https://graph.facebook.com/me/accounts?access_token=${userToken}`
-    );
-    const pagesJson = await pagesRes.json();
+    // Loop through posts
+    for (const post of posts) {
 
-    if (!pagesRes.ok) {
-      return NextResponse.json(
-        {
-          error: {
-            message: "فشل في جلب الصفحات من فيسبوك",
-            facebookError: pagesJson,
-          },
-        },
-        { status: 400 }
-      );
+      const fbToken = post?.users?.facebook_access_token;
+      if (!fbToken) {
+        console.warn(`User ${post.user_id} does not have Facebook token`);
+        continue;
+      }
+
+      try {
+        const pageRes = await fetch(
+          `https://graph.facebook.com/me/accounts?access_token=${fbToken}`
+        );
+        const pagesJson = await pageRes.json();
+        const page = pagesJson.data[0];
+        if (!page) continue;
+
+        const graphRes = await fetch(`https://graph.facebook.com/${page.id}/feed`, {
+          method: "POST",
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          body: new URLSearchParams({
+            message: post.content,
+            access_token: page.access_token,
+          }),
+        });
+        const graphData = await graphRes.json();
+
+        if (!graphRes.ok) {
+          console.error(`Failed to publish post ${post.id}:`, graphData);
+          continue;
+        }
+
+        // Update post after publishing
+        await supabaseServer
+          .from("posts")
+          .update({
+            status: "published",
+            published_at: new Date().toISOString(),
+            platform_post_id: graphData.id,
+            platform_post_url: graphData.url,
+          })
+          .eq("id", post.id);
+
+        console.log(`Post ${post.id} published successfully`);
+      } catch (err) {
+        console.error(`Error publishing post ${post.id}:`, err);
+      }
     }
 
-    const pages = pagesJson.data || [];
-
-    if (pages.length === 0) {
-      return NextResponse.json(
-        { error: { message: "لا يوجد أي صفحة مرتبطة بهذا الحساب" } },
-        { status: 400 }
-      );
-    }
-
-    // اختيار أول صفحة من الصفحات
-    const page = pages[0];
-
-    if (!page) {
-      return NextResponse.json(
-        { error: { message: "تعذر اختيار الصفحة للنشر" } },
-        { status: 400 }
-      );
-    }
-
-    const pageId = page.id;
-    const pageAccessToken = page.access_token;
-
-    // النشر على صفحة فيسبوك باستخدام page access token
-    const graphUrl = `https://graph.facebook.com/${pageId}/feed`;
-
-    const graphRes = await fetch(graphUrl, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
-      body: new URLSearchParams({
-        message: post.content,
-        access_token: pageAccessToken,
-      }),
+    return NextResponse.json({
+      success: true,
+      message: "All scheduled posts processed",
     });
-
-    const graphData = await graphRes.json();
-
-    if (!graphRes.ok) {
-      console.error("Facebook publish error:", graphData);
-      return NextResponse.json(
-        {
-          error: {
-            message: "فشل النشر على فيسبوك",
-            facebookError: graphData,
-          },
-        },
-        { status: 400 }
-      );
-    }
-    //ننحدث حالة البوست في الداتا بيز
-    await supabaseServer
-      .from("posts")
-      .update({
-        status: "published", // تحدثت ال status
-        published_at: new Date().toISOString(),
-        facebook_post_id: graphData.id,
-      })
-      .eq("id", post.id);
-
-    return NextResponse.json(
-      {
-        success: true,
-        facebookPostId: graphData.id,
-      },
-      { status: 200 }
-    );
-  } catch (err) {
-    console.error("FB PUBLISH ERROR:", err);
-    return NextResponse.json(
-      { error: { message: "حدث خطأ أثناء نشر البوست" } },
-      { status: 500 }
-    );
+  } catch (err: any) {
+    console.error("Error in publishAll route:", err);
+    return NextResponse.json({ error: err.message }, { status: 500 });
   }
 }

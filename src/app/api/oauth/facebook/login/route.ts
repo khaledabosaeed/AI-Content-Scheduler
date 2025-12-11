@@ -23,6 +23,6 @@ export async function GET() {
     `&scope=${encodeURIComponent(scopes)}` +
     `&response_type=code` +
     `&auth_type=rerequest`;
-
+console.log("Redirecting to Facebook OAuth URL:", fbLoginUrl);
   return NextResponse.redirect(fbLoginUrl);
 }
