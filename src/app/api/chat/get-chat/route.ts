@@ -3,34 +3,57 @@ import { supabaseServer } from "@/shared/libs/suapabase/supabaseServer";
 import { NextRequest, NextResponse } from "next/server";
 
 /****
- * 
- * NOW THIS ROUTE TAKE THE GET THE CHATS FROM THE DATABASE
- * 
- * DEPEND ON THE USER ID FROM THE SESSION COOKIES
- * 
+ *
+ * GET /api/chat/get-chat?sessionId=...
+ * يرجّع الرسائل المخزّنة في chat_content لسيشن واحدة
+ *
  */
 
-export const GET = (req: NextRequest) => {
+export const GET = (req: NextRequest) =>
+  withAuth(req, async (req, user) => {
+    try {
+      const { searchParams } = new URL(req.url);
+      const sessionId = searchParams.get("sessionId");
 
-    return withAuth(req, async (req, user) => {
+      if (!sessionId) {
+        return NextResponse.json(
+          { error: "sessionId is required" },
+          { status: 400 }
+        );
+      }
 
-        const userId = parseInt(user.userId);
-        console.log(userId, "this is user id");
+      const userId = String(user.userId);
+      console.log(userId, "this is user id in get-chat");
 
-        // get the chats from the database
-        
-        const { data, error } = await
-            supabaseServer.from
-                ("chat_sessions").
-                select("*").
-                eq("user_id", userId).
-                order("created_at", { ascending: false });
+      const { data, error } = await supabaseServer
+        .from("chat_sessions")
+        .select("*")
+        .eq("id", sessionId)
+        .eq("user_id", userId)
+        .single();
 
-        if (error) {
-            return NextResponse.json({ error: error.message }, { status: 500 })
-        }
-        console.log(data, "this is data");
+      if (error || !data) {
+        console.error("Supabase get-chat error:", error);
+        return NextResponse.json(
+          { error: "Session not found" },
+          { status: 404 }
+        );
+      }
 
-        return NextResponse.json({ data })
-    })
-}
+      const messages = (data.chat_content as any[]) ?? [];
+
+      return NextResponse.json(
+        {
+          sessionId: data.id,
+          messages,
+        },
+        { status: 200 }
+      );
+    } catch (err: any) {
+      console.error("get-chat route error:", err);
+      return NextResponse.json(
+        { error: "Internal server error" },
+        { status: 500 }
+      );
+    }
+  });

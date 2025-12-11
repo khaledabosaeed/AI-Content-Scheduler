@@ -2,44 +2,105 @@ import { withAuth } from "@/shared/libs/auth/auth-middleware";
 import { supabaseServer } from "@/shared/libs/suapabase/supabaseServer";
 import { NextRequest, NextResponse } from "next/server";
 
+type MessageBody = {
+  id: string;
+  role: "user" | "assistant";
+  content: string;
+  createdAt: string;
+};
 
-export const POST = async (req: NextRequest) => {
+type Body = {
+  sessionId: string | null;
+  title: string;
+  lastMessage: string;
+  messages: MessageBody[];
+};
 
-    const body = await req.json();
-    if (!body) {
-        return new NextResponse("Bad Request: No data provided", { status: 400 });
-    }
+export const POST = (req: NextRequest) =>
+  withAuth(req, async (req, user) => {
+    try {
+      const body = (await req.json()) as Body;
 
-    return withAuth(req, async (req, user) => {
+      if (!body || !body.messages || body.messages.length === 0) {
+        return NextResponse.json(
+          { error: "No data provided" },
+          { status: 400 }
+        );
+      }
 
-        const userId = parseInt(user.userId);
+      const { sessionId, title, lastMessage, messages } = body;
+      const userId = String(user.userId);
 
-        console.log(userId, "this is user id in add chat");
+      let finalSessionId = sessionId;
 
-        // add a new chat session to the database
+      if (!finalSessionId) {
+        const { data, error } = await supabaseServer
+          .from("chat_sessions")
+          .insert({
+            user_id: userId,
+            chat_title: title,
+            chat_content: messages,
+            last_message: lastMessage,
+          })
+          .select("id, chat_title, last_message, updated_at")
+          .single();
 
-        const { data, error } = await
-            supabaseServer.from("chat_sessions").insert({
-                user_id: userId,
-                chat_title: body.chat_title,
-                chat_content: body.chat_content,
-            });
-
-        console.log(data, "this is data after insert");
-
-        if (error) {
-            return NextResponse.json({ error: error.message }, { status: 500 })
+        if (error || !data) {
+          console.error("insert chat_sessions error:", error);
+          return NextResponse.json(
+            { error: "Failed to create chat session" },
+            { status: 500 }
+          );
         }
 
-        console.log(data, "this is data after insert");
+        finalSessionId = data.id;
 
-        return new Response(JSON.stringify({ message: "chat added successfully" }), {
-            status: 200,
-            headers: {
-                "Content-Type": "application/json"
-            }
+        return NextResponse.json(
+          {
+            id: data.id,
+            title: data.chat_title,
+            lastMessage: data.last_message,
+            updatedAt: data.updated_at,
+          },
+          { status: 200 }
+        );
+      }
+
+      const { data, error } = await supabaseServer
+        .from("chat_sessions")
+        .update({
+          chat_title: title,
+          chat_content: messages,
+          last_message: lastMessage,
+          updated_at: new Date().toISOString(),
         })
+        .eq("id", finalSessionId)
+        .eq("user_id", userId)
+        .select("id, chat_title, last_message, updated_at")
+        .single();
 
-    })
+      if (error || !data) {
+        console.error("update chat_sessions error:", error);
+        return NextResponse.json(
+          { error: "Failed to update chat session" },
+          { status: 500 }
+        );
+      }
 
-};
+      return NextResponse.json(
+        {
+          id: data.id,
+          title: data.chat_title,
+          lastMessage: data.last_message,
+          updatedAt: data.updated_at,
+        },
+        { status: 200 }
+      );
+    } catch (err) {
+      console.error("add-chat API error:", err);
+      return NextResponse.json(
+        { error: "Internal server error" },
+        { status: 500 }
+      );
+    }
+  });

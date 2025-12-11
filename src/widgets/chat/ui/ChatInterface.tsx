@@ -44,10 +44,34 @@ export default function ChatInterface() {
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {[
-                    { icon: "✍️", title: "Write Content", desc: "Get help writing professional content", prompt: "Help me write professional content for my social media" },
-                    { icon: "💡", title: "Creative Ideas", desc: "Get fresh and innovative ideas", prompt: "Give me creative ideas for engaging social media posts" },
-                    { icon: "📊", title: "Analysis", desc: "Analyze data and information", prompt: "Help me analyze my content strategy and engagement" },
-                    { icon: "🎯", title: "Strategy", desc: "Build an effective strategy", prompt: "Help me build an effective content marketing strategy" },
+                    {
+                      icon: "✍️",
+                      title: "Write Content",
+                      desc: "Get help writing professional content",
+                      prompt:
+                        "Help me write professional content for my social media",
+                    },
+                    {
+                      icon: "💡",
+                      title: "Creative Ideas",
+                      desc: "Get fresh and innovative ideas",
+                      prompt:
+                        "Give me creative ideas for engaging social media posts",
+                    },
+                    {
+                      icon: "📊",
+                      title: "Analysis",
+                      desc: "Analyze data and information",
+                      prompt:
+                        "Help me analyze my content strategy and engagement",
+                    },
+                    {
+                      icon: "🎯",
+                      title: "Strategy",
+                      desc: "Build an effective strategy",
+                      prompt:
+                        "Help me build an effective content marketing strategy",
+                    },
                   ].map((item, idx) => (
                     <button
                       key={idx}
@@ -55,9 +79,15 @@ export default function ChatInterface() {
                       disabled={isSending}
                       className="p-4 md:p-5 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-blue-400 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-950/20 transition-all duration-200 text-left group shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      <div className="text-2xl md:text-3xl mb-2 group-hover:scale-110 transition-transform">{item.icon}</div>
-                      <h3 className="font-semibold text-gray-900 dark:text-white text-sm">{item.title}</h3>
-                      <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">{item.desc}</p>
+                      <div className="text-2xl md:text-3xl mb-2 group-hover:scale-110 transition-transform">
+                        {item.icon}
+                      </div>
+                      <h3 className="font-semibold text-gray-900 dark:text-white text-sm">
+                        {item.title}
+                      </h3>
+                      <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                        {item.desc}
+                      </p>
                     </button>
                   ))}
                 </div>
@@ -65,13 +95,20 @@ export default function ChatInterface() {
             </div>
           ) : (
             <div className="w-full max-w-4xl space-y-4 pb-6">
-              {messages.map((msg, i) => (
-                <MessageBubble
-                  key={msg.id}
-                  message={msg}
-                  previousMessage={i > 0 ? messages[i - 1] : null}
-                />
-              ))}
+              {[...messages]
+                .sort(
+                  (a, b) =>
+                    new Date(a.createdAt).getTime() -
+                    new Date(b.createdAt).getTime()
+                )
+                .map((msg, i, sortedMessages) => (
+                  <MessageBubble
+                    key={msg.id}
+                    message={msg}
+                    previousMessage={i > 0 ? sortedMessages[i - 1] : null}
+                  />
+                ))}
+
               <div ref={chatEndRef} />
             </div>
           )}
