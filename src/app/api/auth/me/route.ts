@@ -56,39 +56,7 @@ export async function GET(req: NextRequest) {
       );
     }
 
-<<<<<<< HEAD
-    // 4. قراءة fb_token من الكوكي ومعرفة هل في ربط ولا لأ
-    const fbToken = req.cookies.get("fb_token")?.value;
-    const hasFacebook = !!fbToken;
-
-    let facebookProfile: any = null;
-
-    if (fbToken) {
-      try {
-        const fbRes = await fetch(
-          `https://graph.facebook.com/me?fields=id,name,picture&access_token=${fbToken}`
-        );
-        console.log("FB PROFILE RESPONSE STATUS:", fbRes);
-
-        if (fbRes.ok) {
-          const fbData = await fbRes.json();
-          facebookProfile = {
-            id: fbData.id,
-            name: fbData.name,
-            picture: fbData.picture?.data?.url ?? null,
-          };
-        } else {
-          console.warn("Facebook token invalid or expired");
-        }
-      } catch (e) {
-        console.error("Error fetching Facebook profile:", e);
-      }
-    }
-
-    // 5. إرجاع بيانات المستخدم + حالة فيسبوك
-=======
     // 4. إرجاع بيانات المستخدم فقط
->>>>>>> save_data_sidebar
     return NextResponse.json(
       {
         user: {
