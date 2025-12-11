@@ -88,10 +88,122 @@ I started by building the backend routes.
 ---
 
 # Roozé — write here your work
-*
-*
-*
-*
+
+# 🟦 User State Management — React Query + Validation + Hydration
+
+## ⿡ React Query — Why & What
+
+* *What:* إدارة *Server State* (Fetching / Caching / Refetching / Error & Loading states)
+* *Why:*
+
+  * تسهيل جلب وتحديث بيانات المستخدم
+  * Cache ذكي → تجربة مستخدم سريعة
+  * تنظيم الكود عبر *Custom Hooks*
+
+---
+
+## ⿡ User Data — Fetching
+
+* useQuery تجلب currentUser من Supabase
+* *queryKey:* "currentUser" → يضمن الكاش الصحيح
+* *queryFn:* الفنكشن اللي تنفذ طلب الـ API
+
+*Benefit:*
+
+* بيانات جاهزة لأي Component
+* لا حاجة fetch متكرر
+
+ts
+export function useCurrentUser() {
+  return useQuery({
+    queryKey: ['currentUser'],
+    queryFn: getCurrentUser,
+  });
+}
+
+
+---
+
+## ⿣ Mutations — Updating User
+
+* العمليات: Register / Login / Logout / Update
+* Hook: useMutation
+* بعد نجاح العملية → invalidateQueries(['currentUser']) → React Query تحدث الكاش تلقائيًا
+
+*Code Example:*
+
+ts
+const { mutate } = useMutation(loginUser, {
+  onSuccess: () => queryClient.invalidateQueries(['currentUser'])
+});
+
+
+---
+
+## ⿤ Validation — Yup
+
+* التأكد من صحة البيانات قبل إرسالها للسيرفر
+* مع React Hook Form → إظهار Errors مباشرة تحت الحقول
+* *Example Schema:*
+
+ts
+const loginSchema = Yup.object({
+  email: Yup.string().email().required(),
+  password: Yup.string().min(6).required(),
+});
+
+
+---
+
+## ⿥ Hydration — Data Injection
+
+* منع *Flicker* عند refresh
+* Steps:
+
+  1. prefetchQuery على Server Side
+  2. dehydrate البيانات → Client
+  3. HydrationBoundary → React Query rehydrates
+* Result: UI يظهر مباشرة باسم المستخدم
+
+---
+
+## ⿦ Full Flow — Summary
+
+mermaid
+flowchart TD
+A[App Start] --> B[QueryClientProvider mounted]
+B --> C[Hydrate dehydrated state]
+C --> D{User cached?}
+D -->|Yes| E[Render UI instantly]
+D -->|No| F[useQuery fetch from Supabase]
+F --> G{Success?}
+G -->|Yes| H[Cache user + update UI]
+G -->|No| I[Set currentUser=null]
+
+
+mermaid
+sequenceDiagram
+User->>UI: Open App
+UI->>ReactQuery: useQuery(['currentUser'])
+ReactQuery->>Supabase: fetch session/profile
+Supabase-->>ReactQuery: User data or null
+ReactQuery->>UI: Render final state
+Note over UI: User clicks Login
+UI->>ReactQuery: useMutation(loginUser)
+ReactQuery->>Supabase: POST /login
+Supabase-->>ReactQuery: Success
+ReactQuery->>ReactQuery: invalidateQueries(['currentUser'])
+ReactQuery->>UI: Update UI instantly
+
+
+## ⿧ Conclusion
+
+* *React Query:* إدارة حالة البيانات من السيرفر بسهولة
+* *Fetching:* useQuery + caching
+* *Mutations:* تحديث البيانات مع invalidate للكاش
+* *Validation:* Yup + React Hook Form → بيانات صحيحة قبل الإرسال
+* *Hydration:* منع Flicker → تجربة مستخدم ممتازة
+
 
 
 
@@ -130,9 +242,70 @@ The goal is to build and connect an AI chat model that:
 
 ### Write here how you did it, Y ROOZ:
 
--  
--  
--  
+# 🤖 AI Chat Integration & Post Saving — Summary
+
+## 📋 Overview
+
+This file summarizes the *AI chat integration and post saving workflow* in the AI Content Scheduler project.
+
+### 🎯 Objectives
+
+* ✅ Connect to Google Gemini AI (Free tier)* ✅ Handle chat messages in-memory using Zustand
+* ✅ Save AI responses as posts in the posts table
+
+### 🛠 Technologies Used
+
+* *AI Model:* Google Gemini (gemini-pro)
+* *Backend:* Next.js API Routes
+* *State Management:* Zustand (in-memory chat)
+* *Database:* Supabase (posts table only)
+### 💡 Approach
+
+* Chat is stored *in-memory only* (Zustand)
+* Save to posts table only when needed
+* Directly integrate with AI via API call
+
+---
+## 📁 File Structure (Relevant)
+
+* src/shared/libs/ai/gemini-client.ts → Gemini API client (handles AI requests)
+* src/shared/store/chat-store.ts → Zustand store for in-memory chat messages
+* src/app/api/chat/send/route.ts → API to send user prompt to AI and receive response
+* src/app/api/posts/from-chat/route.ts → API to save AI response as a post
+
+---
+
+## 🔧 Backend (Server Side)
+
+*AI Integration:*
+
+1. User sends message → stored in Zustand
+2. Backend API /chat/send → receives prompt → sends it to *Google Gemini AI*
+3. AI response received → returned to client → Zustand updates in-memory chat state
+
+*Post Saving:*
+* Use /posts/from-chat API to save AI response along with original prompt into Supabase posts table
+
+*Flow Summary:*
+1. User sends message → in-memory state updated
+2. Prompt sent to AI → AI generates response → state updated
+3. Optional: save AI response as post via API
+
+---
+## ✅ Features
+
+* Fast in-memory chat using Zustand
+* Direct integration with Google Gemini AI
+* Save AI responses as posts in Supabase
+* Simple, efficient workflow
+
+---
+
+## 📌 Summary
+*Kept:* Google Gemini API integration, Supabase posts table, Zustand store, APIs for sending messages and saving posts
+
+*Approach:* Focused only on *AI connection and saving responses*, no extra chat database or UI details. 🚀
+
 
 ### Errors we had:
 
@@ -226,4 +399,94 @@ This allows us to:
 The main problem was choosing the correct app type.  
 We needed to create a **Consumer App**, not a **Business App**.
 
----
+# Razan’s Work 
+
+# ⏱ Post Scheduling Flow — Summary
+
+## 📋 Overview
+
+This document summarizes the *post scheduling workflow* in the AI Content Scheduler project.
+
+### 🎯 Objectives
+
+* Allow users to *schedule posts* for future publishing
+* Store scheduled posts in Supabase
+* Use *BullMQ + Redis* to process scheduled jobs
+* Trigger the publish logic automatically at the right time
+
+### 🛠 Technologies Used
+
+* *Queue System:* BullMQ
+* *Job Storage:* Redis
+* *Backend:* Next.js API Routes
+* *Database:* Supabase (scheduled_posts, posts)
+
+
+## 💡 Approach
+
+* User creates a scheduled post → saved in Supabase
+* Backend adds a BullMQ job with a delay based on the scheduled time
+* Redis holds the job until its execution time
+* Worker reads the job when the delay ends and triggers the publish logic
+
+
+## 📁 Relevant File Structure
+
+* src/shared/libs/bull/queue.ts → BullMQ queue configuration
+* src/shared/libs/bull/worker.ts → Worker that processes scheduled jobs
+* src/app/api/chat/send/route.ts → Creates a scheduled post + queue job
+* src/app/api/facebook/publish/route.ts → Actual publish logic
+
+
+## 🔧 Scheduling Flow
+
+### *1. User Schedules a Post*
+
+* User sends (content + scheduled time)
+* Request reaches /chat/send
+* Save the post in posts with the schedualed_at and status schedualed
+* Add a BullMQ job with a delay = (scheduledTime - now)
+
+### *2. Queue + Redis*
+
+* BullMQ stores the job inside Redis
+* Redis counts down the delay
+* When delay ends → job becomes ready
+
+### *3. Worker Executes Job*
+
+* Worker receives the job from Redis
+* Calls the publish route
+* Publishes the post
+* (Optional) Saves final published data into posts table
+
+
+## 🔁 Flow Summary
+
+1. User schedules post
+2. Backend saves schedule + creates delayed job
+3. Redis waits until time comes
+4. Worker triggers publish logic
+5. Post is published automatically
+
+
+## ✅ Features
+
+* Reliable queued scheduling
+* Accurate delayed execution using Redis
+* Clear separation between *scheduling* and *publishing*
+* Scalable and clean architecture
+
+
+## 🐳 Production (Docker)
+
+* In production, the Worker runs inside a dedicated *Docker container*.
+* The Dockerfile includes all Worker logic: connecting to Redis, processing delayed jobs, and triggering publish actions.
+* This ensures scheduled posts continue to publish *even if the main Next.js app is not running*.
+
+
+## 📌 Summary
+
+*Kept:* BullMQ, Redis, Supabase tables, Next.js routes, Worker logic.
+*Approach:* Focused purely on the *core scheduling pipeline* without UI or unrelated details.
+

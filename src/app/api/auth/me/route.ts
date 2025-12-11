@@ -67,6 +67,7 @@ export async function GET(req: NextRequest) {
         const fbRes = await fetch(
           `https://graph.facebook.com/me?fields=id,name,picture&access_token=${fbToken}`
         );
+        console.log("FB PROFILE RESPONSE STATUS:", fbRes);
 
         if (fbRes.ok) {
           const fbData = await fbRes.json();

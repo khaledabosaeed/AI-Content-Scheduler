@@ -10,7 +10,13 @@ import {
 const FAQSection: FC = () => (
   <section
     id="faq"
-    className="relative py-12 sm:py-16 md:py-20 lg:py-24 px-4 sm:px-6 lg:px-8 w-full"
+    className="relative 
+        min-h-screen           
+        w-full 
+        flex flex-col 
+        justify-center 
+        items-center 
+        px-4 sm:px-6 lg:px-8"
     style={{
       backgroundColor: "hsl(var(--background))",
       color: "hsl(var(--foreground))",
