@@ -3,22 +3,30 @@ import { cookies } from "next/headers"
 
 export const tstFun = async () => {
     const cookiesSession = await cookies();
-    console.log("🍪 Cookies object:", cookiesSession);
+    // console.log("🍪 Cookies object:", cookiesSession);
     const sessionCookie = cookiesSession.get("session");
-
-    console.log("🍪 Session cookie value:", sessionCookie?.value);
-    
+    // console.log("🍪 Session cookie value:", sessionCookie?.value);
     try{
-      const payload = fetch("/api/auth/me",{
-        method:"GET",
-             headers: { 
-                'Cookie': `session=${sessionCookie?.value}`  // ← اسم الـ cookie + قيمته
-              },
-        body:JSON.stringify({token:sessionCookie?.value})
-      });  
-      console.log(payload , "this is payload");
-      
-        return payload;
+   const res = await fetch(`/api/users/me`, {
+        method: "GET",
+        headers: {
+          "Content-type": "application/json",
+          Authorization: `Bearer ${sessionCookie}`,
+        },
+        // cache: "no-store", // Always fetch fresh data  
+      });
+          if (!res.ok) {
+      console.log("this is the error ");
+      return null;
+    }
+      const data = await res.json();
+      // Backend returns: { data: { user: {...} } }
+      // Extract user to match the same structure as client-side  
+    const user = data?.data;
+        return user;
 
-    }catch(error){}
+    }catch(error){
+      console.error("Server-side auth error:", error);
+    return null;
+    }
 }
