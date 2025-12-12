@@ -33,7 +33,7 @@ export async function GET(req: NextRequest) {
     }
 
     // 2. التحقق من صحة JWT
-    const payload = verifyToken(token);
+    const payload = await verifyToken(token);
 
     if (!payload) {
       return NextResponse.json(

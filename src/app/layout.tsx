@@ -31,9 +31,10 @@ async function PrefetchUserData() {
       "this is dehydratedState"
     );
     console.log("📊 Query State:", dehydratedState.queries[0]?.state);
+
     return dehydratedState;
   } catch (error) {
-    console.error("❌ Failed to prefetch user data:", error);
+    // console.error("❌ Failed to prefetch user data:", error);
     // إرجع undefined وليس throw - سيسمح بالمتابعة بدون بيانات اليوزر
     return undefined;
   }
