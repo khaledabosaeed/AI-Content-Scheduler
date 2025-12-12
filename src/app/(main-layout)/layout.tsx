@@ -2,7 +2,6 @@
 "use client";
 
 import Header from "@/widgets/header/Header";
-import Footer from "@/widgets/footer/Footer";
 import { SectionsProvider } from "../_providers/SectionsContext";
 
 export default function MainLayout({
@@ -16,7 +15,6 @@ export default function MainLayout({
         <Header />
         {children}
       </SectionsProvider>
-      {/* <Footer /> */}
     </div>
   );
 }

@@ -1,37 +1,38 @@
-"use client";
-
-import { useState } from "react";
-import type { Message } from "@/entities/chat";
 import ScheduleModal from "@/widgets/scheduler/ScheduleModal";
+import { useState } from "react";
 import { useSaveAsPost } from "../model/use-save-as-post";
+import { toast } from "sonner";
+import { Message } from "@/entities/chat";
 
 interface SaveButtonProps {
   message: Message;
+  postId?: string;  // ← لو موجود، سيعدل بدل إنشاء نسخة جديدة
   prompt?: string;
   buttonText?: string;
 }
 
-export default function SaveButton({ message, prompt, buttonText }: SaveButtonProps) {
+export default function SaveButton({ message, postId, prompt, buttonText }: SaveButtonProps) {
   const { saveAsPost, isSaving } = useSaveAsPost();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleSave = async (scheduledDate?: Date, platform?: string,contentOverride?: string) => {
+  const handleSave = async (scheduledDate?: Date, platform?: string, contentOverride?: string) => {
     try {
       await saveAsPost({
+        postId,
         prompt,
         content: contentOverride || message.content,
-        platform: platform || "twitter", // ← يستقبل المنصة من المودال
+        platform: platform || "twitter",
         status: scheduledDate ? "scheduled" : "draft",
         scheduledAt: scheduledDate ? scheduledDate.toISOString() : null,
       });
 
-      alert(
+      toast.success(
         scheduledDate
-          ? `✅ تم جدولة المنشور على ${platform} بتاريخ ${scheduledDate.toLocaleString()}`
-          : "✅ تم حفظ المنشور بنجاح!"
+          ? `تم جدولة المنشور على ${platform} بتاريخ ${scheduledDate.toLocaleString()}`
+          : "تم حفظ المنشور بنجاح!"
       );
     } catch (err: any) {
-      alert("❌ " + err.message);
+      toast.error(err?.message || "حدث خطأ!");
     }
   };
 
@@ -51,7 +52,7 @@ export default function SaveButton({ message, prompt, buttonText }: SaveButtonPr
           onOpenChange={setIsModalOpen}
           initialContent={message.content}
           onConfirm={(date, platform, content) => {
-            handleSave(date, platform, content); // ← هنا بستقبل المنصة
+            handleSave(date, platform, content);
             setIsModalOpen(false);
           }}
         />

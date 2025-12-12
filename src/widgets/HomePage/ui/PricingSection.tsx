@@ -49,37 +49,57 @@ const plans = [
 
 const PricingSection: FC = () => (
   <motion.section
-      id="pricing"
-  className="relative 
-        min-h-screen           
-        w-full 
-        flex flex-col 
-        justify-center 
-        items-center 
-        px-4 sm:px-6 lg:px-8"
-  style={{ backgroundColor: "hsl(var(--background))", color: "hsl(var(--foreground))" }}
-  initial="hidden"
-  animate="show"
-  exit="exit"
-  variants={container}
+    id="pricing"
+    className="
+      relative 
+      min-h-screen
+      w-full 
+      flex flex-col 
+      justify-center 
+      items-center 
+      px-4 sm:px-6 lg:px-8
+      bg-[hsl(var(--background))]
+      text-[hsl(var(--foreground))]
+      transition-colors
+      mt-20
+    "
+    initial="hidden"
+    animate="show"
+    exit="exit"
+    variants={container}
   >
+    {/* Title */}
     <div className="max-w-6xl mx-auto text-center mb-12 sm:mb-14 md:mb-16 lg:mb-20">
       <motion.h2
         variants={item}
-        style={{ color: "hsl(var(--primary))", transition: "color 0.3s" }}
-        className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold mb-2 sm:mb-4 tracking-tight"
+        className="
+          text-[hsl(var(--primary))]
+          text-3xl sm:text-4xl md:text-5xl lg:text-6xl 
+          font-extrabold 
+          mb-2 sm:mb-4 
+          tracking-tight
+          transition-colors
+        "
       >
         Pricing Plans
       </motion.h2>
+
       <motion.p
         variants={item}
-        style={{ color: "hsl(var(--text-secondary))", transition: "color 0.3s" }}
-        className="text-base sm:text-lg max-w-2xl mx-auto leading-relaxed"
+        className="
+          text-[hsl(var(--text-secondary))]
+          text-base sm:text-lg 
+          max-w-2xl 
+          mx-auto 
+          leading-relaxed
+          transition-colors
+        "
       >
         Choose the plan that fits your content workflow.
       </motion.p>
     </div>
 
+    {/* Plans Grid */}
     <motion.div
       variants={container}
       className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 max-w-6xl mx-auto"
@@ -92,38 +112,38 @@ const PricingSection: FC = () => (
           className={plan.popular ? "md:scale-105" : ""}
         >
           <Card
-            className="h-full flex flex-col border"
-            style={{
-              borderColor: plan.popular ? "hsl(var(--primary))" : "hsl(var(--border))",
-              boxShadow: plan.popular
-                ? "0 10px 20px rgba(0,0,0,0.15)"
-                : "0 2px 6px rgba(0,0,0,0.05)",
-              transition: "all 0.3s",
-              backgroundColor: "hsl(var(--card))",
-              color: "hsl(var(--card-foreground))",
-            }}
+            className={`
+              h-full flex flex-col border transition-all duration-300
+              bg-[hsl(var(--card))]
+              text-[hsl(var(--card-foreground))]
+              ${plan.popular 
+                ? "border-[hsl(var(--primary))] shadow-xl" 
+                : "border-[hsl(var(--border))] shadow-sm"
+              }
+            `}
           >
             <CardHeader className="text-center">
               <h3
-                style={{ color: plan.popular ? "hsl(var(--primary))" : "hsl(var(--text-primary))", transition: "color 0.3s" }}
-                className="text-2xl font-bold"
+                className={`
+                  text-2xl font-bold transition-colors
+                  ${plan.popular 
+                    ? "text-[hsl(var(--primary))]" 
+                    : "text-[hsl(var(--text-primary))]"
+                  }
+                `}
               >
                 {plan.name}
               </h3>
-              <p
-                className="mt-2 text-4xl font-bold"
-                style={{ color: "hsl(var(--text-primary))", transition: "color 0.3s" }}
-              >
+
+              <p className="mt-2 text-4xl font-bold text-[hsl(var(--text-primary))] transition-colors">
                 {plan.price}
-                <span
-                  className="text-lg"
-                  style={{ color: "hsl(var(--text-secondary))", transition: "color 0.3s" }}
-                >
+                <span className="text-lg text-[hsl(var(--text-secondary))] transition-colors">
                   {plan.period}
                 </span>
               </p>
+
               {plan.popular && (
-                <p style={{ color: "hsl(var(--primary))", transition: "color 0.3s" }} className="text-sm font-semibold mt-2">
+                <p className="text-sm font-semibold mt-2 text-[hsl(var(--primary))] transition-colors">
                   Most Popular
                 </p>
               )}
@@ -134,10 +154,13 @@ const PricingSection: FC = () => (
                 {plan.features.map((feature, i) => (
                   <li
                     key={i}
-                    className="flex items-center flex-row-reverse gap-2"
-                    style={{ color: "hsl(var(--text-secondary))", transition: "color 0.3s" }}
+                    className="
+                      flex items-center flex-row-reverse gap-2
+                      text-[hsl(var(--text-secondary))]
+                      transition-colors
+                    "
                   >
-                    <Check className="h-5 w-5" style={{ color: "hsl(var(--primary))" }} />
+                    <Check className="h-5 w-5 text-[hsl(var(--primary))]" />
                     {feature}
                   </li>
                 ))}
@@ -146,12 +169,14 @@ const PricingSection: FC = () => (
 
             <CardFooter className="mt-auto pt-4">
               <Button
-                className="w-full py-3"
-                style={{
-                  backgroundColor: plan.popular ? "hsl(var(--primary))" : "hsl(var(--accent))",
-                  color: plan.popular ? "hsl(var(--primary-foreground))" : "hsl(var(--foreground))",
-                  transition: "all 0.3s",
-                }}
+                className={`
+                  w-full py-3 transition-all
+                  ${
+                    plan.popular
+                      ? "bg-[hsl(var(--primary))] text-[hsl(var(--primary-foreground))]"
+                      : "bg-[hsl(var(--accent))] text-[hsl(var(--foreground))]"
+                  }
+                `}
               >
                 Choose Plan
               </Button>

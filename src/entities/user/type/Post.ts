@@ -5,4 +5,5 @@ export interface Post {
   platform: string;
   status: string;
   createdAt: string; 
+  scheduled_at:string
 }

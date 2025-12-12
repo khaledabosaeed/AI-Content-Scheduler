@@ -12,28 +12,33 @@ import { CalendarIcon, Clock } from "lucide-react";
 interface ScheduleModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onConfirm: (date: Date, platform: string, content: string) => void; // أضفنا المحتوى
-  initialContent: string; // المحتوى الأصلي من الرسالة
+  onConfirm: (date: Date | null, platform: string, content: string) => void; // التاريخ ممكن يكون null
+  initialContent: string;
 }
 
 export default function ScheduleModal({ open, onOpenChange, onConfirm, initialContent }: ScheduleModalProps) {
   const [selectedDate, setSelectedDate] = React.useState<Date>();
   const [selectedTime, setSelectedTime] = React.useState<string>("12:00");
   const [platform, setPlatform] = React.useState("twitter");
-  const [content, setContent] = React.useState(initialContent); // محتوى قابل للتعديل
+  const [content, setContent] = React.useState(initialContent);
 
   const formatFullDate = () => {
-    if (!selectedDate) return "اختر التاريخ والوقت";
+    if (!selectedDate) return "لم يتم تحديد موعد";
     return `${format(selectedDate, "yyyy-MM-dd")} — ${selectedTime}`;
   };
 
   const handleConfirm = () => {
-    if (!selectedDate) return;
-    const [hours, minutes] = selectedTime.split(":").map(Number);
-    const finalDate = new Date(selectedDate);
-    finalDate.setHours(hours, minutes, 0);
+    let finalDate: Date | null = null;
 
-    onConfirm(finalDate, platform, content); // إرسال التاريخ + المنصة + المحتوى
+    if (selectedDate) {
+      const [hours, minutes] = selectedTime.split(":").map(Number);
+      finalDate = new Date(selectedDate);
+      finalDate.setHours(hours, minutes, 0);
+    }
+
+    // إرسال التاريخ (أو null إذا لم يتم الاختيار) + المنصة + المحتوى
+    onConfirm(finalDate, platform, content);
+    onOpenChange(false); // إغلاق المودال بعد الحفظ
   };
 
   return (
@@ -46,7 +51,7 @@ export default function ScheduleModal({ open, onOpenChange, onConfirm, initialCo
         </DialogHeader>
 
         <div className="space-y-5 mt-4">
-          {/* تعديل محتوى الـ AI */}
+          {/* محتوى المنشور */}
           <div className="flex flex-col gap-2">
             <label className="text-gray-700 font-medium text-sm">محتوى المنشور</label>
             <textarea
@@ -85,7 +90,7 @@ export default function ScheduleModal({ open, onOpenChange, onConfirm, initialCo
                   )}
                 >
                   <CalendarIcon className="mr-2 h-5 w-5 text-indigo-600" />
-                  {selectedDate ? format(selectedDate, "PPP") : "اختر التاريخ"}
+                  {selectedDate ? format(selectedDate, "PPP") : "اختر التاريخ (اختياري)"}
                 </Button>
               </PopoverTrigger>
               <PopoverContent className="p-0 bg-white rounded-xl shadow-xl">
@@ -123,10 +128,9 @@ export default function ScheduleModal({ open, onOpenChange, onConfirm, initialCo
         <DialogFooter className="mt-6">
           <Button
             onClick={handleConfirm}
-            disabled={!selectedDate}
-            className="w-full py-2.5 text-base bg-indigo-600 hover:bg-indigo-700 rounded-xl disabled:opacity-50"
+            className="w-full py-2.5 text-base bg-indigo-600 hover:bg-indigo-700 rounded-xl"
           >
-            حفظ الموعد
+            حفظ المنشور
           </Button>
         </DialogFooter>
       </DialogContent>

@@ -8,8 +8,8 @@
 @layer base {
   :root {
     /* Light Mode Colors */
-    --background: 0 0% 100%;           /* أبيض */
-    --foreground: 210 15% 20%;         /* نص غامق */
+    --background: 0 0% 100%; /* أبيض */
+    --foreground: 210 15% 20%; /* نص غامق */
 
     --section-1: 193.69 51% 61%;
     --section-2: 193.69 51% 56%;
@@ -51,6 +51,11 @@
     --popover-foreground: 210 15% 20%;
 
     --radius: 0.5rem;
+
+    --toast-success-bg: #22c55e; /* green-500 */
+    --toast-error-bg: #ef4444; /* red-500 */
+    --toast-info-bg: #3b82f6; /* blue-500 */
+    --toast-warning-bg: #facc15;
   }
 
   /* Dark Mode */

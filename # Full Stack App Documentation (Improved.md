@@ -242,80 +242,38 @@ The goal is to build and connect an AI chat model that:
 
 ### Write here how you did it, Y ROOZ:
 
-# 🤖 AI Chat Integration & Post Saving — Summary
+🤖 AI Chat Integration — Summary (Razan’s Role)
+📋 Overview
 
-## 📋 Overview
+This section summarizes Razan’s work in the AI Content Scheduler project.
 
-This file summarizes the *AI chat integration and post saving workflow* in the AI Content Scheduler project.
+🎯 Main Responsibilities
 
-### 🎯 Objectives
+Connect the frontend with Google Gemini AI
 
-* ✅ Connect to Google Gemini AI (Free tier)* ✅ Handle chat messages in-memory using Zustand
-* ✅ Save AI responses as posts in the posts table
+Ensure user messages (prompts) reach the API route /chat/send
 
-### 🛠 Technologies Used
+Handle the request to Gemini API and stream back the response to the client
 
-* *AI Model:* Google Gemini (gemini-pro)
-* *Backend:* Next.js API Routes
-* *State Management:* Zustand (in-memory chat)
-* *Database:* Supabase (posts table only)
-### 💡 Approach
+💡 Workflow
 
-* Chat is stored *in-memory only* (Zustand)
-* Save to posts table only when needed
-* Directly integrate with AI via API call
+User sends a chat message
 
----
-## 📁 File Structure (Relevant)
+Message stored temporarily in Zustand (in-memory state)
 
-* src/shared/libs/ai/gemini-client.ts → Gemini API client (handles AI requests)
-* src/shared/store/chat-store.ts → Zustand store for in-memory chat messages
-* src/app/api/chat/send/route.ts → API to send user prompt to AI and receive response
-* src/app/api/posts/from-chat/route.ts → API to save AI response as a post
+Request hits /chat/send route → forwarded to Google Gemini AI
 
----
+AI generates a response → returned to the original request point
 
-## 🔧 Backend (Server Side)
+Zustand updates in-memory chat state with AI response
 
-*AI Integration:*
+✅ Outcome
 
-1. User sends message → stored in Zustand
-2. Backend API /chat/send → receives prompt → sends it to *Google Gemini AI*
-3. AI response received → returned to client → Zustand updates in-memory chat state
+Smooth integration between frontend and AI
 
-*Post Saving:*
-* Use /posts/from-chat API to save AI response along with original prompt into Supabase posts table
+Streaming responses handled efficiently
 
-*Flow Summary:*
-1. User sends message → in-memory state updated
-2. Prompt sent to AI → AI generates response → state updated
-3. Optional: save AI response as post via API
-
----
-## ✅ Features
-
-* Fast in-memory chat using Zustand
-* Direct integration with Google Gemini AI
-* Save AI responses as posts in Supabase
-* Simple, efficient workflow
-
----
-
-## 📌 Summary
-*Kept:* Google Gemini API integration, Supabase posts table, Zustand store, APIs for sending messages and saving posts
-
-*Approach:* Focused only on *AI connection and saving responses*, no extra chat database or UI details. 🚀
-
-
-### Errors we had:
-
-The issue was with the AI model version.  
-We changed it from **Flash 1.5 → Flash 2.5**.
-
-Razan created one route that does:  
-**req → body → stream(response) → status 200**
-
----
+Simple, reliable in-memory chat workflow
 
 # Khaled’s work
 
@@ -434,7 +392,7 @@ This document summarizes the *post scheduling workflow* in the AI Content Schedu
 
 * src/shared/libs/bull/queue.ts → BullMQ queue configuration
 * src/shared/libs/bull/worker.ts → Worker that processes scheduled jobs
-* src/app/api/chat/send/route.ts → Creates a scheduled post + queue job
+* src/app/api/chat/from-chat/route.ts → Creates a scheduled post + queue job
 * src/app/api/facebook/publish/route.ts → Actual publish logic
 
 
@@ -443,7 +401,7 @@ This document summarizes the *post scheduling workflow* in the AI Content Schedu
 ### *1. User Schedules a Post*
 
 * User sends (content + scheduled time)
-* Request reaches /chat/send
+* Request reaches /chat/from-chat
 * Save the post in posts with the schedualed_at and status schedualed
 * Add a BullMQ job with a delay = (scheduledTime - now)
 
@@ -478,11 +436,39 @@ This document summarizes the *post scheduling workflow* in the AI Content Schedu
 * Scalable and clean architecture
 
 
-## 🐳 Production (Docker)
+## 🐳 Production (Vercel Cron Job)
 
-* In production, the Worker runs inside a dedicated *Docker container*.
-* The Dockerfile includes all Worker logic: connecting to Redis, processing delayed jobs, and triggering publish actions.
-* This ensures scheduled posts continue to publish *even if the main Next.js app is not running*.
+**💡 Why:**
+
+* Workers مثل **BullMQ** لا تعمل في بيئات Serverless (مثل Vercel).
+* الحل: استخدام **Vercel Cron Jobs** لتنفيذ المهام المجدولة.
+
+---
+
+### ⚙️ Steps | الخطوات
+
+1. **🔗 Create Endpoint | إنشاء Endpoint**
+
+   * مثال: `api/facebook/publish`
+
+2. **🔑 Add Secret | إضافة رمز سري**
+
+   * مثال: `secret-publish`
+
+3. **⏰ Schedule Cron Job | جدولة Cron Job**
+
+   * ضبط الجدول للتنفيذ كل عدة دقائق حسب الحاجة
+
+4. **🚀 Execution | التنفيذ**
+
+   * الـ Cron Job يستدعي الـ Endpoint وينفذ المهام كما يفعل Worker
+
+---
+
+### ⚠️ Notes | ملاحظات
+
+* تحقق من الرمز السري على السيرفر لمنع الوصول غير المصرح به
+* عدل تكرار التنفيذ حسب عبء العمل والحاجة
 
 
 ## 📌 Summary

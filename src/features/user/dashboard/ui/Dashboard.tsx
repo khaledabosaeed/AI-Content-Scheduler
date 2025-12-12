@@ -4,6 +4,7 @@
 import { useEffect, useState } from "react";
 import type { Post } from "@/entities/user/type/Post";
 import { SaveButton } from "@/features/chat";
+import { toast } from "sonner";
 
 export default function DashboardPage() {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -66,15 +67,16 @@ export default function DashboardPage() {
       const data = await res.json();
 
       if (!res.ok || data.success === false) {
-        alert("خطأ أثناء النشر على الفيسبوك: " + (data.error?.message || ""));
+        toast.error(
+          "خطأ أثناء النشر على الفيسبوك: " + (data.error?.message || "")
+        );
         return;
       }
 
-      alert("🎉 تم نشر البوست بنجاح على فيسبوك!");
+      toast.success("🎉 تم نشر البوست بنجاح على فيسبوك!", {});
       fetchPosts();
     } catch (err) {
-      console.error(err);
-      alert("حدث خطأ غير متوقع.");
+      toast.error("حدث خطأ غير متوقع.", {});
     } finally {
       setPublishingId(null);
     }
@@ -91,10 +93,10 @@ export default function DashboardPage() {
 
       if (!res.ok) throw new Error(data.error || "فشل إلغاء الجدولة");
 
-      alert("تم إلغاء الجدولة بنجاح");
+      toast.success("تم إلغاء الجدولة بنجاح", {});
       fetchPosts(); // تحديث البوستات
     } catch (err: any) {
-      alert("❌ " + err.message);
+      toast.error(err?.message || "حدث خطأ!", {});
     }
   };
 
@@ -115,12 +117,19 @@ export default function DashboardPage() {
             الداشبورد – البوستات المحفوظة
           </h1>
 
-          <button
-            onClick={fetchPosts}
-            className="px-3 py-2 text-sm rounded-md border bg-white"
-          >
-            تحديث
-          </button>
+          <div className="flex items-baseline justify-center gap-2">
+            <button
+              onClick={fetchPosts}
+              className="px-3 py-2 text-sm rounded-md border bg-white"
+            >
+              تحديث
+            </button>
+            <SaveButton
+              message={{ id: "", content: "" }} // فارغ → المستخدم يكتب المحتوى
+              prompt="" // لو حابة يمكن تتركه فارغ
+              buttonText="إنشاء بوست جديد"
+            />
+          </div>
         </div>
 
         {/* 🔹 بانر ربط فيسبوك لو الحساب مش مربوط */}
@@ -194,6 +203,7 @@ export default function DashboardPage() {
                         message={{ id: post.id, content: post.content }}
                         prompt={post.prompt}
                         buttonText="جدولة" // يظهر نص "جدولة"
+                        postId={post.id}
                       />
                     )}
 

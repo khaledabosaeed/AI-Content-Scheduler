@@ -26,35 +26,35 @@ const features = [
 
 const FeaturesSection: FC = () => (
   <motion.section
-      id="features"
-  className="relative 
+    id="features"
+    className="relative 
         min-h-screen           
         w-full 
         flex flex-col 
         justify-center 
         items-center 
-        px-4 sm:px-6 lg:px-8"
-  style={{ backgroundColor: "hsl(var(--background))", color: "hsl(var(--foreground))" }}
-  initial="hidden"
-  whileInView="show"
-  viewport={{ once: true, amount: 0.2 }}
-  variants={container}
+        px-4 sm:px-6 lg:px-8
+        bg-[hsl(var(--background))] text-[hsl(var(--foreground))]
+        mt-20
+        "
+    initial="hidden"
+    whileInView="show"
+    viewport={{ once: true, amount: 0.2 }}
+    variants={container}
     aria-labelledby="features-heading"
   >
     <div className="max-w-6xl mx-auto text-center mb-12 sm:mb-14 md:mb-16 lg:mb-20">
       <motion.h3
         id="features-heading"
         variants={item}
-        className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold mb-3 sm:mb-4 md:mb-6 tracking-tight"
-        style={{ color: "hsl(var(--text-primary))" }}
+        className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl text-[hsl(var(--text-primary))] font-extrabold mb-3 sm:mb-4 md:mb-6 tracking-tight"
       >
         Powerful features that grow your reach
       </motion.h3>
 
       <motion.p
         variants={item}
-        className="text-base sm:text-lg md:text-xl max-w-3xl mx-auto leading-relaxed px-2"
-        style={{ color: "hsl(var(--text-secondary))" }}
+        className="text-base sm:text-lg md:text-xl max-w-3xl mx-auto leading-relaxed px-2 text-[hsl(var(--text-secondary))]"
       >
         From AI-generated content to smart scheduling and clear performance
         insights — everything you need to save time and scale consistently
@@ -83,12 +83,8 @@ const FeaturesSection: FC = () => (
               className="h-full"
             >
               <Card
-                className="h-full rounded-2xl shadow-sm hover:shadow-2xl transition-all duration-300 border"
-                style={{
-                  backgroundColor: "hsl(var(--card))",
-                  color: "hsl(var(--card-foreground))",
-                  borderColor: "hsl(var(--border))",
-                }}
+                className="h-full rounded-2xl shadow-sm hover:shadow-2xl transition-all duration-300 border border-[hsl(var(--border))] 
+                bg-[hsl(var(--card))] text-[hsl(var(--card-foreground))]"
               >
                 <CardContent className="p-8 flex flex-col items-center text-center gap-4">
                   <motion.div
@@ -99,41 +95,24 @@ const FeaturesSection: FC = () => (
                       ease: "easeOut",
                       delay: index * 0.06,
                     }}
-                    className="w-16 h-16 rounded-full flex items-center justify-center"
-                    style={{
-                      backgroundColor: "hsl(var(-accent-)/20)", // خلي الخلفية أفتح
-                      transition: "background-color 0.3s",
-                    }}
+                    className="w-16 h-16 rounded-full flex items-center justify-center bg-[hsl(var(--accent)/0.2)] transition-colors duration-150"
                     aria-hidden
                   >
-                    <Icon
-                      className="w-8 h-8"
-                      style={{
-                        color: "hsl(var(--accent)/90)", // خلي الأيقونة أغمق وأكثر وضوح
-                        transition: "color 0.3s",
-                      }}
-                    />
+                    <Icon className="w-8 h-8 text-[hsl(var(--accent))] transition-colors duration-150" />
                   </motion.div>
 
                   <h4
                     id={`feature-title-${index}`}
-                    className="text-lg sm:text-xl font-semibold"
-                    style={{ color: "hsl(var(--text-primary))" }}
+                    className="text-lg sm:text-xl font-semibold text-[hsl(var(--text-primary))]"
                   >
                     {feature.title}
                   </h4>
 
-                  <p
-                    className="text-sm leading-relaxed max-w-sm"
-                    style={{ color: "hsl(var(--text-secondary))" }}
-                  >
+                  <p className="text-sm leading-relaxed max-w-sm text-[hsl(var(--text-secondary))]">
                     {feature.desc}
                   </p>
 
-                  <span
-                    className="mt-2 text-xs"
-                    style={{ color: "hsl(var(--text-disabled))" }}
-                  >
+                  <span className="mt-2 text-xs text-[hsl(var(--text-disabled))]">
                     Works with Instagram, Facebook, X and LinkedIn
                   </span>
                 </CardContent>

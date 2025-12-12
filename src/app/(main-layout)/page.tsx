@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useSections } from "@/app/_providers/SectionsContext";
 
@@ -25,27 +25,41 @@ const sections = [
 export default function HomePage() {
   const { visibleIndex, setVisibleIndex } = useSections();
   const [isScrolling, setIsScrolling] = useState(false);
+  const sectionRefs = useRef<(HTMLDivElement | null)[]>([]);
 
   useEffect(() => {
     const onWheel = (e: WheelEvent) => {
-      if (isScrolling) return;
-      setIsScrolling(true);
+  const currentRef = sectionRefs.current[visibleIndex];
+  if (!currentRef) return;
 
-      const delta = Math.sign(e.deltaY);
-      setVisibleIndex((prev) => {
-        let next = prev + delta;
-        // منع القفزات عند الوصول للأول أو الأخير
-        if (next < 0) next = 0;
-        if (next >= sections.length) next = sections.length - 1;
-        return next;
-      });
+  const delta = Math.sign(e.deltaY);
+  const tolerance = 2; // فرق صغير لتجنب التوقف عند نهاية السكشن
 
-      setTimeout(() => setIsScrolling(false), 800);
-    };
+  const canScrollDown =
+    currentRef.scrollTop + currentRef.clientHeight < currentRef.scrollHeight - tolerance;
+  const canScrollUp = currentRef.scrollTop > tolerance;
+
+  if ((delta > 0 && canScrollDown) || (delta < 0 && canScrollUp)) {
+    return; // تمرير داخلي → لا نغير visibleIndex
+  }
+
+  if (isScrolling) return;
+  setIsScrolling(true);
+
+  setVisibleIndex((prev) => {
+    let next = prev + delta;
+    if (next < 0) next = 0;
+    if (next >= sections.length) next = sections.length - 1;
+    return next;
+  });
+
+  setTimeout(() => setIsScrolling(false), 800);
+};
+
 
     window.addEventListener("wheel", onWheel, { passive: false });
     return () => window.removeEventListener("wheel", onWheel);
-  }, [isScrolling, setVisibleIndex]);
+  }, [isScrolling, setVisibleIndex, visibleIndex]);
 
   const variants = {
     hidden: { x: "100%", opacity: 0 },
@@ -54,7 +68,7 @@ export default function HomePage() {
   };
 
   return (
-    <div style={{ width: "100%", height: "100vh", overflow: "hidden", position: "relative" }}>
+    <div style={{ width: "100%", height: "100vh", position: "relative" }}>
       <AnimatePresence mode="wait">
         <motion.div
           key={visibleIndex}
@@ -63,9 +77,23 @@ export default function HomePage() {
           animate="visible"
           exit="exit"
           transition={{ duration: 1.2, ease: "easeInOut" }}
-          style={{ position: "absolute", top: 0, left: 0, width: "100%", height: "100vh" }}
+          style={{
+            position: "absolute",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100vh",
+          }}
         >
-          {React.createElement(sections[visibleIndex])}
+          <div
+            ref={(el) => (sectionRefs.current[visibleIndex] = el)}
+            style={{
+              height: "100%",
+              overflowY: "auto", // ✅ السماح بالتمرير داخل السكشن
+            }}
+          >
+            {React.createElement(sections[visibleIndex])}
+          </div>
         </motion.div>
       </AnimatePresence>
     </div>

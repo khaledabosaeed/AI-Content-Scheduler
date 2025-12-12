@@ -1,5 +1,6 @@
 // app/api/oauth/facebook/callback/route.ts
 import { NextRequest, NextResponse } from "next/server";
+import { toast } from "sonner";
 
 const APP_ID = process.env.FACEBOOK_APP_ID!;
 const APP_SECRET = process.env.FACEBOOK_API_SECRET!;

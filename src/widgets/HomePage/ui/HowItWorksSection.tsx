@@ -27,18 +27,7 @@ const platforms = [Instagram, Facebook, Twitter, Linkedin];
 const FunStepsSection: FC = () => (
   <motion.section
     id="fun-steps"
-    className="relative 
-        min-h-screen           
-        w-full 
-        flex flex-col 
-        justify-center 
-        items-center 
-        px-4 sm:px-6 lg:px-8"
-    style={{
-      backgroundColor: "hsl(var(--background))",
-      color: "hsl(var(--foreground))",
-      transition: "background-color 0.3s, color 0.3s",
-    }}
+    className="relative min-h-screen w-full flex flex-col justify-center items-center px-4 sm:px-6 lg:px-8 bg-background text-foreground transition-colors mt-20"
     initial="hidden"
     whileInView="show"
     viewport={{ once: true }}
@@ -48,18 +37,13 @@ const FunStepsSection: FC = () => (
     <div className="max-w-5xl w-full text-center mb-12 sm:mb-14 md:mb-16 lg:mb-20">
       <motion.h2
         variants={item}
-        style={{ color: "hsl(var(--text-primary))", transition: "color 0.3s" }}
-        className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold mb-3 sm:mb-4 md:mb-6 tracking-tight"
+        className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold mb-3 sm:mb-4 md:mb-6 tracking-tight text-text-primary transition-colors"
       >
         How AI Scheduler Works
       </motion.h2>
       <motion.p
         variants={item}
-        style={{
-          color: "hsl(var(--text-secondary))",
-          transition: "color 0.3s",
-        }}
-        className="text-base sm:text-lg md:text-xl mx-auto max-w-3xl leading-relaxed"
+        className="text-base sm:text-lg md:text-xl mx-auto max-w-3xl leading-relaxed text-text-secondary transition-colors"
       >
         Follow the simple steps to schedule your content like a pro!
       </motion.p>
@@ -77,30 +61,15 @@ const FunStepsSection: FC = () => (
               whileHover={{ scale: 1.05 }}
               className="flex flex-col items-center text-center"
             >
+              {/* Circle with Icon */}
               <motion.div
-                className="w-14 sm:w-16 md:w-18 h-14 sm:h-16 md:h-18 rounded-full flex items-center justify-center shadow-lg mb-3 flex-shrink-0"
-                style={{
-                  backgroundColor: "hsl(var(--primary)/15)", // دائرة أيقونات بلون ثيم
-                  transition: "background-color 0.3s",
-                }}
+                className="w-14 sm:w-16 md:w-18 h-14 sm:h-16 md:h-18 rounded-full flex items-center justify-center shadow-lg mb-3 flex-shrink-0 bg-[hsl(var(--primary))] transition-colors"
                 whileHover={{ rotate: 5 }}
               >
-                <Icon
-                  className="w-6 h-6"
-                  style={{
-                    color: "hsl(var(--primary-foreground))",
-                    transition: "color 0.3s",
-                  }}
-                />
+                <Icon className="w-6 h-6 text-background transition-colors" />
               </motion.div>
 
-              <p
-                className="font-semibold text-xs sm:text-sm md:text-base leading-tight"
-                style={{
-                  color: "hsl(var(--text-primary))",
-                  transition: "color 0.3s",
-                }}
-              >
+              <p className="font-semibold text-xs sm:text-sm md:text-base leading-tight text-text-primary transition-colors">
                 {step.title}
               </p>
 
@@ -115,12 +84,7 @@ const FunStepsSection: FC = () => (
                   {platforms.map((PlatformIcon, i) => (
                     <motion.div
                       key={i}
-                      className="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-full shadow-md hover:shadow-lg hover:scale-110 transition-all duration-200"
-                      style={{
-                        backgroundColor: "hsl(var(--card))",
-                        color: "hsl(var(--primary))",
-                        transition: "background-color 0.3s, color 0.3s",
-                      }}
+                      className="w-8 h-8 sm:w-9 sm:h-9 flex items-center justify-center rounded-full shadow-md hover:shadow-lg hover:scale-110 transition-all duration-200 bg-card text-primary"
                       whileHover={{ rotate: 10 }}
                     >
                       <PlatformIcon className="w-4 h-4" />

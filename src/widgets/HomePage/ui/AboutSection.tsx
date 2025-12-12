@@ -29,19 +29,17 @@ const AboutSection: FC = () => {
       id="about"
       className="
         relative 
-        min-h-screen           
+        min-h-screen
         w-full 
         flex flex-col 
         justify-center 
         items-center 
         px-4 sm:px-6 lg:px-8
-        snap-start                /* مهم للسنابينج */
+        snap-start
+        
+        bg-[linear-gradient(to_bottom,hsl(var(--background))_0%,hsl(var(--elevated))_100%)]
+        text-[hsl(var(--text-primary))]
       "
-      style={{
-        background:
-          "linear-gradient(to bottom, hsl(var(--background)) 0%, hsl(var(--elevated)) 100%)",
-        color: "hsl(var(--text-primary))",
-      }}
       initial="hidden"
       animate="show"
       exit="exit"
@@ -51,21 +49,24 @@ const AboutSection: FC = () => {
       <div className="max-w-6xl w-full text-center mb-10">
         <motion.h2
           variants={item}
-          className="text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-4 tracking-tight"
-          style={{
-            background:
-              "linear-gradient(to right, hsl(var(--primary)) 0%, hsl(var(--secondary)) 100%)",
-            WebkitBackgroundClip: "text",
-            color: "hsl(var(--primary))",
-          }}
+          className="
+            text-4xl sm:text-5xl lg:text-6xl 
+            font-extrabold mb-4 tracking-tight
+            bg-[linear-gradient(to_right,hsl(var(--primary))_0%,hsl(var(--secondary))_100%)]
+             bg-clip-text
+          "
         >
           About AI Scheduler
         </motion.h2>
 
         <motion.p
           variants={item}
-          className="text-lg sm:text-xl max-w-3xl mx-auto leading-relaxed"
-          style={{ color: "hsl(var(--text-secondary))" }}
+          className="
+            text-lg sm:text-xl 
+            max-w-3xl mx-auto 
+            leading-relaxed
+            text-[hsl(var(--text-secondary))]
+          "
         >
           Simplifying social media management with AI-powered automation and
           insights to save time and boost your presence.
@@ -95,24 +96,25 @@ const AboutSection: FC = () => {
                 border 
                 transition-all
                 duration-300
+
+                bg-[hsl(var(--card))]
+                border-[hsl(var(--primary)/0.2)]
               "
-              style={{
-                backgroundColor: "hsl(var(--card))",
-                borderColor: "hsl(var(--primary)/20)",
-              }}
             >
-              <div className="mb-4" style={{ color: "hsl(var(--primary))" }}>
+              <div className="mb-4 text-[hsl(var(--primary))]">
                 <Icon className="h-10 w-10" />
               </div>
 
               <h3
-                className="font-semibold text-2xl mb-2"
-                style={{ color: "hsl(var(--primary))" }}
+                className="
+                  font-semibold text-2xl mb-2 
+                  text-[hsl(var(--primary))]
+                "
               >
                 {feature.title}
               </h3>
 
-              <p style={{ color: "hsl(var(--text-secondary))" }}>
+              <p className="text-[hsl(var(--text-secondary))]">
                 {feature.desc}
               </p>
             </motion.div>
