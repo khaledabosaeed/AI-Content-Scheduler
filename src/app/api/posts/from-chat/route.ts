@@ -23,7 +23,7 @@ export async function POST(req: NextRequest) {
 
       // حفظ البوست في Supabase
       const { data: post, error } = await supabaseServer
-        .from("post_schedules")
+        .from("posts")
         .insert({
           user_id: user.userId,
           content: content.trim(),
