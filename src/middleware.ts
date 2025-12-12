@@ -4,10 +4,9 @@ import type { NextRequest } from "next/server";
 
 const PROTECTED_ROUTES = ["/dashboard", "/chat"];
 const AUTH_ROUTES = ["/login", "/register"];
-const PUBLIC_ROUTES = ["/"];
 
-export function middleware(request: NextRequest) {
-  const { pathname,  } = request.nextUrl;
+export async function middleware(request: NextRequest) {
+  const { pathname } = request.nextUrl;
 
   // Ignore assets & API
   if (
@@ -19,18 +18,20 @@ export function middleware(request: NextRequest) {
     return NextResponse.next();
   }
 
-
   // -----------------------------------------
   // 2️⃣ check authentication
   // -----------------------------------------
-  const { isAuthenticated } = checkAuth(request);
+  const { isAuthenticated } = await checkAuth(request);
 
   // Protected routes
   const isProtectedRoute = PROTECTED_ROUTES.some((route) =>
     pathname.startsWith(route)
   );
 
+  console.log("🔐 Middleware:", { pathname, isProtectedRoute, isAuthenticated });``
+
   if (isProtectedRoute && !isAuthenticated) {
+    console.log("❌ Redirecting to login - user not authenticated");
     const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("redirect", pathname);
     return NextResponse.redirect(loginUrl);

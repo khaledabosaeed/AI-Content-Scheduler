@@ -13,18 +13,18 @@ export const getUserServer = async () => {
         const cookieStore = await cookies();
         const sessionCookie = cookieStore.get("session");
         
-        console.log("🍪 Cookie value:", sessionCookie?.value ? "Found" : "Not found");
+        // console.log("🍪 Cookie value:", sessionCookie?.value ? "Found" : "Not found");
         
         if (!sessionCookie?.value) {
-            console.log("⚠️ No session cookie found");
+            // console.log("⚠️ No session cookie found");
             return null;
         }
 
         // 2. التحقق من صحة الـ token
-        const payload = verifyToken(sessionCookie.value);
+        const payload = await verifyToken(sessionCookie.value);
         
         if (!payload) {
-            console.log("⚠️ Invalid or expired token");
+            // console.log("⚠️ Invalid or expired token");
             return null;
         }
 

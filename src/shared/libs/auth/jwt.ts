@@ -1,8 +1,8 @@
+import { SignJWT, errors, jwtVerify } from "jose";
 
-import jwt from 'jsonwebtoken';
 
+const SECRET = new TextEncoder().encode(process.env.JWT_SECRET!);
 
-const JWT_SECRET = process.env.JWT_SECRET || 'fjsaofjaso(*&*^fnsdiofn2654a#$2f84we89r425s34243&^';
 const JWT_EXPIRATION = '7d';
 
 
@@ -13,61 +13,43 @@ export interface JWTPayload {
   iat?: number;
   exp?: number;
 }
-
-
-export function createToken(payload: Omit<JWTPayload, 'iat' | 'exp'>): string {
-  try {
-    const token = jwt.sign(payload, JWT_SECRET, {
-      expiresIn: JWT_EXPIRATION,
-    });
-    return token;
-  } catch (error) {
+export async function createToken(payload: any) {
+  try{
+      return await new SignJWT(payload)
+    .setProtectedHeader({ alg: "HS256" })
+    .setIssuedAt()
+    .setExpirationTime(JWT_EXPIRATION)
+    .sign(SECRET);
+  }catch (error) {
     console.error('Error creating JWT token:', error);
     throw new Error('فشل في إنشاء token');
   }
+
 }
 
 
-export function verifyToken(token: string): JWTPayload | null {
+export async function verifyToken(token: string):Promise<JWTPayload | null> {
   try {
-    const decoded = jwt.verify(token, JWT_SECRET) as JWTPayload;
-    return decoded;
-  } catch (error) {
-    if (error instanceof jwt.TokenExpiredError) {
-      console.log('JWT token expired');
-    } else if (error instanceof jwt.JsonWebTokenError) {
-      console.log('Invalid JWT token');
+    console.log("🔐 Verifying token with SECRET length:", SECRET.length);
+    const { payload } = await jwtVerify(token, SECRET);
+    console.log("✅ Token verified successfully:", payload);
+    return payload as unknown as JWTPayload;
+  } catch (error: any) {
+    if (error instanceof errors.JWTExpired) {
+      console.log("❌ JWT token expired");
+    } else if (error instanceof errors.JWTInvalid) {
+      console.log("❌ Invalid JWT token");
     } else {
-      console.error('Error verifying JWT token:', error);
+      console.error("❌ Error verifying JWT token:", error);
     }
     return null;
   }
 }
 
 
-// export function decodeToken(token: string): JWTPayload | null {
-//   try {
-//     const decoded = jwt.decode(token) as JWTPayload;
-//     return decoded;
-//   } catch (error) {
-//     console.error('Error decoding JWT token:', error);
-//     return null;
-//   }
-// }
 
-
-// export function isTokenExpired(token: string): boolean {
-//   const decoded = decodeToken(token);
-//   if (!decoded || !decoded.exp) {
-//     return true;
-//   }
-
-//   const currentTime = Math.floor(Date.now() / 1000);
-//   return decoded.exp < currentTime;
-// }
-
-export function refreshToken(token: string): string | null {
-  const decoded = verifyToken(token);
+export async function refreshToken(token: string): Promise<string | null> {
+  const decoded = await verifyToken(token);
   if (!decoded) {
     return null;
   }
