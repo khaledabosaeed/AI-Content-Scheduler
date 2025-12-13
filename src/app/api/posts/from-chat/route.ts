@@ -1,18 +1,13 @@
-import { NextRequest, NextResponse } from "next/server";
 import { withAuth } from "@/shared/libs/auth/auth-middleware";
 import { supabaseServer } from "@/shared/libs/suapabase/supabaseServer";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
   return withAuth(req, async (req, user) => {
     try {
-      const body = await req.json();
-      const {
-        prompt,
-        content,
-        platform = "twitter",
-        status,
-        scheduledAt,
-      } = body;
+      // جلب البيانات من body
+      const { prompt, content, platform = "twitter", status, scheduledAt } =
+        await req.json();
 
       if (!content || !platform) {
         return NextResponse.json(
@@ -21,58 +16,84 @@ export async function POST(req: NextRequest) {
         );
       }
 
-      // حفظ البوست في Supabase
-      const { data: post, error } = await supabaseServer
+      // ===== حفظ Draft =====
+      if (status === "draft") {
+        const { data: post, error } = await supabaseServer
+          .from("posts")
+          .insert({
+            user_id: user.userId,
+            content: content.trim(),
+            ai_prompt: prompt?.trim() || null,
+            platform,
+            status: "draft",
+            scheduled_at: null,
+          })
+          .select()
+          .single();
+
+        if (error) throw new Error(error.message);
+
+        return NextResponse.json({
+          success: true,
+          post,
+          message: "تم حفظ المنشور كمسودة",
+        });
+      }
+
+      // ===== حفظ Scheduled =====
+      // التأكد من وجود حساب مرتبط بالمنصة
+      const { data: socialAccount } = await supabaseServer
+        .from("social_accounts")
+        .select("*")
+        .eq("user_id", user.userId)
+        .eq("platform", platform)
+        .single();
+
+      if (!socialAccount) {
+        return NextResponse.json(
+          { error: `لا يوجد حساب مرتبط بمنصة ${platform}` },
+          { status: 400 }
+        );
+      }
+
+      // إنشاء البوست المجدول أولاً
+      const { data: post, error: postError } = await supabaseServer
         .from("posts")
         .insert({
           user_id: user.userId,
           content: content.trim(),
           ai_prompt: prompt?.trim() || null,
           platform,
-          status,
-          scheduled_at: scheduledAt || null,
+          status: "scheduled",
+          scheduled_at: scheduledAt,
         })
         .select()
         .single();
 
-      if (error) throw new Error("فشل في حفظ المنشور");
+      if (postError) throw new Error(postError.message);
 
-      // أرسل response فوراً
-      const response = NextResponse.json({
+      // إدراج في جدول post_schedules
+      const { data: schedule, error: scheduleError } = await supabaseServer
+        .from("post_schedules")
+        .insert({
+          post_id: post.id,
+          social_account_id: socialAccount.id,
+          scheduled_for: scheduledAt,
+          status: "pending", // يجب أن تكون ضمن القيم المسموح بها ['pending', 'processing', 'published', 'failed']
+        })
+        .select()
+        .single();
+
+      if (scheduleError) throw new Error(scheduleError.message);
+
+      return NextResponse.json({
         success: true,
         post,
-        message: `تم حفظ المنشور كـ ${status === "draft" ? "مسودة" : status}`,
+        schedule,
+        message: "تم جدولة المنشور بنجاح",
       });
-
-      // // نفّذ الجدولة بشكل غير متزامن
-      // if (status === "scheduled" && scheduledAt) {
-      //   (async () => {
-      //     try {
-      //       const scheduledTime = new Date(scheduledAt);
-      //       const now = new Date();
-      //       const delay = scheduledTime.getTime() - now.getTime();
-
-      //       if (delay > 0) {
-      //         queue.add("publish", { postId: post.id }, { delay }); // بدون await
-      //         console.log(
-      //           `✅ تم جدولة المنشور ${post.id} للنشر في ${scheduledAt}`
-      //         );
-      //       } else {
-      //         await supabaseServer
-      //           .from("posts")
-      //           .update({ status: "draft", scheduled_at: null })
-      //           .eq("id", post.id);
-      //         console.warn("لا يمكن جدولة منشور في الماضي");
-      //       }
-      //     } catch (err) {
-      //       console.error("فشل جدولة المنشور:", err);
-      //     }
-      //   })();
-      // }
-
-      return response;
-    } catch (error: any) {
-      return NextResponse.json({ error: error.message }, { status: 500 });
+    } catch (err: any) {
+      return NextResponse.json({ error: err.message }, { status: 500 });
     }
   });
 }

@@ -1,7 +1,7 @@
-// api/posts/[id]/update/route.ts
+// app/api/posts/[id]/route.ts
 import { NextRequest, NextResponse } from "next/server";
-import { supabaseServer } from "@/shared/libs/suapabase/supabaseServer";
 import { withAuth } from "@/shared/libs/auth/auth-middleware";
+import { supabaseServer } from "@/shared/libs/suapabase/supabaseServer";
 
 export async function PUT(
   req: NextRequest,
@@ -9,39 +9,73 @@ export async function PUT(
 ) {
   return withAuth(req, async (req, user) => {
     try {
-      const { id: postId } = await params; // ← لازم يكون نفس اسم الفولدر [id]
+      const { id: postId } = await params;
       const { content, platform, status, scheduledAt } = await req.json();
 
       if (!content || !platform || !status) {
         return NextResponse.json(
-          { error: "Content, platform, and status are required" },
+          { error: "Content, platform, and status required" },
           { status: 400 }
         );
       }
 
-      const { data, error } = await supabaseServer
+      // ===== تحديث البوست =====
+      const { data: post, error: postError } = await supabaseServer
         .from("posts")
         .update({
           content,
           platform,
           status,
-          scheduled_at: scheduledAt ? new Date(scheduledAt) : null,
+          scheduled_at: status === "scheduled" ? scheduledAt : null,
         })
         .eq("id", postId)
+        .eq("user_id", user.userId)
         .select()
         .single();
 
-      if (error || !data) {
+      if (postError || !post) {
         return NextResponse.json({ error: "Post not found" }, { status: 404 });
       }
 
-      return NextResponse.json({ success: true, post: data });
+      // ===== التعامل مع جدول post_schedules =====
+      if (status === "scheduled") {
+        // تحقق من وجود حساب مرتبط بالمنصة
+        const { data: socialAccount } = await supabaseServer
+          .from("social_accounts")
+          .select("*")
+          .eq("user_id", user.userId)
+          .eq("platform", platform)
+          .single();
+
+        if (!socialAccount) {
+          return NextResponse.json(
+            { error: `No social account linked for ${platform}` },
+            { status: 400 }
+          );
+        }
+
+        // إدراج أو تحديث السجل في post_schedules
+        await supabaseServer.from("post_schedules").upsert({
+          post_id: post.id,
+          social_account_id: socialAccount.id,
+          scheduled_for: scheduledAt,
+          status: "pending", // يجب أن يكون ضمن القيم ['pending','processing','published','failed']
+        });
+      } else {
+        // إذا كان status != scheduled → حذف من post_schedules
+        await supabaseServer
+          .from("post_schedules")
+          .delete()
+          .eq("post_id", post.id);
+      }
+
+      return NextResponse.json({
+        success: true,
+        post,
+        message: "Post updated successfully",
+      });
     } catch (err: any) {
-      console.error("Server error:", err);
-      return NextResponse.json(
-        { error: err.message || "Internal server error" },
-        { status: 500 }
-      );
+      return NextResponse.json({ error: err.message }, { status: 500 });
     }
   });
 }
