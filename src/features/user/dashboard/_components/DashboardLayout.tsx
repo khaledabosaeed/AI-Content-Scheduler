@@ -9,14 +9,14 @@ export default function DashboardLayout({
   return (
     <div dir="ltr" className="min-h-screen bg-muted/40">
       <div className="sticky top-0 z-40">
-        <DashboardHeader onRefresh={() => {}} />
+        <DashboardHeader />
       </div>
 
       <div className="flex min-h-screen">
-        {/* Sidebar */}
         <DashboardSidebar />
-        {/* Main content */}
-        <main className="flex-1 min-w-0 p-6">{children}</main>
+        <main className="flex-1 min-w-0 p-4 md:p-6 overflow-auto">
+          {children}
+        </main>
       </div>
     </div>
   );

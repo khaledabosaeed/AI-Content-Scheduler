@@ -52,8 +52,6 @@ export default function Dashboard() {
     fetchPosts();
     fetchUser();
   }, []);
-
-  // ✅ نفس publishToFacebook تبعك (رح نستخدمه بعدين بالـ table actions)
   const publishToFacebook = async (postId: string) => {
     try {
       setPublishingId(postId);
@@ -65,22 +63,17 @@ export default function Dashboard() {
       });
 
       const data = await res.json();
+
       if (!res.ok || data.success === false) {
-        alert("Error publishing to Facebook: " + (data.error?.message || ""));
-        return;
+        throw new Error(data?.error?.message || "Publish failed");
       }
 
-      alert("✅ Published successfully!");
-      fetchPosts();
-    } catch (err) {
-      console.error(err);
-      alert("Unexpected error.");
+      await fetchPosts();
     } finally {
       setPublishingId(null);
     }
   };
 
-  // ✅ نفس cancelSchedule تبعك
   const cancelSchedule = async (postId: string) => {
     try {
       const res = await fetch(`/api/posts/${postId}/cancel-schedule`, {
@@ -96,7 +89,6 @@ export default function Dashboard() {
     }
   };
 
-
   const normalizedPosts = useMemo(() => {
     return (posts as any[]).map((p) => ({
       ...p,
@@ -107,7 +99,7 @@ export default function Dashboard() {
 
   if (isLoading) {
     return (
-      <div className="min-h-[70vh] flex items-center justify-center">
+      <div className="h-full flex items-center justify-center">
         <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-primary" />
       </div>
     );
