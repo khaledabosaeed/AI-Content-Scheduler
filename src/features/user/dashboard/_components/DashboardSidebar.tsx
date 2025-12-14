@@ -22,9 +22,9 @@ export function DashboardSidebar() {
     <aside
       dir="ltr"
       className={cn(
-        "sticky top-0 h-screen w-[260px] shrink-0 border-r",
+        " top-0 h-screen w-[260px] shrink-0 border-r",
         "bg-gradient-to-b from-slate-950 to-slate-900 text-white",
-        "flex flex-col" // ✅ مهم جدًا عشان mt-auto تشتغل
+        "flex flex-col"
       )}
     >
       {/* Nav */}
@@ -32,7 +32,9 @@ export function DashboardSidebar() {
         {NAV_ITEMS.map((item) => {
           const isActive =
             pathname === item.href ||
-            (pathname !== null && item.href !== "/dashboard" && pathname.startsWith(item.href));
+            (pathname !== null &&
+              item.href !== "/dashboard" &&
+              pathname.startsWith(item.href));
 
           return (
             <Link

@@ -129,7 +129,6 @@ export default function Dashboard() {
         <div className="lg:col-span-8">
           <PostsTabs
             posts={normalizedPosts as any}
-            // ✨ جهزيهم بالخطوة الجاية داخل الجدول
             hasFacebook={hasFacebook}
             publishingId={publishingId}
             onPublishFacebook={publishToFacebook}

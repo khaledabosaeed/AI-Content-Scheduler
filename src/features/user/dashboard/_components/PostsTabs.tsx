@@ -7,11 +7,35 @@ import {
 } from "@/shared/components/ui/tabs";
 import { RecentPostsTable } from "./RecentPostsTable";
 
-export function PostsTabs({ posts }: { posts: Post[] }) {
+type Props = {
+  posts: Post[];
+
+  // ✅ optional handlers (مش إجباريين)
+  onSchedule?: (post: Post) => void;
+  onPublish?: (postId: string) => Promise<void> | void;
+  onCancelSchedule?: (postId: string) => Promise<void> | void;
+
+  // ✅ optional optimistic state updater
+  setPosts?: React.Dispatch<React.SetStateAction<Post[]>>;
+};
+
+export function PostsTabs({
+  posts,
+  onSchedule,
+  onPublish,
+  onCancelSchedule,
+  setPosts,
+}: Props) {
   const all = posts;
-  const scheduled = posts.filter((p: any) => p.status === "scheduled");
-  const drafts = posts.filter((p: any) => p.status === "draft");
-  const published = posts.filter((p: any) => p.status === "published");
+  const scheduled = posts.filter(
+    (p: any) => (p.status || "").toLowerCase() === "scheduled"
+  );
+  const drafts = posts.filter(
+    (p: any) => (p.status || "").toLowerCase() === "draft"
+  );
+  const published = posts.filter(
+    (p: any) => (p.status || "").toLowerCase() === "published"
+  );
 
   return (
     <div className="space-y-4">
@@ -31,15 +55,35 @@ export function PostsTabs({ posts }: { posts: Post[] }) {
         </TabsList>
 
         <TabsContent value="all" className="mt-4">
-          <RecentPostsTable posts={all} emptyText="No posts yet." />
+          <RecentPostsTable
+            posts={all}
+            emptyText="No posts yet."
+            onSchedule={onSchedule}
+            onPublish={onPublish}
+            onCancelSchedule={onCancelSchedule}
+            setPosts={setPosts}
+          />
         </TabsContent>
 
         <TabsContent value="scheduled" className="mt-4">
-          <RecentPostsTable posts={scheduled} emptyText="No scheduled posts." />
+          <RecentPostsTable
+            posts={scheduled}
+            emptyText="No scheduled posts."
+            // scheduled: publish + cancel
+            onPublish={onPublish}
+            onCancelSchedule={onCancelSchedule}
+            setPosts={setPosts}
+          />
         </TabsContent>
 
         <TabsContent value="drafts" className="mt-4">
-          <RecentPostsTable posts={drafts} emptyText="No drafts." />
+          <RecentPostsTable
+            posts={drafts}
+            emptyText="No drafts."
+            // drafts: schedule only
+            onSchedule={onSchedule}
+            setPosts={setPosts}
+          />
         </TabsContent>
 
         <TabsContent value="published" className="mt-4">

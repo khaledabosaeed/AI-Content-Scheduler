@@ -9,13 +9,22 @@ interface SaveButtonProps {
   message: Message;
   prompt?: string;
   buttonText?: string;
+  onSaved?: () => void;
 }
 
-export default function SaveButton({ message, prompt, buttonText }: SaveButtonProps) {
+export default function SaveButton({
+  message,
+  prompt,
+  buttonText,
+}: SaveButtonProps) {
   const { saveAsPost, isSaving } = useSaveAsPost();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleSave = async (scheduledDate?: Date, platform?: string,contentOverride?: string) => {
+  const handleSave = async (
+    scheduledDate?: Date,
+    platform?: string,
+    contentOverride?: string
+  ) => {
     try {
       await saveAsPost({
         prompt,
@@ -24,6 +33,7 @@ export default function SaveButton({ message, prompt, buttonText }: SaveButtonPr
         status: scheduledDate ? "scheduled" : "draft",
         scheduledAt: scheduledDate ? scheduledDate.toISOString() : null,
       });
+      onSaved?.();
 
       alert(
         scheduledDate
@@ -59,3 +69,7 @@ export default function SaveButton({ message, prompt, buttonText }: SaveButtonPr
     </>
   );
 }
+function onSaved() {
+  throw new Error("Function not implemented.");
+}
+

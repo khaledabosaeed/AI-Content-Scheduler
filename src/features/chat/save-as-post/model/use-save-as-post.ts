@@ -1,10 +1,12 @@
 import { useState } from "react";
 
 interface SaveAsPostParams {
-    prompt?: string;
-    content: string;
-    platform?: string;
-    status?: string;
+  postId?: string;
+  prompt?: string;
+  content: string;
+  platform?: string;
+  status?: string;
+  scheduledAt?: string | null;
 }
 
 export function useSaveAsPost() {

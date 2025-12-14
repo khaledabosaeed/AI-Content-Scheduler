@@ -12,7 +12,7 @@ export default function DashboardLayout({
         <DashboardHeader onRefresh={() => {}} />
       </div>
 
-      <div className="flex min-h-[calc(100vh-64px)]">
+      <div className="flex min-h-screen">
         {/* Sidebar */}
         <DashboardSidebar />
         {/* Main content */}

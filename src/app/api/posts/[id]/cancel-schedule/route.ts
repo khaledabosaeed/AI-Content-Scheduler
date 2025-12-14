@@ -5,20 +5,27 @@ import { z } from "zod";
 
 const uuidSchema = z.string().uuid();
 
-export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
-  return withAuth(req, async (req, user) => {
-    const { id: postId } = await params;
+export async function POST(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  return withAuth(req, async (_req, user) => {
+    const postId = params.id;
 
-    // Validate that postId is a valid UUID
     const validationResult = uuidSchema.safeParse(postId);
     if (!validationResult.success) {
-      return NextResponse.json({ error: "Invalid post ID format" }, { status: 400 });
+      return NextResponse.json(
+        { error: "Invalid post ID format" },
+        { status: 400 }
+      );
     }
 
-    // تحديث الحالة إلى draft وإلغاء تاريخ الجدولة
     const { data, error } = await supabaseServer
       .from("posts")
-      .update({ status: "draft", scheduled_at: null })
+      .update({
+        status: "draft",
+        scheduled_at: null,
+      })
       .eq("id", postId)
       .eq("user_id", user.userId)
       .select()
