@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { Card, CardContent } from "@/shared/components/ui/card";
 import { Sparkles, CalendarCheck, BarChart3 } from "lucide-react";
 import { container, item } from "@/shared/components/lib/animations";
+import { FloatingIcons } from "@/shared/ui/floating-icons";
 
 const features = [
   {
@@ -25,6 +26,7 @@ const features = [
 ];
 
 const FeaturesSection: FC = () => (
+
   <motion.section
     id="features"
     className="relative 
@@ -43,7 +45,9 @@ const FeaturesSection: FC = () => (
     variants={container}
     aria-labelledby="features-heading"
   >
+    <FloatingIcons/>
     <div className="max-w-6xl mx-auto text-center mb-12 sm:mb-14 md:mb-16 lg:mb-20">
+      
       <motion.h3
         id="features-heading"
         variants={item}
@@ -122,6 +126,7 @@ const FeaturesSection: FC = () => (
         );
       })}
     </motion.ul>
+    
   </motion.section>
 );
 

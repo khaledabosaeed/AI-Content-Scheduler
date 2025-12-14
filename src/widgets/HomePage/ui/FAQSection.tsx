@@ -6,12 +6,14 @@ import {
   AccordionTrigger,
   AccordionContent,
 } from '@/shared/components/ui/accordion';
+import { FloatingIcons } from "@/shared/ui/floating-icons";
 
 const FAQSection: FC = () => (
   <section
     id="faq"
     className="relative min-h-screen w-full flex flex-col justify-center items-center px-4 sm:px-6 lg:px-8 bg-background text-foreground transition-colors mt-20"
   >
+    <FloatingIcons/>
     <div className="max-w-6xl mx-auto">
       {/* Section Title */}
       <div className="text-center mb-12 sm:mb-14 md:mb-16 lg:mb-20">

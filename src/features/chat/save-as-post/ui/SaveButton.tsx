@@ -6,16 +6,25 @@ import { Message } from "@/entities/chat";
 
 interface SaveButtonProps {
   message: Message;
-  postId?: string;  // ← لو موجود، سيعدل بدل إنشاء نسخة جديدة
+  postId?: string; // ← لو موجود، سيعدل بدل إنشاء نسخة جديدة
   prompt?: string;
   buttonText?: string;
 }
 
-export default function SaveButton({ message, postId, prompt, buttonText }: SaveButtonProps) {
+export default function SaveButton({
+  message,
+  postId,
+  prompt,
+  buttonText,
+}: SaveButtonProps) {
   const { saveAsPost, isSaving } = useSaveAsPost();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  const handleSave = async (scheduledDate?: Date, platform?: string, contentOverride?: string) => {
+  const handleSave = async (
+    scheduledDate?: Date,
+    platform?: string,
+    contentOverride?: string
+  ) => {
     try {
       await saveAsPost({
         postId,
@@ -28,11 +37,11 @@ export default function SaveButton({ message, postId, prompt, buttonText }: Save
 
       toast.success(
         scheduledDate
-          ? `تم جدولة المنشور على ${platform} بتاريخ ${scheduledDate.toLocaleString()}`
-          : "تم حفظ المنشور بنجاح!"
+          ? `Your post is scheduled on ${platform} for ${scheduledDate.toLocaleString()}`
+          : "Your post has been saved successfully."
       );
     } catch (err: any) {
-      toast.error(err?.message || "حدث خطأ!");
+      toast.error(err?.message || "Something went wrong!");
     }
   };
 

@@ -4,6 +4,7 @@ import { FC } from "react";
 import { motion } from "framer-motion";
 import { container, item } from "@/shared/components/lib/animations";
 import { Card, CardContent } from "@/shared/components/ui/card";
+import { FloatingIcons } from "@/shared/ui/floating-icons";
 
 const testimonials = [
   {
@@ -52,7 +53,7 @@ const TestimonialsSection: FC = () => (
     viewport={{ once: true }}
     variants={container}
   >
-
+    <FloatingIcons/>
     {/* Section Title */}
     <div className="max-w-6xl mx-auto text-center mb-12 sm:mb-14 md:mb-16 lg:mb-20 mt-20">
       <motion.h3

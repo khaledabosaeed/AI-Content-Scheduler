@@ -4,6 +4,7 @@ import { FC } from "react";
 import { motion } from "framer-motion";
 import { container, item } from "@/shared/components/lib/animations";
 import { Users, Zap, CalendarCheck } from "lucide-react";
+import { FloatingIcons } from "@/shared/ui/floating-icons";
 
 const aboutFeatures = [
   {
@@ -45,6 +46,7 @@ const AboutSection: FC = () => {
       exit="exit"
       variants={container}
     >
+      <FloatingIcons/>
       {/* Title */}
       <div className="max-w-6xl w-full text-center mb-10">
         <motion.h2

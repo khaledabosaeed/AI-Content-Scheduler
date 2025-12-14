@@ -18,7 +18,7 @@ export function FloatingIcons() {
         bg-gradient-to-br
         from-primary/5 via-background to-secondary/5
         dark:from-primary/10 dark:via-background dark:to-secondary/10
-        backdrop-blur-[2px]
+        
         pointer-events-none
       "
     >
@@ -110,22 +110,16 @@ function Icon({
   size?: string
 }) {
   return (
-    <div
-      className={`absolute ${className} pointer-events-auto`}
-    >
-      <div
-        className="
-          transition-transform duration-300
-          hover:scale-125
-          will-change-transform
-        "
-      >
+    <div className={`absolute ${className} pointer-events-auto z-50`}>
+      <div className="relative w-full h-full">
         <div
           className={`
-            ${size}
-            ${color}
+            ${size} ${color}
             opacity-70 hover:opacity-100
-            transition-colors duration-300
+            transition-all duration-300
+            transform-gpu hover:scale-125
+            origin-center
+            z-50
           `}
         >
           {icon}
@@ -134,3 +128,4 @@ function Icon({
     </div>
   )
 }
+

@@ -12,6 +12,7 @@ import {
   Send,
 } from "lucide-react";
 import { Instagram, Facebook, Twitter, Linkedin } from "lucide-react";
+import { FloatingIcons } from "@/shared/ui/floating-icons";
 
 const steps = [
   { icon: User, title: "Login / Register" },
@@ -33,6 +34,7 @@ const FunStepsSection: FC = () => (
     viewport={{ once: true }}
     variants={container}
   >
+    <FloatingIcons/>
     {/* Title */}
     <div className="max-w-5xl w-full text-center mb-12 sm:mb-14 md:mb-16 lg:mb-20">
       <motion.h2

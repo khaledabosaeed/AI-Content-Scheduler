@@ -68,15 +68,15 @@ export default function DashboardPage() {
 
       if (!res.ok || data.success === false) {
         toast.error(
-          "خطأ أثناء النشر على الفيسبوك: " + (data.error?.message || "")
+          "Something went wrong!" + (data.error?.message || "")
         );
         return;
       }
 
-      toast.success("🎉 تم نشر البوست بنجاح على فيسبوك!", {});
+      toast.success(`🎉 The post has been published successfully on ${data.platform}!`);
       fetchPosts();
     } catch (err) {
-      toast.error("حدث خطأ غير متوقع.", {});
+      toast.error(err?.message || "Something went wrong!");
     } finally {
       setPublishingId(null);
     }
@@ -93,10 +93,10 @@ export default function DashboardPage() {
 
       if (!res.ok) throw new Error(data.error || "فشل إلغاء الجدولة");
 
-      toast.success("تم إلغاء الجدولة بنجاح", {});
+      toast.success("The scheduled post has been cancelled successfully.");
       fetchPosts(); // تحديث البوستات
     } catch (err: any) {
-      toast.error(err?.message || "حدث خطأ!", {});
+      toast.error(err?.message || "Something went wrong!");
     }
   };
 

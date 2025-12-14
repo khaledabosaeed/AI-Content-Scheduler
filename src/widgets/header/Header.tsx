@@ -131,7 +131,7 @@ export default function Header() {
 
                   <button
                     onClick={() => {
-                      toast.success("تم تسجيل الخروج بنجاح!");
+                      toast.success("Logged out successfully!");
                       mutate();
                     }}
                     className="block w-full text-end px-4 py-2 text-red-600 font-medium hover:bg-indigo-50 transition text-sm"

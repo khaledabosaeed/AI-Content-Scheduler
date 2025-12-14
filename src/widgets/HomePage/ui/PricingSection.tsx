@@ -5,6 +5,7 @@ import { Card, CardHeader, CardContent, CardFooter } from "@/shared/components/u
 import { Button } from "@/shared/components/ui/button";
 import { Check } from "lucide-react";
 import { container, item } from "@/shared/components/lib/animations";
+import { FloatingIcons } from "@/shared/ui/floating-icons";
 
 const plans = [
   {
@@ -68,6 +69,7 @@ const PricingSection: FC = () => (
     exit="exit"
     variants={container}
   >
+    <FloatingIcons/>
     {/* Title */}
     <div className="max-w-6xl mx-auto text-center mb-12 sm:mb-14 md:mb-16 lg:mb-20">
       <motion.h2
