@@ -1,16 +1,13 @@
 import { NextRequest, NextResponse } from "next/server";
 import { supabaseServer } from "@/shared/libs/suapabase/supabaseServer";
 import { withAuth } from "@/shared/libs/auth/auth-middleware";
-import { z } from "zod";
+import { z } from "zod"; 
 
 const uuidSchema = z.string().uuid();
 
-export async function POST(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function POST(req: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   return withAuth(req, async (_req, user) => {
-    const postId = params.id;
+    const { id: postId } = await params;
 
     const validationResult = uuidSchema.safeParse(postId);
     if (!validationResult.success) {
