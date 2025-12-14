@@ -18,10 +18,13 @@ import { useRegisterMutation } from "../api/useRegister";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { toast } from "sonner";
+import { FloatingIcons } from "../../../../shared/ui/floating-icons";
+import { Eye, EyeOff, Lock, Mail } from "lucide-react";
 
 export default function StyledRegisterForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
   const router = useRouter();
 
   const {
@@ -36,19 +39,21 @@ export default function StyledRegisterForm() {
 
   const onSubmit = (values: RegisterFormInputs) => {
     mutate(values, {
-      
-      onSuccess: () =>{
-        toast.success("Account created successfully!"); 
-        router.push("/login")
+      onSuccess: () => {
+        toast.success("Account created successfully!");
+        router.push("/login");
       },
       onError: (err: any) => {
         toast.error(err?.message || "Registration failed"); // ✅ هنا التوست للخطأ
-      }
+      },
     });
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 bg-[hsl(var(--background))]">
+      {/* 👈 استخدام مكون الأيقونات العائمة */}
+      <FloatingIcons />
+
       <Card className="w-full max-w-md rounded-2xl shadow-xl backdrop-blur-xl bg-[hsl(var(--paper)/90)] border border-[hsl(var(--border)/50)]">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-bold text-[hsl(var(--primary))]">
@@ -78,127 +83,108 @@ export default function StyledRegisterForm() {
             </div>
 
             {/* Email */}
-            <div className="flex flex-col">
-              <label className="text-sm font-medium text-[hsl(var(--foreground))] text-end">
-                Email
-              </label>
-              <Input
-                type="email"
-                placeholder="you@example.com"
-                {...register("email")}
-                className="rounded-xl bg-[hsl(var(--input))] text-[hsl(var(--foreground))] placeholder:text-[hsl(var(--text-disabled))] text-end"
-              />
+            <div className="flex flex-col gap-2">
+              <label className="font-medium text-sm text-foreground text-left">Email</label>
+              <div className="relative">
+                <Input
+                  type="email"
+                  placeholder="you@example.com"
+                  // Applying register and error styles
+                  className={`rounded-xl pl-10 h-12 bg-input border-2 ${
+                    errors.email ? 'border-destructive' : 'border-input focus:border-primary'
+                  } transition-colors text-left`}
+                  dir="ltr"
+                  {...register("email")}
+                />
+                {/* Icons position changed to right for LTR/English */}
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" /> 
+              </div>
+              {/* Error message */}
               {errors.email && (
-                <p className="text-sm text-[hsl(var(--destructive))]">
-                  {errors.email.message}
-                </p>
+                <p className="text-xs text-destructive text-left">{errors.email.message}</p>
               )}
             </div>
 
             {/* Password */}
-            <div className="flex flex-col relative">
-              <label className="text-sm font-medium text-[hsl(var(--foreground))] text-end">
+            <div className="flex flex-col gap-2">
+              <label className="font-medium text-sm text-foreground text-left">
                 Password
               </label>
-              <Input
-                type={showPassword ? "text" : "password"}
-                placeholder="•••••••"
-                {...register("password")}
-                className="rounded-xl bg-[hsl(var(--input))] text-[hsl(var(--foreground))] placeholder:text-[hsl(var(--text-disabled))] text-end"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-2/3 -translate-y-1/2 text-text-secondary hover:text-foreground transition-colors"
-              >
-                {" "}
-                {showPassword ? (
-                  <svg
-                    className="w-5 h-5"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    {" "}
-                    <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />{" "}
-                    <path
-                      fillRule="evenodd"
-                      d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
-                      clipRule="evenodd"
-                    />{" "}
-                  </svg>
-                ) : (
-                  <svg
-                    className="w-5 h-5"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    {" "}
-                    <path
-                      fillRule="evenodd"
-                      d="M3.707 2.293a1 1 0 00-1.414 1.414l14 14a1 1 0 001.414-1.414l-1.473-1.473A10.014 10.014 0 0019.542 10C18.268 5.943 14.478 3 10 3a9.958 9.958 0 00-4.512 1.074l-1.78-1.781zm4.261 4.26l1.514 1.515a2.003 2.003 0 012.45 2.45l1.514 1.514a4 4 0 00-5.478-5.478z"
-                      clipRule="evenodd"
-                    />{" "}
-                    <path d="M15.171 13.576l1.414 1.414A6.981 6.981 0 0018.528 11c-1.274-4.057-5.064-7-9.528-7a6.998 6.998 0 00-1.528.161l2.117 2.117a4 4 0 015.771 5.771z" />{" "}
-                  </svg>
-                )}{" "}
-              </button>
+              <div className="relative">
+                <Input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="•••••••"
+                  // Applying register and error styles
+                  className={`rounded-xl pl-10 pr-10 h-12 bg-input border-2 ${
+                    errors.password
+                      ? "border-destructive"
+                      : "border-input focus:border-primary"
+                  } transition-colors text-left`}
+                  dir="ltr"
+                  {...register("password")}
+                />
+                {/* Icons position changed for LTR/English */}
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+
+                {/* Show/Hide Password Button */}
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-muted-foreground hover:text-foreground"
+                >
+                  {showPassword ? (
+                    <EyeOff className="w-5 h-5" />
+                  ) : (
+                    <Eye className="w-5 h-5" />
+                  )}
+                </button>
+              </div>
+              {/* Error message */}
               {errors.password && (
-                <p className="text-sm text-[hsl(var(--destructive))]">
+                <p className="text-xs text-destructive text-left">
                   {errors.password.message}
                 </p>
               )}
             </div>
 
             {/* Confirm Password */}
-            <div className="flex flex-col relative">
-              <label className="text-sm font-medium text-[hsl(var(--foreground))] text-end">
-                Confirm Password
+            <div className="flex flex-col gap-2">
+              <label className="font-medium text-sm text-foreground text-left">
+                Password
               </label>
-              <Input
-                type={showConfirmPassword ? "text" : "password"}
-                placeholder="•••••••"
-                {...register("confirmPassword")}
-                className="rounded-xl bg-[hsl(var(--input))] text-[hsl(var(--foreground))] placeholder:text-[hsl(var(--text-disabled))] text-end"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPassword(!showPassword)}
-                className="absolute right-4 top-2/3 -translate-y-1/2 text-text-secondary hover:text-foreground transition-colors"
-              >
-                {" "}
-                {showPassword ? (
-                  <svg
-                    className="w-5 h-5"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    {" "}
-                    <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />{" "}
-                    <path
-                      fillRule="evenodd"
-                      d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
-                      clipRule="evenodd"
-                    />{" "}
-                  </svg>
-                ) : (
-                  <svg
-                    className="w-5 h-5"
-                    fill="currentColor"
-                    viewBox="0 0 20 20"
-                  >
-                    {" "}
-                    <path
-                      fillRule="evenodd"
-                      d="M3.707 2.293a1 1 0 00-1.414 1.414l14 14a1 1 0 001.414-1.414l-1.473-1.473A10.014 10.014 0 0019.542 10C18.268 5.943 14.478 3 10 3a9.958 9.958 0 00-4.512 1.074l-1.78-1.781zm4.261 4.26l1.514 1.515a2.003 2.003 0 012.45 2.45l1.514 1.514a4 4 0 00-5.478-5.478z"
-                      clipRule="evenodd"
-                    />{" "}
-                    <path d="M15.171 13.576l1.414 1.414A6.981 6.981 0 0018.528 11c-1.274-4.057-5.064-7-9.528-7a6.998 6.998 0 00-1.528.161l2.117 2.117a4 4 0 015.771 5.771z" />{" "}
-                  </svg>
-                )}{" "}
-              </button>
-              {errors.confirmPassword && (
-                <p className="text-sm text-[hsl(var(--destructive))]">
-                  {errors.confirmPassword.message}
+              <div className="relative">
+                <Input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="•••••••"
+                  // Applying register and error styles
+                  className={`rounded-xl pl-10 pr-10 h-12 bg-input border-2 ${
+                    errors.password
+                      ? "border-destructive"
+                      : "border-input focus:border-primary"
+                  } transition-colors text-left`}
+                  dir="ltr"
+                  {...register("password")}
+                />
+                {/* Icons position changed for LTR/English */}
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+
+                {/* Show/Hide Password Button */}
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-muted-foreground hover:text-foreground"
+                >
+                  {showConfirmPassword ? (
+                    <EyeOff className="w-5 h-5" />
+                  ) : (
+                    <Eye className="w-5 h-5" />
+                  )}
+                </button>
+              </div>
+              {/* Error message */}
+              {errors.password && (
+                <p className="text-xs text-destructive text-left">
+                  {errors.password.message}
                 </p>
               )}
             </div>
@@ -207,8 +193,8 @@ export default function StyledRegisterForm() {
             <div className="flex items-center gap-2 justify-end">
               <Checkbox
                 id="remember"
-                checked={false}
-                onCheckedChange={() => {}}
+                checked={rememberMe}
+                onCheckedChange={(checked) => setRememberMe(checked as boolean)}
               />
               <label
                 htmlFor="remember"
