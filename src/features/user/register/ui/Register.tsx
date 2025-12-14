@@ -84,24 +84,30 @@ export default function StyledRegisterForm() {
 
             {/* Email */}
             <div className="flex flex-col gap-2">
-              <label className="font-medium text-sm text-foreground text-left">Email</label>
+              <label className="font-medium text-sm text-foreground text-left">
+                Email
+              </label>
               <div className="relative">
                 <Input
                   type="email"
                   placeholder="you@example.com"
                   // Applying register and error styles
                   className={`rounded-xl pl-10 h-12 bg-input border-2 ${
-                    errors.email ? 'border-destructive' : 'border-input focus:border-primary'
+                    errors.email
+                      ? "border-destructive"
+                      : "border-input focus:border-primary"
                   } transition-colors text-left`}
                   dir="ltr"
                   {...register("email")}
                 />
                 {/* Icons position changed to right for LTR/English */}
-                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" /> 
+                <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
               </div>
               {/* Error message */}
               {errors.email && (
-                <p className="text-xs text-destructive text-left">{errors.email.message}</p>
+                <p className="text-xs text-destructive text-left">
+                  {errors.email.message}
+                </p>
               )}
             </div>
 
@@ -150,25 +156,24 @@ export default function StyledRegisterForm() {
             {/* Confirm Password */}
             <div className="flex flex-col gap-2">
               <label className="font-medium text-sm text-foreground text-left">
-                Password
+                Confirm Password
               </label>
+
               <div className="relative">
                 <Input
-                  type={showPassword ? "text" : "password"}
+                  type={showConfirmPassword ? "text" : "password"}
                   placeholder="•••••••"
-                  // Applying register and error styles
                   className={`rounded-xl pl-10 pr-10 h-12 bg-input border-2 ${
-                    errors.password
+                    errors.confirmPassword
                       ? "border-destructive"
                       : "border-input focus:border-primary"
                   } transition-colors text-left`}
                   dir="ltr"
-                  {...register("password")}
+                  {...register("confirmPassword")}
                 />
-                {/* Icons position changed for LTR/English */}
+
                 <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
 
-                {/* Show/Hide Password Button */}
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
@@ -181,10 +186,10 @@ export default function StyledRegisterForm() {
                   )}
                 </button>
               </div>
-              {/* Error message */}
-              {errors.password && (
+
+              {errors.confirmPassword && (
                 <p className="text-xs text-destructive text-left">
-                  {errors.password.message}
+                  {errors.confirmPassword.message}
                 </p>
               )}
             </div>
