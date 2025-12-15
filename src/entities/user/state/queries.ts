@@ -3,11 +3,13 @@ import { api } from "@/shared/api/api-client";
 import { userKeys } from "./keys";
 
 interface UserData {
-  id: string;
-  email: string;
-  name?: string;
-  // أضف الحقول الأخرى التي يرجعها API
+  user: {
+    id: string;
+    name: string;
+    email: string;
+  }
 }
+
 
 export async function fetchUserData(): Promise<UserData> {
   const response = await api.get<UserData>("/auth/me", {

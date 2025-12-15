@@ -95,6 +95,16 @@
     --card-foreground: 0 0% 95%;
     --popover: 220 15% 15%;
     --popover-foreground: 0 0% 95%;
+
+     --toast-success-bg: #16a34a;
+  --toast-success-color: white;
+
+  --toast-error-bg: #dc2626;
+  --toast-error-color: white;
+
+  --toast-loading-bg: #fbbf24;
+  --toast-loading-color: black;
+
   }
 
   /* ===================== */

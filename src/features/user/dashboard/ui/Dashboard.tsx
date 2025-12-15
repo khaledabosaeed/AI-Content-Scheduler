@@ -67,16 +67,20 @@ export default function DashboardPage() {
       const data = await res.json();
 
       if (!res.ok || data.success === false) {
-        toast.error(
-          "Something went wrong!" + (data.error?.message || "")
-        );
+        toast.error("Something went wrong!" + (data.error?.message || ""));
         return;
       }
 
-      toast.success(`🎉 The post has been published successfully on ${data.platform}!`);
+      toast.success(
+        `🎉 The post has been published successfully on ${data.platform}!`
+      );
       fetchPosts();
-    } catch (err) {
-      toast.error(err?.message || "Something went wrong!");
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        toast.error(err.message);
+      } else {
+        toast.error("Something went wrong!");
+      }
     } finally {
       setPublishingId(null);
     }
@@ -125,8 +129,13 @@ export default function DashboardPage() {
               تحديث
             </button>
             <SaveButton
-              message={{ id: "", content: "" }} // فارغ → المستخدم يكتب المحتوى
-              prompt="" // لو حابة يمكن تتركه فارغ
+              message={{
+                id: "",
+                content: "",
+                role: "user", // أو "system" حسب السياق
+                createdAt: "", // الوقت الحالي أو أي تاريخ مناسب
+              }}
+              prompt=""
               buttonText="إنشاء بوست جديد"
             />
           </div>
@@ -200,9 +209,14 @@ export default function DashboardPage() {
 
                     {post.status === "draft" && (
                       <SaveButton
-                        message={{ id: post.id, content: post.content }}
+                        message={{
+                          id: post.id,
+                          content: post.content,
+                          role: "user", // أو القيمة المناسبة حسب سياق البوست
+                          createdAt: "", // أو post.created_at إذا موجودة في الـ post
+                        }}
                         prompt={post.prompt}
-                        buttonText="جدولة" // يظهر نص "جدولة"
+                        buttonText="جدولة"
                         postId={post.id}
                       />
                     )}

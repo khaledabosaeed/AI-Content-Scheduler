@@ -61,7 +61,7 @@ export default function SaveButton({
           onOpenChange={setIsModalOpen}
           initialContent={message.content}
           onConfirm={(date, platform, content) => {
-            handleSave(date, platform, content);
+            handleSave(date ?? undefined, platform, content);
             setIsModalOpen(false);
           }}
         />

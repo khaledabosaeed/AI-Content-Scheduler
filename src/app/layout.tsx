@@ -56,35 +56,7 @@ export default async function RootLayout({
             <Suspense fallback={<div />}>
               <main>
                 {children}
-                <Toaster
-                  richColors
-                  toastOptions={{
-                    success: {
-                      style: {
-                        background: "var(--toast-success-bg)",
-                        color: "var(--toast-success-color)",
-                      },
-                    },
-                    error: {
-                      style: {
-                        background: "var(--toast-error-bg)",
-                        color: "var(--toast-error-color)",
-                      },
-                    },
-                    info: {
-                      style: {
-                        background: "var(--toast-info-bg)",
-                        color: "var(--toast-info-color)",
-                      },
-                    },
-                    warning: {
-                      style: {
-                        background: "var(--toast-warning-bg)",
-                        color: "var(--toast-warning-color)",
-                      },
-                    },
-                  }}
-                />
+                <Toaster richColors />
               </main>
             </Suspense>
           </QueryProvider>

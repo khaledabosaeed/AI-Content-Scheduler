@@ -19,8 +19,8 @@ interface Schedule {
   id: string;
   scheduled_for: string;
   status: string;
-  social_accounts: SocialAccount | null;
-  posts: Post | null;
+  social_accounts: SocialAccount[];
+  posts: Post[];
 }
 
 export async function POST(req: Request) {
@@ -63,7 +63,14 @@ export async function POST(req: Request) {
     }
 
     // الآن نقدر نعمل assertion بأمان
-    const schedules: Schedule[] = data as Schedule[];
+    const schedules: Schedule[] = (data || []).map((item: any) => ({
+      id: item.id,
+      scheduled_for: item.scheduled_for,
+      status: item.status,
+
+      social_accounts: item.social_accounts ?? [],
+      posts: item.posts ?? [],
+    }));
 
     if (error) throw error;
     if (!schedules || schedules.length === 0) {
@@ -73,8 +80,8 @@ export async function POST(req: Request) {
     }
 
     for (const schedule of schedules) {
-      const post = schedule.posts;
-      const socialAccount = schedule.social_accounts;
+      const post = schedule.posts[0];
+      const socialAccount = schedule.social_accounts[0];
 
       if (!post?.content) {
         console.warn(`Schedule ${schedule.id} has no post content`);
