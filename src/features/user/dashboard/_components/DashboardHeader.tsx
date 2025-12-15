@@ -29,7 +29,7 @@ export function DashboardHeader() {
             className="hidden md:inline-flex bg-white text-slate-900 hover:bg-slate-100 shadow-sm font-medium"
           >
             <SaveButton
-              message={{ id: "", content: "" }}
+              message={{ id: "", content: "", role: "user", createdAt: new Date() }}
               prompt=""
               buttonText="+ Create Post"
             />

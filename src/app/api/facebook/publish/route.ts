@@ -8,7 +8,7 @@ export async function POST(req: Request) {
     const body = await req.json().catch(() => ({}));
     const postId: string | undefined = body?.postId;
 
-    // لو بدون postId (publishAll) لازم secret
+    // ✅ لو بدون postId (publishAll) لازم secret
     if (!postId) {
       const secret = req.headers.get("x-publish-secret");
       if (!secret || secret !== SECRET_KEY) {
@@ -19,17 +19,15 @@ export async function POST(req: Request) {
       }
     }
 
-    let query = supabaseServer.from("posts").select(
-      `
-        id,
-        content,
-        platform,
-        user_id,
-        status,
-        scheduled_at,
-        users(facebook_access_token)
-      `
-    );
+    // ✅ 1) نجيب البوستات بدون JOIN
+    let query = supabaseServer.from("posts").select(`
+      id,
+      content,
+      platform,
+      user_id,
+      status,
+      scheduled_at
+    `);
 
     if (postId) {
       query = query.eq("id", postId);
@@ -42,6 +40,7 @@ export async function POST(req: Request) {
     const { data: posts, error } = await query;
 
     if (error) throw error;
+
     if (!posts || posts.length === 0) {
       return NextResponse.json(
         { success: false, error: "No posts to publish" },
@@ -53,9 +52,16 @@ export async function POST(req: Request) {
     const results: Array<{ id: string; ok: boolean; error?: string }> = [];
 
     for (const post of posts) {
-      const fbToken = post?.users?.facebook_access_token;
+      // ✅ 2) نجيب Facebook token من جدول users بناءً على user_id
+      const { data: userRow, error: userErr } = await supabaseServer
+        .from("users")
+        .select("facebook_access_token")
+        .eq("id", post.user_id)
+        .single();
 
-      if (!fbToken) {
+      const fbToken = userRow?.facebook_access_token;
+
+      if (userErr || !fbToken) {
         results.push({
           id: post.id,
           ok: false,
@@ -65,13 +71,12 @@ export async function POST(req: Request) {
       }
 
       try {
-        // 1) get pages
+        // ✅ 3) get pages
         const pageRes = await fetch(
           `https://graph.facebook.com/me/accounts?access_token=${encodeURIComponent(
             fbToken
           )}`
         );
-
         const pagesJson = await pageRes.json();
 
         if (!pageRes.ok) {
@@ -93,7 +98,7 @@ export async function POST(req: Request) {
           continue;
         }
 
-        // 2) publish
+        // ✅ 4) publish post
         const graphRes = await fetch(
           `https://graph.facebook.com/${page.id}/feed`,
           {
@@ -117,8 +122,8 @@ export async function POST(req: Request) {
           continue;
         }
 
-        // 3) update DB only on success
-        await supabaseServer
+        // ✅ 5) update DB only on success
+        const { error: updateErr } = await supabaseServer
           .from("posts")
           .update({
             status: "published",
@@ -126,6 +131,15 @@ export async function POST(req: Request) {
             platform_post_id: graphData.id,
           })
           .eq("id", post.id);
+
+        if (updateErr) {
+          results.push({
+            id: post.id,
+            ok: false,
+            error: updateErr.message || "Failed to update DB status",
+          });
+          continue;
+        }
 
         successCount++;
         results.push({ id: post.id, ok: true });

@@ -11,6 +11,7 @@ type Props = {
   onCancelSchedule?: (postId: string) => Promise<void> | void;
 
   onDelete: (postId: string) => Promise<void> | void;
+  publishingId?: string | null;
 
   setPosts?: React.Dispatch<React.SetStateAction<Post[]>>;
 };
@@ -94,9 +95,23 @@ export function RecentPostsTable({
               const showPublish =
                 !isPublished && typeof onPublish === "function";
 
-              function handleCancelClick(id: string): void {
-                throw new Error("Function not implemented.");
-              }
+              const handleCancelClick = async (postId: string) => {
+                try {
+                  if (!onCancelSchedule) return;
+
+                  await onCancelSchedule(postId);
+
+                  // ✅ تحديث UI بعد النجاح
+                  updateLocal(postId, {
+                    status: "draft" as any,
+                    scheduled_at: null as any,
+                  } as any);
+                } catch (err: any) {
+                  alert(
+                    "❌ فشل الإلغاء: " + (err?.message || "Unexpected error")
+                  );
+                }
+              };
 
               return (
                 <tr key={post.id} className="border-b last:border-0">

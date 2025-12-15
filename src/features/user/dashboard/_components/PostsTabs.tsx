@@ -15,8 +15,7 @@ type Props = {
   onSchedule?: (post: Post) => void;
   onPublish?: (postId: string) => Promise<void> | void;
   onCancelSchedule?: (postId: string) => Promise<void> | void;
-
-  // ❗ إجباري (عشان RecentPostsTable صار بده onDelete)
+  publishingId?: string | null;
   onDelete: (postId: string) => Promise<void> | void;
 
   setPosts?: React.Dispatch<React.SetStateAction<Post[]>>;
@@ -97,6 +96,7 @@ export function PostsTabs({
             onPublish={onPublish}
             onDelete={onDelete}
             setPosts={setPosts}
+            // publishingId={publishingId}
           />
         </TabsContent>
       </Tabs>

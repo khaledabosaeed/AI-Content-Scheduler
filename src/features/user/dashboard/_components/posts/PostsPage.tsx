@@ -78,41 +78,26 @@ export default function PostsPage() {
     try {
       setPublishingId(postId);
 
+      console.log("➡️ calling /api/facebook/publish", postId);
+
       const res = await fetch("/api/facebook/publish", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ postId }),
       });
 
-      const data = await safeJson(res);
+      console.log("⬅️ publish response status:", res.status);
 
-      if (!res.ok || data?.success === false) {
-        alert(
-          "خطأ أثناء النشر على الفيسبوك: " +
-            (data?.error?.message || data?.error || data?.raw || "")
+      const data = await res.json();
+      console.log("⬅️ publish response json:", data);
+
+      if (!res.ok || data.success === false) {
+        throw new Error(
+          data?.error?.message || data?.error || "Publish failed"
         );
-        return;
       }
 
-      // ✅ update locally immediately (status + published_at)
-      setPosts((prev) =>
-        prev.map((p) =>
-          p.id === postId
-            ? ({
-                ...p,
-                status: "published" as any,
-                published_at: new Date().toISOString() as any,
-                scheduled_at: null as any,
-              } as any)
-            : p
-        )
-      );
-
-      alert("🎉 تم نشر البوست بنجاح على فيسبوك!");
-      await fetchPosts(); // تأكيد من السيرفر
-    } catch (err) {
-      console.error(err);
-      alert("حدث خطأ غير متوقع.");
+      await fetchPosts();
     } finally {
       setPublishingId(null);
     }
@@ -262,7 +247,7 @@ export default function PostsPage() {
           setSelectedPost(post);
           setIsScheduleOpen(true);
         }}
-onPublish={async (id) => { console.log("publishing", id); }}
+        onPublish={(id) => publishToFacebook(id)}
         onCancelSchedule={(postId) => cancelSchedule(postId)}
         onDelete={() => {}}
       />
@@ -278,7 +263,6 @@ onPublish={async (id) => { console.log("publishing", id); }}
           onConfirm={(date, platform, content) =>
             confirmSchedule(date, platform, content)
           }
-          // لو المودال بيدعم loading:
           isLoading={isScheduling}
         />
       )}
