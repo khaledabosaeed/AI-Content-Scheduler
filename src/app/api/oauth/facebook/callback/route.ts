@@ -45,16 +45,6 @@ export async function GET(req: NextRequest) {
       // إعادة التوجيه للداشبورد
       const url = new URL("/dashboard", req.url);
       const res = NextResponse.redirect(url);
-
-      // تخزين التوكن في كوكيز
-      res.cookies.set("fb_token", userAccessToken, {
-        httpOnly: true,
-        secure: false,
-        sameSite: "lax",
-        path: "/",
-        maxAge: 60 * 60 * 24 * 30,
-      });
-
       return res;
     } catch (err: any) {
       console.error("FB CALLBACK ERROR:", err);
