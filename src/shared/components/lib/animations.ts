@@ -46,6 +46,27 @@ export const fadeIn: Variants = {
 };
 
 /**
+ * Fade in and slide up variant
+ * Used for elements that appear smoothly from bottom to top
+ */
+export const fadeInUp: Variants = {
+  hidden: {
+    opacity: 0,
+    y: 30,
+  },
+  show: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.6,
+      ease: "easeOut",
+    },
+  },
+};
+
+
+
+/**
  * Scale variant for zoom-in effects
  */
 export const scaleIn: Variants = {

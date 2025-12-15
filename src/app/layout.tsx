@@ -6,7 +6,7 @@ import { userKeys } from "@/entities/user/state/keys";
 import { ThemeProvider } from "./_providers/theme-provider";
 import { Suspense } from "react";
 import { getUserServer } from "@/shared/api/getUserclient";
-import { Toaster } from "sonner";
+import { Toaster } from "sonner"
 
 export const metadata: Metadata = {
   title: "AI Content Scheduler",
