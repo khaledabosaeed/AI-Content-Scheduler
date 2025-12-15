@@ -2,17 +2,16 @@
 
 import type { Post } from "@/entities/user/type/Post";
 import { Button } from "@/shared/components/ui/button";
-
 type Props = {
   posts: Post[];
   emptyText?: string;
 
-  // ✅ optional handlers
   onSchedule?: (post: Post) => void;
   onPublish?: (postId: string) => Promise<void> | void;
   onCancelSchedule?: (postId: string) => Promise<void> | void;
 
-  // ✅ optional optimistic updater
+  onDelete: (postId: string) => Promise<void> | void;
+
   setPosts?: React.Dispatch<React.SetStateAction<Post[]>>;
 };
 
@@ -22,37 +21,43 @@ export function RecentPostsTable({
   onSchedule,
   onPublish,
   onCancelSchedule,
+  onDelete,
   setPosts,
 }: Props) {
   const updateLocal = (postId: string, patch: Partial<Post>) => {
-    if (!setPosts) return; // مش إجباري
+    if (!setPosts) return;
     setPosts((prev) =>
       prev.map((p) => (p.id === postId ? ({ ...p, ...patch } as Post) : p))
     );
   };
 
   const handleScheduleClick = (post: Post) => {
-    // ✅ optimistic: نحط status scheduled (حقيقيًا التاريخ بيتحدد من المودال عندك)
     updateLocal(post.id, { status: "scheduled" as any });
     onSchedule?.(post);
   };
 
   const handlePublishClick = async (postId: string) => {
-    // ✅ optimistic: published
-    updateLocal(postId, {
-      status: "published" as any,
-      scheduled_at: null as any,
-    } as any);
-    await onPublish?.(postId);
+    try {
+      if (!onPublish) return;
+      console.log("✅ publish clicked", postId);
+      await onPublish?.(postId);
+
+      updateLocal(postId, {
+        status: "published" as any,
+        scheduled_at: null as any,
+      } as any);
+
+      console.log("تم النشر ");
+    } catch (err: any) {
+      alert("❌ فشل النشر: " + (err?.message || "Unexpected error"));
+    }
   };
 
-  const handleCancelClick = async (postId: string) => {
-    // ✅ optimistic: draft + cancel date
-    updateLocal(postId, {
-      status: "draft" as any,
-      scheduled_at: null as any,
-    } as any);
-    await onCancelSchedule?.(postId);
+  const handleDeleteClick = async (postId: string) => {
+    if (setPosts) {
+      setPosts((prev) => prev.filter((p) => p.id !== postId));
+    }
+    await onDelete(postId);
   };
 
   if (!posts?.length) {
@@ -71,22 +76,27 @@ export function RecentPostsTable({
             <tr className="text-left text-muted-foreground">
               <th className="p-3">Content</th>
               <th className="p-3">Status</th>
-              <th className="p-3 text-right">Actions</th>
+              <th className="p-3 text-center">Actions</th>
             </tr>
           </thead>
 
           <tbody>
             {posts.map((post) => {
-              const s = (post.status || "draft").toString().toLowerCase();
+              const s = (post.status || "draft").toLowerCase();
               const isDraft = s === "draft";
               const isScheduled = s === "scheduled";
               const isPublished = s === "published";
 
               const showSchedule = isDraft && typeof onSchedule === "function";
-              const showPublish =
-                !isPublished && typeof onPublish === "function";
+              const showDelete = isDraft;
               const showCancel =
                 isScheduled && typeof onCancelSchedule === "function";
+              const showPublish =
+                !isPublished && typeof onPublish === "function";
+
+              function handleCancelClick(id: string): void {
+                throw new Error("Function not implemented.");
+              }
 
               return (
                 <tr key={post.id} className="border-b last:border-0">
@@ -123,6 +133,15 @@ export function RecentPostsTable({
                           onClick={() => handlePublishClick(post.id)}
                         >
                           Publish
+                        </Button>
+                      )}
+                      {showDelete && (
+                        <Button
+                          size="sm"
+                          variant="destructive"
+                          onClick={() => handleDeleteClick(post.id)}
+                        >
+                          Delete
                         </Button>
                       )}
                     </div>

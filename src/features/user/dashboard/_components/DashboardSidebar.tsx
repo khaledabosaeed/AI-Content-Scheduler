@@ -50,7 +50,6 @@ function useActivePath() {
   return { isItemActive };
 }
 
-/** ✅ جزء ال Links (نستخدمه بالموبايل والديسكتوب) */
 function NavLinks({
   onNavigate,
   variant,
@@ -236,7 +235,7 @@ export function DashboardSidebar() {
     <aside
       dir="ltr"
       className={cn(
-        "hidden md:flex w-[260px] h-screen shrink-0",
+        "hidden md:flex w-[260px] h-auto shrink-0",
         "border-r bg-gradient-to-b from-slate-950 to-slate-900 text-white",
         "flex-col"
       )}

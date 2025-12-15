@@ -1,3 +1,5 @@
+"use client";
+
 import type { Post } from "@/entities/user/type/Post";
 import {
   Tabs,
@@ -10,12 +12,13 @@ import { RecentPostsTable } from "./RecentPostsTable";
 type Props = {
   posts: Post[];
 
-  // ✅ optional handlers (مش إجباريين)
   onSchedule?: (post: Post) => void;
   onPublish?: (postId: string) => Promise<void> | void;
   onCancelSchedule?: (postId: string) => Promise<void> | void;
 
-  // ✅ optional optimistic state updater
+  // ❗ إجباري (عشان RecentPostsTable صار بده onDelete)
+  onDelete: (postId: string) => Promise<void> | void;
+
   setPosts?: React.Dispatch<React.SetStateAction<Post[]>>;
 };
 
@@ -24,6 +27,7 @@ export function PostsTabs({
   onSchedule,
   onPublish,
   onCancelSchedule,
+  onDelete,
   setPosts,
 }: Props) {
   const all = posts;
@@ -61,6 +65,7 @@ export function PostsTabs({
             onSchedule={onSchedule}
             onPublish={onPublish}
             onCancelSchedule={onCancelSchedule}
+            onDelete={onDelete}
             setPosts={setPosts}
           />
         </TabsContent>
@@ -69,9 +74,9 @@ export function PostsTabs({
           <RecentPostsTable
             posts={scheduled}
             emptyText="No scheduled posts."
-            // scheduled: publish + cancel
             onPublish={onPublish}
             onCancelSchedule={onCancelSchedule}
+            onDelete={onDelete}
             setPosts={setPosts}
           />
         </TabsContent>
@@ -80,14 +85,19 @@ export function PostsTabs({
           <RecentPostsTable
             posts={drafts}
             emptyText="No drafts."
-            // drafts: schedule only
             onSchedule={onSchedule}
+            onDelete={onDelete}
             setPosts={setPosts}
           />
         </TabsContent>
-
         <TabsContent value="published" className="mt-4">
-          <RecentPostsTable posts={published} emptyText="No published posts." />
+          <RecentPostsTable
+            posts={published}
+            emptyText="No published posts."
+            onPublish={onPublish}
+            onDelete={onDelete}
+            setPosts={setPosts}
+          />
         </TabsContent>
       </Tabs>
     </div>

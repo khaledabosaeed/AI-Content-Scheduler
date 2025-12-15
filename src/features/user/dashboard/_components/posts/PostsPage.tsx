@@ -259,12 +259,12 @@ export default function PostsPage() {
         posts={posts}
         setPosts={setPosts}
         onSchedule={(post) => {
-          // افتحي المودال تبعك
           setSelectedPost(post);
           setIsScheduleOpen(true);
         }}
-        onPublish={(postId) => publishToFacebook(postId)}
+onPublish={async (id) => { console.log("publishing", id); }}
         onCancelSchedule={(postId) => cancelSchedule(postId)}
+        onDelete={() => {}}
       />
 
       {isScheduleOpen && selectedPost && (

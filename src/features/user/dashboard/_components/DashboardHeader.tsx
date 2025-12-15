@@ -1,12 +1,10 @@
-"use client";
-
 import { Button } from "@/shared/components/ui/button";
 import Link from "next/link";
 import {
   DashboardMobileMenuButton,
   MobileCreatePostSelect,
 } from "./DashboardSidebar";
-import { SaveButton } from "@/features/chat";
+import SaveButton from "@/features/chat/save-as-post/ui/SaveButton";
 
 export function DashboardHeader() {
   return (
@@ -25,15 +23,14 @@ export function DashboardHeader() {
           <div className="md:hidden">
             <MobileCreatePostSelect />
           </div>
-          
 
           <Button
-            
+            asChild
             className="hidden md:inline-flex bg-white text-slate-900 hover:bg-slate-100 shadow-sm font-medium"
           >
             <SaveButton
-              message={{ id: "", content: "" }} // فارغ → المستخدم يكتب المحتوى
-              prompt="" // لو حابة يمكن تتركه فارغ
+              message={{ id: "", content: "" }}
+              prompt=""
               buttonText="+ Create Post"
             />
           </Button>

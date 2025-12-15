@@ -5,7 +5,8 @@ import type { Message } from "@/entities/chat";
 import ScheduleModal from "@/widgets/scheduler/ScheduleModal";
 import { useSaveAsPost } from "../model/use-save-as-post";
 
-interface SaveButtonProps {
+interface SaveButtonProps
+  extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   message: Message;
   prompt?: string;
   buttonText?: string;
@@ -13,7 +14,7 @@ interface SaveButtonProps {
 }
 
 const SaveButton = forwardRef<HTMLButtonElement, SaveButtonProps>(
-  ({ message, prompt, buttonText, onSaved }, ref) => {
+  ({ message, prompt, buttonText, onSaved, className, type, ...rest }, ref) => {
     const { saveAsPost, isSaving } = useSaveAsPost();
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -30,6 +31,7 @@ const SaveButton = forwardRef<HTMLButtonElement, SaveButtonProps>(
           status: scheduledDate ? "scheduled" : "draft",
           scheduledAt: scheduledDate ? scheduledDate.toISOString() : null,
         });
+
         onSaved?.();
 
         alert(
@@ -46,8 +48,11 @@ const SaveButton = forwardRef<HTMLButtonElement, SaveButtonProps>(
       <>
         <button
           ref={ref}
+          type={type ?? "button"} // مهم عشان ما يعملش submit بالخطأ
+          className={className} // خلي الشادكن يمرر الستايل هنا
           onClick={() => setIsModalOpen(true)}
           disabled={isSaving}
+          {...rest}
         >
           {isSaving ? "جاري الحفظ..." : buttonText || "💾 save post"}
         </button>
@@ -69,5 +74,4 @@ const SaveButton = forwardRef<HTMLButtonElement, SaveButtonProps>(
 );
 
 SaveButton.displayName = "SaveButton";
-
 export default SaveButton;
