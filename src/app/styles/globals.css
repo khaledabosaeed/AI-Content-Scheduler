@@ -5,10 +5,29 @@
 @layer base {
   :root {
     /* ===================== */
-    /* Light Mode – Gray */
+    /* Light Mode – Purple & Teal */
     /* ===================== */
     --background: 0 0% 100%;
     --foreground: 220 15% 20%;
+
+    /* Purple Primary Colors */
+    --primary-purple: 265 75% 55%;
+    --primary-purple-light: 265 75% 70%;
+    --primary-purple-dark: 265 75% 40%;
+
+    /* Teal Secondary Colors */
+    --teal: 180 65% 45%;
+    --teal-light: 180 65% 60%;
+
+    /* Surface Colors */
+    --surface-1: 0 0% 100%;
+    --surface-2: 0 0% 98%;
+
+    /* Brand Colors */
+    --brand-secondary: 265 50% 50%;
+
+    /* CTA Colors */
+    --cta-foreground: 0 0% 100%;
 
     --primary: 220 10% 35%;
     --primary-foreground: 0 0% 100%;
@@ -35,12 +54,12 @@
 
     --divider: 220 10% 90%;
 
-    --action-hover: 220 10% 30%;
-    --action-selected: 220 10% 35%;
+    --action-hover: 265 75% 95%;
+    --action-selected: 265 75% 90%;
 
     --card: 0 0% 100%;
     --card-foreground: 220 15% 20%;
-    --popover: 0 0% 100%;
+    --popover: 0 0% 98%;
     --popover-foreground: 220 15% 20%;
 
     /* ✅ Border Radius */
@@ -57,11 +76,30 @@
   }
 
   /* ===================== */
-  /* Dark Mode – Dark Gray */
+  /* Dark Mode – Dark Purple & Teal */
   /* ===================== */
   .dark {
     --background: 220 15% 10%;
     --foreground: 0 0% 95%;
+
+    /* Purple Primary Colors */
+    --primary-purple: 265 75% 65%;
+    --primary-purple-light: 265 75% 75%;
+    --primary-purple-dark: 265 75% 50%;
+
+    /* Teal Secondary Colors */
+    --teal: 180 65% 50%;
+    --teal-light: 180 65% 65%;
+
+    /* Surface Colors */
+    --surface-1: 220 15% 15%;
+    --surface-2: 220 15% 20%;
+
+    /* Brand Colors */
+    --brand-secondary: 265 50% 60%;
+
+    /* CTA Colors */
+    --cta-foreground: 0 0% 100%;
 
     --primary: 220 10% 65%;
     --primary-foreground: 220 15% 10%;
@@ -88,12 +126,12 @@
 
     --divider: 220 10% 25%;
 
-    --action-hover: 220 10% 70%;
-    --action-selected: 220 10% 65%;
+    --action-hover: 265 75% 20%;
+    --action-selected: 265 75% 25%;
 
     --card: 220 15% 15%;
     --card-foreground: 0 0% 95%;
-    --popover: 220 15% 15%;
+    --popover: 220 15% 20%;
     --popover-foreground: 0 0% 95%;
 
      --toast-success-bg: #16a34a;

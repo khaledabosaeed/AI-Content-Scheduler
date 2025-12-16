@@ -299,17 +299,13 @@ export async function POST(req: Request) {
           continue;
         }
 
-<<<<<<< HEAD
         console.log(`Post ${post.id} published successfully with id ${graphData.id}`);
 
         // تحديث جدول البوست بعد النشر
         await supabaseServer
           .from("posts")
           .update({
-=======
-        // 3) update DB only on success
-        await supabaseServer.from("posts").update({
->>>>>>> 36a95f27a90a8193902b03d1b06f6d94f8fd84e7
+
             status: "published",
             published_at: new Date().toISOString(),
             platform_post_id: graphData.id,

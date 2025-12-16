@@ -36,12 +36,12 @@ export default function ChatInput() {
   };
 
   return (
-    <div className="border-t border-gray-200 dark:border-gray-800 bg-white dark:bg-slate-950 shadow-lg">
+    <div className="border-t border-divider bg-card shadow-lg">
       <div className="w-full max-w-4xl mx-auto px-4 md:px-6 py-3 md:py-4 space-y-2">
         {error && (
-          <div className="bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-800 rounded-lg px-3 py-2 flex items-center gap-2">
+          <div className="bg-destructive/10 border border-destructive/30 rounded-lg px-3 py-2 flex items-center gap-2">
             <span className="text-base">⚠️</span>
-            <p className="text-red-600 dark:text-red-400 text-xs md:text-sm flex-1">
+            <p className="text-destructive text-xs md:text-sm flex-1">
               {error}
             </p>
           </div>
@@ -56,14 +56,14 @@ export default function ChatInput() {
             onKeyDown={handleKeyDown}
             placeholder="Type your message... (Ctrl + Enter to send)"
             rows={1}
-            className="resize-none pr-12 md:pr-14 rounded-xl border-gray-300 dark:border-gray-700 bg-gray-50 dark:bg-slate-900 text-gray-900 dark:text-white placeholder:text-gray-400 dark:placeholder:text-gray-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-200 dark:focus:ring-blue-900 transition-all min-h-[44px] text-sm md:text-base"
+            className="resize-none pr-12 md:pr-14 rounded-xl border-border bg-background text-text-primary placeholder:text-text-secondary focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all min-h-[44px] text-sm md:text-base"
           />
           {isSending ? (
             <Button
               onClick={cancelOngoingRequest}
               disabled={!isSending}
               size="sm"
-              className="absolute bottom-2 right-2 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 dark:from-blue-600 dark:to-blue-700 text-white rounded-lg shadow-md hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed h-8 w-8 md:h-9 md:w-9 p-0"
+              className="absolute bottom-2 right-2 bg-gradient-to-r from-primary to-accent hover:from-accent-foreground hover:to-primary text-primary-foreground rounded-lg shadow-md hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed h-8 w-8 md:h-9 md:w-9 p-0"
               title="Cancel Ongoing Request"
             >
               <XIcon className="w-4 h-4" />
@@ -74,7 +74,7 @@ export default function ChatInput() {
               onClick={handleSend}
               disabled={isSending || !text.trim()}
               size="sm"
-              className="absolute bottom-2 right-2 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 dark:from-blue-600 dark:to-blue-700 text-white rounded-lg shadow-md hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed h-8 w-8 md:h-9 md:w-9 p-0"
+              className="absolute bottom-2 right-2 bg-gradient-to-r from-primary to-accent hover:from-accent-foreground hover:to-primary text-primary-foreground rounded-lg shadow-md hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed h-8 w-8 md:h-9 md:w-9 p-0"
               title="Send (Ctrl + Enter)"
             >
               <SendIcon className="w-4 h-4" />
@@ -82,8 +82,8 @@ export default function ChatInput() {
           }
         </div>
 
-        <p className="text-[10px] md:text-xs text-gray-400 dark:text-gray-600 text-center font-light">
-          Press <kbd className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-800 rounded border border-gray-300 dark:border-gray-700 text-gray-600 dark:text-gray-400 font-mono text-[10px]">Ctrl</kbd> + <kbd className="px-1.5 py-0.5 bg-gray-100 dark:bg-gray-800 rounded border border-gray-300 dark:border-gray-700 text-gray-600 dark:text-gray-400 font-mono text-[10px]">Enter</kbd> to send
+        <p className="text-[10px] md:text-xs text-text-secondary text-center font-light">
+          Press <kbd className="px-1.5 py-0.5 bg-muted rounded border border-border text-text-secondary font-mono text-[10px]">Ctrl</kbd> + <kbd className="px-1.5 py-0.5 bg-muted rounded border border-border text-text-secondary font-mono text-[10px]">Enter</kbd> to send
         </p>
 
 
