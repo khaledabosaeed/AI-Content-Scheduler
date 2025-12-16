@@ -29,37 +29,40 @@ export default function HomePage() {
 
   useEffect(() => {
     const onWheel = (e: WheelEvent) => {
-  const currentRef = sectionRefs.current[visibleIndex];
-  if (!currentRef) return;
+      const currentRef = sectionRefs.current[visibleIndex];
+      if (!currentRef) return;
 
-  const delta = Math.sign(e.deltaY);
-  const tolerance = 2; // فرق صغير لتجنب التوقف عند نهاية السكشن
+      const delta = Math.sign(e.deltaY);
+      const tolerance = 2;
 
-  const canScrollDown =
-    currentRef.scrollTop + currentRef.clientHeight < currentRef.scrollHeight - tolerance;
-  const canScrollUp = currentRef.scrollTop > tolerance;
+      const canScrollDown =
+        currentRef.scrollTop + currentRef.clientHeight <
+        currentRef.scrollHeight - tolerance;
 
-  if ((delta > 0 && canScrollDown) || (delta < 0 && canScrollUp)) {
-    return; // تمرير داخلي → لا نغير visibleIndex
-  }
+      const canScrollUp = currentRef.scrollTop > tolerance;
 
-  if (isScrolling) return;
-  setIsScrolling(true);
+      // ⛔ سكروول داخلي → لا تغيّر السيكشن
+      if ((delta > 0 && canScrollDown) || (delta < 0 && canScrollUp)) {
+        return;
+      }
 
-  setVisibleIndex((prev) => {
-    let next = prev + delta;
-    if (next < 0) next = 0;
-    if (next >= sections.length) next = sections.length - 1;
-    return next;
-  });
+      if (isScrolling) return;
+      setIsScrolling(true);
 
-  setTimeout(() => setIsScrolling(false), 800);
-};
+      // ✅ حساب الإندكس بطريقة بسيطة
+      let next = visibleIndex + delta;
 
+      if (next < 0) next = 0;
+      if (next >= sections.length) next = sections.length - 1;
+
+      setVisibleIndex(next);
+
+      setTimeout(() => setIsScrolling(false), 800);
+    };
 
     window.addEventListener("wheel", onWheel, { passive: false });
     return () => window.removeEventListener("wheel", onWheel);
-  }, [isScrolling, setVisibleIndex, visibleIndex]);
+  }, [visibleIndex, isScrolling, setVisibleIndex]);
 
   const variants = {
     hidden: { x: "100%", opacity: 0 },
@@ -79,17 +82,18 @@ export default function HomePage() {
           transition={{ duration: 1.2, ease: "easeInOut" }}
           style={{
             position: "absolute",
-            top: 0,
-            left: 0,
+            inset: 0,
             width: "100%",
             height: "100vh",
           }}
         >
           <div
-            ref={(el) => (sectionRefs.current[visibleIndex] = el)}
+            ref={(el) => {
+              sectionRefs.current[visibleIndex] = el;
+            }}
             style={{
               height: "100%",
-              overflowY: "auto", // ✅ السماح بالتمرير داخل السكشن
+              overflowY: "auto",
             }}
           >
             {React.createElement(sections[visibleIndex])}

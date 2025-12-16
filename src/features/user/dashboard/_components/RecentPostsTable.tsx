@@ -1,6 +1,7 @@
 "use client";
 
 import type { Post } from "@/entities/user/type/Post";
+import { SaveButton } from "@/features/chat";
 import { Button } from "@/shared/components/ui/button";
 type Props = {
   posts: Post[];
@@ -122,13 +123,19 @@ export function RecentPostsTable({
 
                   <td className="p-3">
                     <div className="flex justify-end gap-2">
-                      {showSchedule && (
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          onClick={() => handleScheduleClick(post)}
-                        >
-                          Schedule
+                      {post.status === "draft" && (
+                        <Button asChild size="sm" variant="outline">
+                          <SaveButton
+                            message={{
+                              id: post.id,
+                              content: post.content,
+                              role: "user",
+                              createdAt: "",
+                            }}
+                            prompt={post.prompt}
+                            buttonText="Scheduale" // يظهر نص "جدولة"
+                            postId={post.id}
+                          />
                         </Button>
                       )}
 

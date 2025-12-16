@@ -25,6 +25,7 @@ type Props = {
 
   // ✅ coming from PostsPage
   hasFacebook?: boolean;
+  
   publishingId?: string | null;
 
   onPublishFacebook?: (postId: string) => void;
@@ -102,7 +103,7 @@ export function PostsTable({
                       <td className="p-3 text-muted-foreground">
                         {p.scheduled_at
                           ? new Date(p.scheduled_at).toLocaleString("en-GB")
-                          : new Date(p.created_at).toLocaleString("en-GB")}
+                          : new Date(p.createdAt).toLocaleString("en-GB")}
                       </td>
 
                       <td className="p-3 text-right">

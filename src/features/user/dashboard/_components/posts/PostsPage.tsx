@@ -133,12 +133,24 @@ export default function PostsPage() {
       toast.success("Schedule canceled ");
       await fetchPosts();
     } catch (err: any) {
-      toast.error(err?.message || "Failed to cancel schedule", {
-        id: `cancel-${postId}`,
-      });
+      alert("❌ " + (err?.message || "فشل إلغاء الجدولة"));
     }
   };
 
+  const deletePost = async (postId: string) => {
+    try {
+      const res = await fetch(`/api/posts/${postId}/delete-post`, {
+        method: "DELETE",
+      });
+      const data = await safeJson(res);
+    console.log("clicked");
+    
+    } catch (err: any) {
+      alert("❌ " + (err?.message || "Failed to delete post"));
+    }
+  };
+
+  // ===== Open schedule modal =====
   const openScheduleModal = (post: Post) => {
     setSelectedPost(post);
     setIsScheduleOpen(true);
@@ -157,7 +169,7 @@ export default function PostsPage() {
       setIsScheduling(true);
       toast.loading("Scheduling post...");
 
-      const res = await fetch(`/api/posts/${id}/schedule`, {
+      const res = await fetch(`/api/posts/${selectedPost.id}/update`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -186,7 +198,6 @@ export default function PostsPage() {
             : p
         )
       );
-
       setIsScheduleOpen(false);
       setSelectedPost(null);
 
@@ -220,11 +231,15 @@ export default function PostsPage() {
 
       <PostsTabs
         posts={posts}
+        hasFacebook={hasFacebook}
         setPosts={setPosts}
         onSchedule={(post) => openScheduleModal(post)}
         onPublish={(id) => publishToFacebook(id)}
         onCancelSchedule={(postId) => cancelSchedule(postId)}
-        onDelete={() => {}}
+
+        onRefresh={fetchPosts}
+
+        onDelete={(postId) => deletePost(postId)}
       />
 
       {isScheduleOpen && selectedPost && (
@@ -235,10 +250,11 @@ export default function PostsPage() {
             if (!v) setSelectedPost(null);
           }}
           initialContent={selectedPost.content || ""}
-          onConfirm={(date, platform, content) =>
-            confirmSchedule(date, platform, content)
-          }
-          isLoading={isScheduling}
+          onConfirm={(date, platform, content) => {
+            if (!date) return; // أو alert للمستخدم
+            confirmSchedule(date, platform, content);
+          }}
+          
         />
       )}
     </div>

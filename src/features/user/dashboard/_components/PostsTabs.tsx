@@ -11,13 +11,13 @@ import { RecentPostsTable } from "./RecentPostsTable";
 
 type Props = {
   posts: Post[];
-
+  hasFacebook: boolean;
   onSchedule?: (post: Post) => void;
   onPublish?: (postId: string) => Promise<void> | void;
   onCancelSchedule?: (postId: string) => Promise<void> | void;
   publishingId?: string | null;
   onDelete: (postId: string) => Promise<void> | void;
-
+  onRefresh: () => Promise<void>;
   setPosts?: React.Dispatch<React.SetStateAction<Post[]>>;
 };
 

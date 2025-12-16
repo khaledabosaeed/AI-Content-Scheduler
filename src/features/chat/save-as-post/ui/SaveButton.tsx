@@ -8,13 +8,14 @@ import { useSaveAsPost } from "../model/use-save-as-post";
 interface SaveButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   message: Message;
+  postId?: string;
   prompt?: string;
   buttonText?: string;
   onSaved?: () => void;
 }
 
 const SaveButton = React.forwardRef<HTMLButtonElement, SaveButtonProps>(
-  ({ message, prompt, buttonText, onSaved, className, type, ...rest }, ref) => {
+  ({ message, prompt, buttonText, onSaved, className, type,postId, ...rest }, ref) => {
     const { saveAsPost, isSaving } = useSaveAsPost();
     const [isModalOpen, setIsModalOpen] = React.useState(false);
 
@@ -25,6 +26,7 @@ const SaveButton = React.forwardRef<HTMLButtonElement, SaveButtonProps>(
     ) => {
       try {
         await saveAsPost({
+          postId,
           prompt,
           content: contentOverride || message.content,
           platform: platform || "twitter",
@@ -43,7 +45,6 @@ const SaveButton = React.forwardRef<HTMLButtonElement, SaveButtonProps>(
         alert("❌ " + (err?.message ?? "حدث خطأ"));
       }
     };
-
     return (
       <>
         <button
@@ -61,16 +62,16 @@ const SaveButton = React.forwardRef<HTMLButtonElement, SaveButtonProps>(
         </button>
 
         {isModalOpen && (
-          <ScheduleModal
-            open={isModalOpen}
-            onOpenChange={setIsModalOpen}
-            initialContent={message.content}
-            onConfirm={(date, platform, content) => {
-              handleSave(date, platform, content);
-              setIsModalOpen(false);
-            }}
-          />
-        )}
+        <ScheduleModal
+          open={isModalOpen}
+          onOpenChange={setIsModalOpen}
+          initialContent={message.content}
+          onConfirm={(date, platform, content) => {
+            handleSave(date ?? undefined, platform, content);
+            setIsModalOpen(false);
+          }}
+        />
+      )}
       </>
     );
   }
