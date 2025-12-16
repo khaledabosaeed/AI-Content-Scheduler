@@ -7,6 +7,7 @@ import { StatsCards } from "./StatsCards";
 import { PostsTabs } from "./PostsTabs";
 import { UpcomingQueue } from "./UpcomingQueue";
 import { AlertsPanel } from "./AlertsPanel";
+import { Skeleton } from "@/shared/components/ui/skeleton";
 
 import { toast } from "sonner";
 
@@ -57,7 +58,6 @@ export default function Dashboard() {
   const publishToFacebook = async (postId: string) => {
     try {
       setPublishingId(postId);
-
       toast.loading("Publishing...", { id: `publish-${postId}` });
 
       const res = await fetch("/api/facebook/publish", {
@@ -74,8 +74,7 @@ export default function Dashboard() {
         );
       }
 
-      toast.success("Published successfully ✅");
-
+      toast.success("Published successfully ✅", { id: `publish-${postId}` });
       await fetchPosts();
     } catch (err: any) {
       toast.error(err?.message || "Publish failed", {
@@ -98,8 +97,7 @@ export default function Dashboard() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to cancel schedule");
 
-      toast.success("Schedule cancelled ✅");
-
+      toast.success("Schedule cancelled ✅", { id: `cancel-${postId}` });
       fetchPosts();
     } catch (err: any) {
       toast.error(err?.message || "Failed to cancel schedule", {
@@ -115,6 +113,30 @@ export default function Dashboard() {
       scheduled_at: p.scheduled_at ?? p.scheduledAt ?? null,
     }));
   }, [posts]);
+
+  if (isLoading) {
+    return (
+      <div className="space-y-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <Skeleton className="h-24 rounded-xl" />
+          <Skeleton className="h-24 rounded-xl" />
+          <Skeleton className="h-24 rounded-xl" />
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <div className="lg:col-span-8 space-y-4">
+            <Skeleton className="h-10 rounded-lg" />
+            <Skeleton className="h-[420px] rounded-xl" />
+          </div>
+
+          <div className="lg:col-span-4 space-y-6">
+            <Skeleton className="h-[220px] rounded-xl" />
+            <Skeleton className="h-[260px] rounded-xl" />
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-6">
