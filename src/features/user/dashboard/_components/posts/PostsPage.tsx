@@ -205,21 +205,6 @@ export default function PostsPage() {
     }));
   }, [posts]);
 
-  // ===== Filtering (tabs + search) =====
-  const filteredPosts = useMemo(() => {
-    const q = query.trim().toLowerCase();
-
-    return normalizedPosts.filter((p: any) => {
-      const matchStatus = status === "all" ? true : p.status === status;
-
-      const matchQuery =
-        !q ||
-        (p.content || "").toLowerCase().includes(q) ||
-        (p.platform || "").toLowerCase().includes(q);
-
-      return matchStatus && matchQuery;
-    });
-  }, [normalizedPosts, status, query]);
 
   return (
     <div className="space-y-6">

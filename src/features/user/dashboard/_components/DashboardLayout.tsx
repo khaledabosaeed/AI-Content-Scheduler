@@ -1,5 +1,5 @@
-import { DashboardSidebar } from "./DashboardSidebar";
 import { DashboardHeader } from "./DashboardHeader";
+import { DashboardSidebar } from "./DashboardSidebar";
 
 export default function DashboardLayout({
   children,
@@ -12,9 +12,10 @@ export default function DashboardLayout({
         <DashboardHeader />
       </div>
 
-      <div className="flex min-h-screen">
+      <div className="flex">
         <DashboardSidebar />
-        <main className="flex-1 min-w-0 p-4 md:p-6 overflow-auto">
+
+        <main className="flex-1 md:ml-[260px] min-h-screen overflow-y-auto p-6">
           {children}
         </main>
       </div>

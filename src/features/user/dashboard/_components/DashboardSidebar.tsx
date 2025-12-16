@@ -193,26 +193,18 @@ export function DashboardMobileMenuButton() {
               />
             </div>
 
-            <div className="p-4 border-t border-white/10 space-y-2">
+            <div className="p-4 border-t border-white/10">
               <SheetClose asChild>
                 <Button
-                  className="w-full justify-start bg-white text-slate-900 hover:bg-slate-100"
-                  onClick={() => router.push("/chat")}
+                  variant="secondary"
+                  className="w-full justify-start bg-white/10 hover:bg-white/15 text-white"
+                  onClick={handleLogout}
+                  disabled={logoutMutation.isPending}
                 >
-                  <Plus className="h-4 w-4 mr-2" />
-                  Create Post
+                  <LogOut className="h-4 w-4 mr-2" />
+                  {logoutMutation.isPending ? "Logging out..." : "Log out"}
                 </Button>
               </SheetClose>
-
-              <Button
-                variant="secondary"
-                className="w-full justify-start bg-white/10 hover:bg-white/15 text-white"
-                onClick={handleLogout}
-                disabled={logoutMutation.isPending}
-              >
-                <LogOut className="h-4 w-4 mr-2" />
-                {logoutMutation.isPending ? "Logging out..." : "Log out"}
-              </Button>
             </div>
           </div>
         </SheetContent>
@@ -235,7 +227,10 @@ export function DashboardSidebar() {
     <aside
       dir="ltr"
       className={cn(
-        "hidden md:flex w-[260px] h-auto shrink-0",
+        "hidden md:flex mb-5",
+        "fixed top-[64px] left-0 z-30",
+        "w-[260px] h-[calc(100vh-64px)]",
+        "shrink-0 overflow-hidden",
         "border-r bg-gradient-to-b from-slate-950 to-slate-900 text-white",
         "flex-col"
       )}
@@ -250,21 +245,25 @@ export function DashboardSidebar() {
         <NavLinks variant="desktop" />
       </div>
 
-      <div className="p-4 border-t border-white/10 space-y-2">
+      <div className="p-4 border-t border-white/10">
         <Button
-          asChild
-          className="w-full bg-white text-slate-900 hover:bg-slate-100"
-        >
-          <Link href="/chat">+ Create Post</Link>
-        </Button>
-
-        <Button
-          variant="secondary"
-          className="w-full bg-white/10 hover:bg-white/15 text-white"
+          variant="ghost"
+          className="
+      w-full
+      flex items-center gap-3
+      px-4 py-3
+      text-white
+      hover:bg-white/10
+      justify-start
+    "
           onClick={handleLogout}
           disabled={logoutMutation.isPending}
         >
-          {logoutMutation.isPending ? "Logging out..." : "Log out"}
+          <span className="flex-1 text-left">
+            {logoutMutation.isPending ? "Logging out..." : "Log out"}
+          </span>
+
+          <LogOut className="h-5 w-5 opacity-90" />
         </Button>
       </div>
     </aside>
