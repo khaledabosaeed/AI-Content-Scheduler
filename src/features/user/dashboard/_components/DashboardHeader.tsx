@@ -20,11 +20,13 @@ export function DashboardHeader() {
         </div>
 
         <div className="flex items-center gap-2">
-          <div className="md:hidden">
+          <div>
             <MobileCreatePostSelect />
           </div>
 
-          <Button
+
+
+          {/* <Button
             asChild
             className="hidden md:inline-flex bg-white text-slate-900 hover:bg-slate-100 shadow-sm font-medium"
           >
@@ -33,7 +35,7 @@ export function DashboardHeader() {
               prompt=""
               buttonText="+ Create Post"
             />
-          </Button>
+          </Button> */}
         </div>
       </div>
     </div>
