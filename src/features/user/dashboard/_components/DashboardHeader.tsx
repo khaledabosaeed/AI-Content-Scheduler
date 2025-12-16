@@ -1,10 +1,12 @@
-import { Button } from "@/shared/components/ui/button";
+"use client";
+
 import Link from "next/link";
 import {
   DashboardMobileMenuButton,
   MobileCreatePostSelect,
 } from "./DashboardSidebar";
 import SaveButton from "@/features/chat/save-as-post/ui/SaveButton";
+import { ThemeToggle } from "@/shared/ui/ThemeToggle";
 
 export function DashboardHeader() {
   return (
@@ -20,20 +22,25 @@ export function DashboardHeader() {
         </div>
 
         <div className="flex items-center gap-2">
+          {/* Mobile create post */}
           <div className="md:hidden">
             <MobileCreatePostSelect />
           </div>
 
-          <Button
-            asChild
-            className="hidden md:inline-flex bg-white text-slate-900 hover:bg-slate-100 shadow-sm font-medium"
-          >
-            <SaveButton
-              message={{ id: "", content: "", role: "user", createdAt: new Date() }}
-              prompt=""
-              buttonText="+ Create Post"
-            />
-          </Button>
+          <div className="text-white bg-transparent">
+            <ThemeToggle />
+          </div>
+          <SaveButton
+            message={{
+              id: "",
+              content: "",
+              role: "user",
+              createdAt: new Date(),
+            }}
+            prompt=""
+            buttonText="+ Create Post"
+            className="hidden md:inline-flex bg-white text-slate-900 hover:bg-slate-100 shadow-sm font-medium px-4 py-2 rounded-md"
+          />
         </div>
       </div>
     </div>
