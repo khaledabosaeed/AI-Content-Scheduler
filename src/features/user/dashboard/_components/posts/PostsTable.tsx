@@ -25,6 +25,7 @@ type Props = {
 
   // ✅ coming from PostsPage
   hasFacebook?: boolean;
+  
   publishingId?: string | null;
 
   onPublishFacebook?: (postId: string) => void;
