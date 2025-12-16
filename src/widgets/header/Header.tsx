@@ -105,7 +105,7 @@ export default function Header() {
             <div ref={dropdownRef} className="relative flex">
               <button
                 onClick={() => setUserMenuOpen(!userMenuOpen)}
-                className="flex items-center gap-2 px-3 py-2 bg-primary text-text-primary rounded-md text-sm sm:text-base font-medium shadow-md transition"
+                className="flex items-center gap-2 px-3 py-2 bg-primary text-background rounded-md text-sm sm:text-base font-medium shadow-md transition"
               >
                 {user.name}
                 <ChevronDown className="w-4 h-4" />

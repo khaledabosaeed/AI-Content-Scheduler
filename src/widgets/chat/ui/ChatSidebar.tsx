@@ -7,6 +7,7 @@ import { Separator } from "@/shared/components/ui/separator";
 import { Plus, MessageSquarePlus, Settings, LayoutGrid } from "lucide-react";
 import { useChatStore } from "@/entities/chat";
 import Link from "next/link";
+import { ThemeToggle } from "@/shared/ui/ThemeToggle";
 
 export const ChatSideBar = () => {
   const {
@@ -44,15 +45,19 @@ export const ChatSideBar = () => {
   return (
     <div className="w-64 h-screen bg-gradient-to-b from-card to-popover text-text-primary flex flex-col border-r border-divider">
       {/* Header */}
-      <Link href="/" className="w-full p-5">
+      <div className="flex flex-row-reverse items-center">
+        <Link href="/" className="w-full p-5">
         <Button
           variant="ghost"
-          className="w-full justify-start gap-2 text-text-secondary hover:text-primary hover:bg-action-hover rounded-lg transition-all"
+          className="w-full justify-end gap-2 pl-2 text-text-secondary hover:text-primary hover:bg-action-hover rounded-lg transition-all"
         >
-          <LayoutGrid className="w-4 h-4" />
+          
           Home
+          <LayoutGrid className="w-4 h-4" />
         </Button>
       </Link>
+      <ThemeToggle/>
+      </div>
 
       <Separator className="bg-divider" />
 
@@ -93,21 +98,23 @@ export const ChatSideBar = () => {
       <Separator className="bg-divider" />
 
       {/* Footer */}
-      <div className="p-4 space-y-2">
+      <div className="p-4 space-y-2 ">
         <Button
           variant="ghost"
-          className="w-full justify-start gap-2 text-text-secondary hover:text-primary hover:bg-action-hover rounded-lg transition-all"
+          className="w-full justify-end gap-2 p-2 text-text-secondary hover:text-primary hover:bg-action-hover rounded-lg transition-all"
         >
-          <Settings className="w-4 h-4" />
+          
           Settings
+          <Settings className="w-4 h-4" />
         </Button>
         <Link href="/dashboard" className="w-full">
           <Button
             variant="ghost"
-            className="w-full justify-start gap-2 text-text-secondary hover:text-primary hover:bg-action-hover rounded-lg transition-all"
+            className="w-full justify-end gap-2 p-2 text-text-secondary hover:text-primary hover:bg-action-hover rounded-lg transition-all"
           >
-            <LayoutGrid className="w-4 h-4" />
+            
             Dashboard
+            <LayoutGrid className="w-4 h-4" />
           </Button>
         </Link>
       </div>
