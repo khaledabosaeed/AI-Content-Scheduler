@@ -11,7 +11,7 @@ interface SaveButtonProps
   postId?: string;
   prompt?: string;
   buttonText?: string;
-  onSaved?: () => void;
+  onSaved: () => void;
 }
 
 const SaveButton = React.forwardRef<HTMLButtonElement, SaveButtonProps>(
@@ -34,7 +34,7 @@ const SaveButton = React.forwardRef<HTMLButtonElement, SaveButtonProps>(
           scheduledAt: scheduledDate ? scheduledDate.toISOString() : null,
         });
 
-        onSaved?.();
+        onSaved();
 
         alert(
           scheduledDate

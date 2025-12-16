@@ -33,10 +33,19 @@ export function RecentPostsTable({
     );
   };
 
-  const handleScheduleClick = (post: Post) => {
-    updateLocal(post.id, { status: "scheduled" as any });
-    onSchedule?.(post);
-  };
+  // const handleScheduleClick = (post: Post) => {
+  //   updateLocal(post.id, { status: "scheduled" as any });
+  //   onSchedule?.(post);
+  // };
+
+  const markAsScheduled = (postId: string) => {
+  if (!setPosts) return;
+  setPosts(prev =>
+    prev.map(p => (p.id === postId ? { ...p, status: "scheduled" } : p))
+  );
+};
+
+
 
   const handlePublishClick = async (postId: string) => {
     try {
@@ -123,8 +132,8 @@ export function RecentPostsTable({
 
                   <td className="p-3">
                     <div className="flex justify-end gap-2">
-                      {post.status === "draft" && (
-                        <Button asChild size="sm" variant="outline">
+                      {showSchedule && (
+                        <Button asChild size="sm" variant="outline" >
                           <SaveButton
                             message={{
                               id: post.id,
@@ -135,9 +144,11 @@ export function RecentPostsTable({
                             prompt={post.prompt}
                             buttonText="Scheduale" // يظهر نص "جدولة"
                             postId={post.id}
+                            onSaved={() => markAsScheduled(post.id)}
                           />
                         </Button>
                       )}
+                     
 
                       {showCancel && (
                         <Button

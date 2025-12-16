@@ -16,8 +16,8 @@ export function FloatingIcons() {
       className="
         absolute inset-0 overflow-hidden
         bg-gradient-to-br
-        from-primary/5 via-background to-secondary/5
-        dark:from-primary/10 dark:via-background dark:to-secondary/10
+        from-primary/5 to-secondary/5
+       
         
         pointer-events-none
       "

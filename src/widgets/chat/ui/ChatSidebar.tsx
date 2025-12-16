@@ -7,6 +7,7 @@ import { Separator } from "@/shared/components/ui/separator";
 import { Plus, MessageSquarePlus, Settings, LayoutGrid } from "lucide-react";
 import { useChatStore } from "@/entities/chat";
 import Link from "next/link";
+import { ThemeToggle } from "@/shared/ui/ThemeToggle";
 
 export const ChatSideBar = () => {
   const {
@@ -42,33 +43,37 @@ export const ChatSideBar = () => {
     return bTime - aTime;
   });
   return (
-    <div className="w-64 h-screen bg-gradient-to-b from-gray-900 to-gray-950 dark:from-slate-950 dark:to-slate-950 text-white flex flex-col border-r border-gray-800 dark:border-gray-800">
+    <div className="w-64 h-screen bg-gradient-to-b from-card to-popover text-text-primary flex flex-col border-r border-divider">
       {/* Header */}
-      <Link href="/" className="w-full p-5">
+      <div className="flex flex-row-reverse items-center">
+        <Link href="/" className="w-full p-5">
         <Button
           variant="ghost"
-          className="w-full justify-start gap-2 text-gray-400 hover:text-gray-100 hover:bg-gray-800/50 rounded-lg"
+          className="w-full justify-end gap-2 pl-2 text-text-secondary hover:text-primary hover:bg-action-hover rounded-lg transition-all"
         >
-          <LayoutGrid className="w-4 h-4" />
+          
           Home
+          <LayoutGrid className="w-4 h-4" />
         </Button>
       </Link>
+      <ThemeToggle/>
+      </div>
 
-      <Separator className="bg-gray-800" />
+      <Separator className="bg-divider" />
 
       {/* Chat History */}
       <ScrollArea className="flex-1">
         <div className="p-4 space-y-2">
-          <p className="text-xs font-semibold text-gray-500 uppercase mb-4 ml-2">
+          <p className="text-xs font-semibold text-text-disabled uppercase mb-4 ml-2">
             Recent Chats
           </p>
 
           {isLoadingHistory ? (
-            <p className="text-xs text-gray-500 text-center py-8">
+            <p className="text-xs text-text-secondary text-center py-8">
               Loading chats...
             </p>
           ) : chatHistory.length === 0 ? (
-            <p className="text-xs text-gray-500 text-center py-8">
+            <p className="text-xs text-text-secondary text-center py-8">
               No chat history yet
             </p>
           ) : (
@@ -76,13 +81,13 @@ export const ChatSideBar = () => {
               <button
                 key={chat.id}
                 onClick={() => handleLoadSession(chat.id)}
-                className={`w-full text-left px-3 py-2.5 rounded-lg hover:bg-gray-800 dark:hover:bg-gray-800/50 transition-colors text-sm truncate flex items-center gap-2 group ${
+                className={`w-full text-left px-3 py-2.5 rounded-lg hover:bg-action-hover transition-all text-sm truncate flex items-center gap-2 group ${
                   chat.id === currentSessionId
-                    ? "bg-gray-800 dark:bg-gray-800/50 text-gray-100"
-                    : "text-gray-400 hover:text-gray-100"
+                    ? "bg-action-selected text-primary"
+                    : "text-text-secondary hover:text-text-primary"
                 }`}
               >
-                <MessageSquarePlus className="w-4 h-4 flex-shrink-0 group-hover:text-blue-400 transition-colors" />
+                <MessageSquarePlus className="w-4 h-4 flex-shrink-0 group-hover:text-primary transition-colors" />
                 <span className="truncate">{chat.title || "New Chat"}</span>
               </button>
             ))
@@ -90,24 +95,26 @@ export const ChatSideBar = () => {
         </div>
       </ScrollArea>
 
-      <Separator className="bg-gray-800" />
+      <Separator className="bg-divider" />
 
       {/* Footer */}
-      <div className="p-4 space-y-2">
+      <div className="p-4 space-y-2 ">
         <Button
           variant="ghost"
-          className="w-full justify-start gap-2 text-gray-400 hover:text-gray-100 hover:bg-gray-800/50 rounded-lg"
+          className="w-full justify-end gap-2 p-2 text-text-secondary hover:text-primary hover:bg-action-hover rounded-lg transition-all"
         >
-          <Settings className="w-4 h-4" />
+          
           Settings
+          <Settings className="w-4 h-4" />
         </Button>
         <Link href="/dashboard" className="w-full">
           <Button
             variant="ghost"
-            className="w-full justify-start gap-2 text-gray-400 hover:text-gray-100 hover:bg-gray-800/50 rounded-lg"
+            className="w-full justify-end gap-2 p-2 text-text-secondary hover:text-primary hover:bg-action-hover rounded-lg transition-all"
           >
-            <LayoutGrid className="w-4 h-4" />
+            
             Dashboard
+            <LayoutGrid className="w-4 h-4" />
           </Button>
         </Link>
       </div>
@@ -116,13 +123,13 @@ export const ChatSideBar = () => {
         <Button
           onClick={handleNewChat}
           disabled={isSending}
-          className="w-full gap-2 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-700 hover:to-blue-600 text-white shadow-lg rounded-lg font-medium"
+          className="w-full gap-2 bg-gradient-to-r from-primary to-accent hover:from-accent-foreground hover:to-primary text-primary-foreground shadow-lg rounded-lg font-medium transition-all"
         >
           <Plus className="w-5 h-5" />
           New Chat
         </Button>
       </div>
-      <Separator className="bg-gray-800" />
+      <Separator className="bg-divider" />
     </div>
   );
 };

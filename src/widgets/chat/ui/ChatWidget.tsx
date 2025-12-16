@@ -14,7 +14,7 @@ export default function ChatWidget() {
     const [sidebarOpen, setSidebarOpen] = useState(true);
 
     return (
-        <div className="flex h-screen overflow-hidden bg-white dark:bg-slate-950">
+        <div className="flex h-screen overflow-hidden bg-background">
             {/* Main Chat Interface */}
             <div className="flex-1 flex flex-col overflow-hidden relative">
                 {/* Toggle Button - Desktop only (top left) */}
@@ -23,7 +23,7 @@ export default function ChatWidget() {
                         onClick={() => setSidebarOpen(!sidebarOpen)}
                         variant="ghost"
                         size="sm"
-                        className="text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-200 transition-colors"
+                        className="text-text-secondary hover:bg-action-hover hover:text-text-primary transition-colors"
                         title={sidebarOpen ? "Close sidebar" : "Open sidebar"}
                     >
                         {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -36,7 +36,7 @@ export default function ChatWidget() {
                         onClick={() => setSidebarOpen(!sidebarOpen)}
                         variant="ghost"
                         size="sm"
-                        className="text-gray-600 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-800 hover:text-gray-900 dark:hover:text-gray-200 transition-colors"
+                        className="text-text-secondary hover:bg-action-hover hover:text-text-primary transition-colors"
                         title={sidebarOpen ? "Close sidebar" : "Open sidebar"}
                     >
                         {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -51,7 +51,7 @@ export default function ChatWidget() {
                 - Desktop: Static, can toggle open/close with width animation
             */}
             <div
-                className={`hidden md:flex h-screen bg-gradient-to-b from-gray-900 to-gray-950 dark:from-slate-950 dark:to-slate-950 border-l border-gray-800 dark:border-gray-800 transition-all duration-300 ease-in-out overflow-hidden ${
+                className={`hidden md:flex h-screen bg-gradient-to-b from-card to-popover border-l border-divider transition-all duration-300 ease-in-out overflow-hidden ${
                     sidebarOpen ? "w-64" : "w-0"
                 }`}
             >
@@ -60,7 +60,7 @@ export default function ChatWidget() {
 
             {/* Sidebar - Mobile */}
             <div
-                className={`fixed right-0 top-0 h-screen w-64 md:hidden bg-gradient-to-b from-gray-900 to-gray-950 dark:from-slate-950 dark:to-slate-950 border-l border-gray-800 dark:border-gray-800 transition-transform duration-300 ease-in-out z-40 ${
+                className={`fixed right-0 top-0 h-screen w-64 md:hidden bg-gradient-to-b from-card to-popover border-l border-divider transition-transform duration-300 ease-in-out z-40 ${
                     sidebarOpen ? "translate-x-0" : "translate-x-full"
                 }`}
             >

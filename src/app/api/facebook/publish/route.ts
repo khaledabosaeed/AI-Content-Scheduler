@@ -141,6 +141,7 @@ export async function POST(req: Request) {
         const { error: updateErr } = await supabaseServer
           .from("posts")
           .update({
+
             status: "published",
             published_at: new Date().toISOString(),
             platform_post_id: graphData.id,
