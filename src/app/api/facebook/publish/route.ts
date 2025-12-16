@@ -118,8 +118,7 @@ export async function POST(req: Request) {
         }
 
         // 3) update DB only on success
-        await supabaseServer
-          .update({
+        await supabaseServer.from("posts").update({
             status: "published",
             published_at: new Date().toISOString(),
             platform_post_id: graphData.id,

@@ -16,7 +16,6 @@ export class ApiError extends Error {
   ) {
     super(message);
     this.name = 'ApiError';
-
     // where error was thrown (V8 engines only)
     if (Error.captureStackTrace) {
       Error.captureStackTrace(this, ApiError);
@@ -34,7 +33,6 @@ export class AuthError extends ApiError {
     this.name = 'AuthError';
   }
 }
-
 /**
  * Validation Error (422)
  * Server validation failed
@@ -45,7 +43,6 @@ export class ValidationError extends ApiError {
     this.name = 'ValidationError';
   }
 }
-
 /**
  * Network Error
  * Fetch failed due to network issues (no internet, DNS, CORS, etc)

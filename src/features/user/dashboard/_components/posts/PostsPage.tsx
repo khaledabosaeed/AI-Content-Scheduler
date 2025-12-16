@@ -134,6 +134,19 @@ export default function PostsPage() {
     }
   };
 
+  const deletePost = async (postId: string) => {
+    try {
+      const res = await fetch(`/api/posts/${postId}/delete-post`, {
+        method: "DELETE",
+      });
+      const data = await safeJson(res);
+    console.log("clicked");
+    
+    } catch (err: any) {
+      alert("❌ " + (err?.message || "Failed to delete post"));
+    }
+  };
+
   // ===== Open schedule modal =====
   const openScheduleModal = (post: Post) => {
     setSelectedPost(post);
@@ -181,7 +194,6 @@ export default function PostsPage() {
             : p
         )
       );
-
       setIsScheduleOpen(false);
       setSelectedPost(null);
 
@@ -249,7 +261,7 @@ export default function PostsPage() {
         }}
         onPublish={(id) => publishToFacebook(id)}
         onCancelSchedule={(postId) => cancelSchedule(postId)}
-        onDelete={() => {}}
+        onDelete={(postId) => deletePost(postId)}
       />
 
       {isScheduleOpen && selectedPost && (
