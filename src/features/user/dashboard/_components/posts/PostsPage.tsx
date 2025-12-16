@@ -5,10 +5,10 @@ import type { Post } from "@/entities/user/type/Post";
 import Link from "next/link";
 
 import { Button } from "@/shared/components/ui/button";
-import { Tabs, TabsList, TabsTrigger } from "@/shared/components/ui/tabs";
-import { PostsTable } from "./PostsTable";
 import ScheduleModal from "@/widgets/scheduler/ScheduleModal";
 import { PostsTabs } from "../PostsTabs";
+
+import { toast } from "sonner";
 
 type StatusFilter = "all" | "draft" | "scheduled" | "published" | "failed";
 
@@ -36,7 +36,6 @@ export default function PostsPage() {
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [isScheduling, setIsScheduling] = useState(false);
 
-  // ===== Fetch Facebook connection =====
   const fetchUser = async () => {
     try {
       const res = await fetch("/api/facebook/me");
@@ -48,7 +47,6 @@ export default function PostsPage() {
     }
   };
 
-  // ===== Fetch Posts =====
   const fetchPosts = async () => {
     try {
       setIsLoading(true);
@@ -62,7 +60,9 @@ export default function PostsPage() {
 
       setPosts(Array.isArray(data.posts) ? data.posts : []);
     } catch (err: any) {
-      setError(err.message || "Unexpected error");
+      const msg = err?.message || "Unexpected error";
+      setError(msg);
+      toast.error(msg);
     } finally {
       setIsLoading(false);
     }
@@ -73,12 +73,10 @@ export default function PostsPage() {
     fetchUser();
   }, []);
 
-  // ===== Publish =====
   const publishToFacebook = async (postId: string) => {
     try {
       setPublishingId(postId);
-
-      console.log("➡️ calling /api/facebook/publish", postId);
+      toast.loading("Publishing to Facebook...");
 
       const res = await fetch("/api/facebook/publish", {
         method: "POST",
@@ -86,10 +84,7 @@ export default function PostsPage() {
         body: JSON.stringify({ postId }),
       });
 
-      console.log("⬅️ publish response status:", res.status);
-
       const data = await res.json();
-      console.log("⬅️ publish response json:", data);
 
       if (!res.ok || data.success === false) {
         throw new Error(
@@ -97,24 +92,32 @@ export default function PostsPage() {
         );
       }
 
+      toast.success("Published successfully ");
       await fetchPosts();
+    } catch (err: any) {
+      toast.error(err?.message || "Publish failed", {
+        id: `publish-${postId}`,
+      });
+      throw err;
     } finally {
       setPublishingId(null);
     }
   };
 
-  // ===== Cancel schedule =====
   const cancelSchedule = async (postId: string) => {
     try {
+      toast.loading("Canceling schedule...");
+
       const res = await fetch(`/api/posts/${postId}/cancel-schedule`, {
         method: "POST",
       });
       const data = await safeJson(res);
 
       if (!res.ok)
-        throw new Error(data?.error || data?.raw || "فشل إلغاء الجدولة");
+        throw new Error(
+          data?.error || data?.raw || "Failed to cancel schedule"
+        );
 
-      // ✅ update locally immediately
       setPosts((prev) =>
         prev.map((p) =>
           p.id === postId
@@ -127,20 +130,20 @@ export default function PostsPage() {
         )
       );
 
-      alert("تم إلغاء الجدولة بنجاح");
+      toast.success("Schedule canceled ");
       await fetchPosts();
     } catch (err: any) {
-      alert("❌ " + (err?.message || "فشل إلغاء الجدولة"));
+      toast.error(err?.message || "Failed to cancel schedule", {
+        id: `cancel-${postId}`,
+      });
     }
   };
 
-  // ===== Open schedule modal =====
   const openScheduleModal = (post: Post) => {
     setSelectedPost(post);
     setIsScheduleOpen(true);
   };
 
-  // ===== Confirm schedule (رجعناه من الفايل الأول) =====
   const confirmSchedule = async (
     date: Date,
     platform: string,
@@ -148,10 +151,13 @@ export default function PostsPage() {
   ) => {
     if (!selectedPost?.id) return;
 
+    const id = selectedPost.id;
+
     try {
       setIsScheduling(true);
+      toast.loading("Scheduling post...");
 
-      const res = await fetch(`/api/posts/${selectedPost.id}/schedule`, {
+      const res = await fetch(`/api/posts/${id}/schedule`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -167,10 +173,9 @@ export default function PostsPage() {
       if (!res.ok)
         throw new Error(data?.error || data?.raw || "Failed to schedule post");
 
-      // ✅ update locally immediately
       setPosts((prev) =>
         prev.map((p) =>
-          p.id === selectedPost.id
+          p.id === id
             ? ({
                 ...p,
                 status: "scheduled" as any,
@@ -185,26 +190,14 @@ export default function PostsPage() {
       setIsScheduleOpen(false);
       setSelectedPost(null);
 
-      alert("✅ Scheduled successfully");
+      toast.success("Scheduled successfully ");
       await fetchPosts();
     } catch (err: any) {
-      alert("❌ " + (err?.message || "Schedule failed"));
+      toast.error(err?.message || "Schedule failed");
     } finally {
       setIsScheduling(false);
     }
   };
-
-  // ===== Normalize keys + lowercase status/platform =====
-  const normalizedPosts = useMemo(() => {
-    return (posts as any[]).map((p) => ({
-      ...p,
-      created_at: p.created_at ?? p.createdAt ?? null,
-      scheduled_at: p.scheduled_at ?? p.scheduledAt ?? null,
-      status: (p.status ?? "draft").toString().toLowerCase(),
-      platform: (p.platform ?? "twitter").toString().toLowerCase(),
-    }));
-  }, [posts]);
-
 
   return (
     <div className="space-y-6">
@@ -228,10 +221,7 @@ export default function PostsPage() {
       <PostsTabs
         posts={posts}
         setPosts={setPosts}
-        onSchedule={(post) => {
-          setSelectedPost(post);
-          setIsScheduleOpen(true);
-        }}
+        onSchedule={(post) => openScheduleModal(post)}
         onPublish={(id) => publishToFacebook(id)}
         onCancelSchedule={(postId) => cancelSchedule(postId)}
         onDelete={() => {}}
