@@ -7,13 +7,6 @@ import { NextRequest, NextResponse } from "next/server";
 
 
 
-
-
-
-
-
-
-
 /****
  * 
   return withAuth(req, async (req, user) => {

@@ -3,15 +3,23 @@ import { supabaseServer } from "@/shared/libs/suapabase/supabaseServer";
 
 const SECRET_KEY = process.env.PUBLISH_SECRET;
 
+type PostRow = {
+  id: string;
+  content: string | null;
+  platform: string | null;
+  user_id: string;
+  status: string | null;
+  scheduled_at: string | null;
+};
+
 export async function POST(req: Request) {
   try {
     const body = await req.json().catch(() => ({}));
     const postId: string | undefined = body?.postId;
 
-    // لو بدون postId (publishAll) لازم secret
     if (!postId) {
       const secret = req.headers.get("x-publish-secret");
-      if (!secret || secret !== SECRET_KEY) {
+      if (!SECRET_KEY || !secret || secret !== SECRET_KEY) {
         return NextResponse.json(
           { success: false, error: "Unauthorized - invalid secret" },
           { status: 401 }
@@ -19,17 +27,9 @@ export async function POST(req: Request) {
       }
     }
 
-    let query = supabaseServer.from("posts").select(
-      `
-        id,
-        content,
-        platform,
-        user_id,
-        status,
-        scheduled_at,
-        users(facebook_access_token)
-      `
-    );
+    let query = supabaseServer
+      .from("posts")
+      .select("id,content,platform,user_id,status,scheduled_at");
 
     if (postId) {
       query = query.eq("id", postId);
@@ -40,8 +40,8 @@ export async function POST(req: Request) {
     }
 
     const { data: posts, error } = await query;
-
     if (error) throw error;
+
     if (!posts || posts.length === 0) {
       return NextResponse.json(
         { success: false, error: "No posts to publish" },
@@ -52,10 +52,15 @@ export async function POST(req: Request) {
     let successCount = 0;
     const results: Array<{ id: string; ok: boolean; error?: string }> = [];
 
-    for (const post of posts) {
-      const fbToken = post?.users?.facebook_access_token;
+    for (const post of posts as PostRow[]) {
+      const { data: social, error: socialErr } = await supabaseServer
+        .from("social_accounts")
+        .select("access_token")
+        .eq("user_id", post.user_id)
+        .eq("platform", "facebook")
+        .single();
 
-      if (!fbToken) {
+      if (socialErr || !social?.access_token) {
         results.push({
           id: post.id,
           ok: false,
@@ -64,15 +69,25 @@ export async function POST(req: Request) {
         continue;
       }
 
+      const fbToken = social.access_token;
+
+      const message = (post.content || "").trim();
+      if (!message) {
+        results.push({
+          id: post.id,
+          ok: false,
+          error: "Post content is empty",
+        });
+        continue;
+      }
+
       try {
-        // 1) get pages
         const pageRes = await fetch(
           `https://graph.facebook.com/me/accounts?access_token=${encodeURIComponent(
             fbToken
           )}`
         );
-
-        const pagesJson = await pageRes.json();
+        const pagesJson = await pageRes.json().catch(() => ({}));
 
         if (!pageRes.ok) {
           results.push({
@@ -93,20 +108,19 @@ export async function POST(req: Request) {
           continue;
         }
 
-        // 2) publish
         const graphRes = await fetch(
           `https://graph.facebook.com/${page.id}/feed`,
           {
             method: "POST",
             headers: { "Content-Type": "application/x-www-form-urlencoded" },
             body: new URLSearchParams({
-              message: post.content,
+              message,
               access_token: page.access_token,
             }),
           }
         );
 
-        const graphData = await graphRes.json();
+        const graphData = await graphRes.json().catch(() => ({}));
 
         if (!graphRes.ok) {
           results.push({
@@ -117,14 +131,23 @@ export async function POST(req: Request) {
           continue;
         }
 
-        // 3) update DB only on success
-        await supabaseServer
+        const { error: updateErr } = await supabaseServer
+          .from("posts")
           .update({
             status: "published",
             published_at: new Date().toISOString(),
             platform_post_id: graphData.id,
           })
           .eq("id", post.id);
+
+        if (updateErr) {
+          results.push({
+            id: post.id,
+            ok: false,
+            error: "Published but failed to update DB",
+          });
+          continue;
+        }
 
         successCount++;
         results.push({ id: post.id, ok: true });
@@ -137,7 +160,6 @@ export async function POST(req: Request) {
       }
     }
 
-    // ✅ لو publish بوست واحد وفشل: رجّعي error (عشان الـ UI ما يكذب)
     if (postId && successCount === 0) {
       const first = results[0];
       return NextResponse.json(
