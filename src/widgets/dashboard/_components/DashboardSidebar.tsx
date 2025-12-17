@@ -4,7 +4,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { cn } from "@/shared/libs/chadcn/utils";
 import { Button } from "@/shared/components/ui/button";
-import { useLogoutMutation } from "../../logout/useLogout";
+// import { useLogoutMutation } from "../../logout/useLogout";
 
 import {
   Menu,
@@ -38,6 +38,7 @@ import {
   DropdownMenuTrigger,
 } from "@/shared/components/ui/dropdown-menu";
 import { SaveButton } from "@/features/chat";
+import { useLogoutMutation } from "@/features/user/logout/useLogout";
 
 type NavItem = { label: string; href: string; icon: any };
 
