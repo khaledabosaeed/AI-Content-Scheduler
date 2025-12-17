@@ -105,6 +105,9 @@ export default function Dashboard() {
       });
     }
   };
+  const handleScheduleClick = ()=>{
+    fetchPosts()
+  }
 
   const normalizedPosts = useMemo(() => {
     return (posts as any[]).map((p) => ({
@@ -148,7 +151,8 @@ export default function Dashboard() {
 
       {/* Row 1 */}
       <StatsCards posts={normalizedPosts as any} />
-
+      
+    
       {/* Row 2 */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         <div className="lg:col-span-8">
@@ -159,6 +163,7 @@ export default function Dashboard() {
             onPublish={(postId) => publishToFacebook(postId)}
             onCancelSchedule={cancelSchedule}
             onRefresh={fetchPosts}
+            onSchedule={handleScheduleClick}
             onDelete={() => {}}
           />
         </div>

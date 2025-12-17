@@ -7,7 +7,7 @@ type Props = {
   posts: Post[];
   emptyText?: string;
 
-  onSchedule?: (post: Post) => void;
+  onSchedule: (post: Post) => void;
   onPublish?: (postId: string) => Promise<void> | void;
   onCancelSchedule?: (postId: string) => Promise<void> | void;
 
@@ -33,16 +33,17 @@ export function RecentPostsTable({
     );
   };
 
-  // const handleScheduleClick = (post: Post) => {
-  //   updateLocal(post.id, { status: "scheduled" as any });
-  //   onSchedule?.(post);
-  // };
+  const handleScheduleClick = (post: Post) => {
+    updateLocal(post.id, { status: "scheduled" as any });
+    onSchedule?.(post);
+  };
 
   const markAsScheduled = (postId: string) => {
   if (!setPosts) return;
   setPosts(prev =>
     prev.map(p => (p.id === postId ? { ...p, status: "scheduled" } : p))
   );
+  // onSchedule?.(postId)
 };
 
 
@@ -79,6 +80,7 @@ export function RecentPostsTable({
     );
   }
 
+  console.log(typeof onSchedule)
   return (
     <div className="rounded-md border">
       <div className="overflow-x-auto">
@@ -144,7 +146,7 @@ export function RecentPostsTable({
                             prompt={post.prompt}
                             buttonText="Scheduale" // يظهر نص "جدولة"
                             postId={post.id}
-                            onSaved={() => markAsScheduled(post.id)}
+                            onSaved={() => handleScheduleClick(post)}
                           />
                         </Button>
                       )}

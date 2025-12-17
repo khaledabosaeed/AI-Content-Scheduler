@@ -22,6 +22,7 @@ export const ChatSideBar = () => {
   } = useChatStore();
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [showTheme, setShowTheme] = useState(false);
 
   useEffect(() => {
     fetchChatHistory();
@@ -45,8 +46,9 @@ export const ChatSideBar = () => {
   return (
     <div className="w-64 h-screen bg-gradient-to-b from-card to-popover text-text-primary flex flex-col border-r border-divider">
       {/* Header */}
-      <div className="flex flex-row-reverse items-center">
-        <Link href="/" className="w-full p-5">
+      <div className="flex flex-row-reverse items-center pr-2"
+>
+        <Link href="/" className="w-full p-5 ">
         <Button
           variant="ghost"
           className="w-full justify-end gap-2 pl-2 text-text-secondary hover:text-primary hover:bg-action-hover rounded-lg transition-all"
@@ -56,7 +58,7 @@ export const ChatSideBar = () => {
           <LayoutGrid className="w-4 h-4" />
         </Button>
       </Link>
-      <ThemeToggle/>
+      <div className="hidden md:block bg-accent rounded-md "><ThemeToggle/></div>
       </div>
 
       <Separator className="bg-divider" />
@@ -99,14 +101,23 @@ export const ChatSideBar = () => {
 
       {/* Footer */}
       <div className="p-4 space-y-2 ">
-        <Button
-          variant="ghost"
-          className="w-full justify-end gap-2 p-2 text-text-secondary hover:text-primary hover:bg-action-hover rounded-lg transition-all"
-        >
-          
-          Settings
-          <Settings className="w-4 h-4" />
-        </Button>
+          <div className="flex flex-row-reverse items-center gap-2">
+      <Button
+        variant="ghost"
+        className="w-full justify-end gap-2 p-2 text-text-secondary hover:text-primary hover:bg-action-hover rounded-lg transition-all"
+        onClick={() => setShowTheme((prev) => !prev)}
+      >
+        Settings
+        <Settings className="w-4 h-4" />
+      </Button>
+
+      {/* يظهر فقط إذا ضغطنا */}
+      {showTheme && (
+        <div className="inline-block md:hidden bg-accent rounded-md transition-all">
+          <ThemeToggle />
+        </div>
+      )}
+    </div>
         <Link href="/dashboard" className="w-full">
           <Button
             variant="ghost"

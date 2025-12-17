@@ -55,7 +55,7 @@ const TestimonialsSection: FC = () => (
   >
     <FloatingIcons/>
     {/* Section Title */}
-    <div className="max-w-6xl mx-auto text-center mb-12 sm:mb-14 md:mb-16 lg:mb-20 mt-20">
+    <div className="max-w-6xl mx-auto text-center mb-12 sm:mb-14 md:mb-16 lg:mb-20">
       <motion.h3
         variants={item}
         className="

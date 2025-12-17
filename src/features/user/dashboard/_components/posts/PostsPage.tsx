@@ -156,59 +156,59 @@ export default function PostsPage() {
     setIsScheduleOpen(true);
   };
 
-  const confirmSchedule = async (
-    date: Date,
-    platform: string,
-    content: string
-  ) => {
-    if (!selectedPost?.id) return;
+  // const confirmSchedule = async (
+  //   date: Date,
+  //   platform: string,
+  //   content: string
+  // ) => {
+  //   if (!selectedPost?.id) return;
 
-    const id = selectedPost.id;
+  //   const id = selectedPost.id;
 
-    try {
-      setIsScheduling(true);
-      toast.loading("Scheduling post...");
+  //   try {
+  //     setIsScheduling(true);
+  //     toast.loading("Scheduling post...");
 
-      const res = await fetch(`/api/posts/${selectedPost.id}/update`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          scheduledAt: date.toISOString(),
-          platform,
-          content,
-          status: "scheduled",
-        }),
-      });
+  //     const res = await fetch(`/api/posts/${selectedPost.id}/update`, {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify({
+  //         scheduledAt: date.toISOString(),
+  //         platform,
+  //         content,
+  //         status: "scheduled",
+  //       }),
+  //     });
 
-      const data = await safeJson(res);
+  //     const data = await safeJson(res);
 
-      if (!res.ok)
-        throw new Error(data?.error || data?.raw || "Failed to schedule post");
+  //     if (!res.ok)
+  //       throw new Error(data?.error || data?.raw || "Failed to schedule post");
 
-      setPosts((prev) =>
-        prev.map((p) =>
-          p.id === id
-            ? ({
-                ...p,
-                status: "scheduled" as any,
-                platform: platform as any,
-                content: content as any,
-                scheduled_at: date.toISOString() as any,
-              } as any)
-            : p
-        )
-      );
-      setIsScheduleOpen(false);
-      setSelectedPost(null);
+  //     setPosts((prev) =>
+  //       prev.map((p) =>
+  //         p.id === id
+  //           ? ({
+  //               ...p,
+  //               status: "scheduled" as any,
+  //               platform: platform as any,
+  //               content: content as any,
+  //               scheduled_at: date.toISOString() as any,
+  //             } as any)
+  //           : p
+  //       )
+  //     );
+  //     setIsScheduleOpen(false);
+  //     setSelectedPost(null);
 
-      toast.success("Scheduled successfully ");
-      await fetchPosts();
-    } catch (err: any) {
-      toast.error(err?.message || "Schedule failed");
-    } finally {
-      setIsScheduling(false);
-    }
-  };
+  //     toast.success("Scheduled successfully ");
+  //     await fetchPosts();
+  //   } catch (err: any) {
+  //     toast.error(err?.message || "Schedule failed");
+  //   } finally {
+  //     setIsScheduling(false);
+  //   }
+  // };
 
   return (
     <div className="space-y-6">
@@ -242,7 +242,7 @@ export default function PostsPage() {
         onDelete={(postId) => deletePost(postId)}
       />
 
-      {isScheduleOpen && selectedPost && (
+      {/* {isScheduleOpen && selectedPost && (
         <ScheduleModal
           open={isScheduleOpen}
           onOpenChange={(v) => {
@@ -256,7 +256,7 @@ export default function PostsPage() {
           }}
           
         />
-      )}
+      )} */}
     </div>
   );
 }

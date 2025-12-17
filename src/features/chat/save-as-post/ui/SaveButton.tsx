@@ -4,6 +4,7 @@ import * as React from "react";
 import type { Message } from "@/entities/chat";
 import ScheduleModal from "@/widgets/scheduler/ScheduleModal";
 import { useSaveAsPost } from "../model/use-save-as-post";
+import { toast } from "sonner";
 
 interface SaveButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -19,7 +20,7 @@ const SaveButton = React.forwardRef<HTMLButtonElement, SaveButtonProps>(
     const { saveAsPost, isSaving } = useSaveAsPost();
     const [isModalOpen, setIsModalOpen] = React.useState(false);
 
-    const handleSave = async (
+     const handleSave = async (
       scheduledDate?: Date,
       platform?: string,
       contentOverride?: string
@@ -36,13 +37,13 @@ const SaveButton = React.forwardRef<HTMLButtonElement, SaveButtonProps>(
 
         onSaved();
 
-        alert(
-          scheduledDate
-            ? `✅ تم جدولة المنشور على ${platform} بتاريخ ${scheduledDate.toLocaleString()}`
-            : "✅ تم حفظ المنشور بنجاح!"
-        );
+       toast.success(
+        scheduledDate
+          ? `Your post is scheduled on ${platform} for ${scheduledDate.toLocaleString()}`
+          : "Your post has been saved successfully."
+      );
       } catch (err: any) {
-        alert("❌ " + (err?.message ?? "حدث خطأ"));
+      toast.error(err?.message || "Something went wrong!");
       }
     };
     return (
@@ -52,7 +53,7 @@ const SaveButton = React.forwardRef<HTMLButtonElement, SaveButtonProps>(
           type={type ?? "button"}
           className={
             className ??
-            "mt-2 text-xs bg-black text-white px-3 py-1 rounded hover:bg-gray-800 disabled:opacity-50 transition-colors"
+            "mt-2 text-xs bg-black text-white px-3 py-1 rounded hover:bg-action-hover disabled:opacity-50 transition-colors"
           }
           onClick={() => setIsModalOpen(true)}
           disabled={isSaving}
