@@ -26,3 +26,7 @@ export function usePostsUI() {
   if (!ctx) throw new Error("usePostsUI must be used inside PostsUIProvider");
   return ctx;
 }
+
+export function usePostsUIOptional() {
+  return useContext(PostsUIContext);
+}

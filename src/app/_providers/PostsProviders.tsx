@@ -83,7 +83,7 @@ export default function PostsProviders({
       onPublish: publishToFacebook,
       onCancelSchedule: cancelSchedule,
       onDelete: deletePost,
-      refreshPosts: fetchPosts, 
+      refreshPosts: fetchPosts,
       onSchedule: openScheduleModal,
     }),
     [
@@ -97,6 +97,7 @@ export default function PostsProviders({
     ]
   );
 
+  // أول تحميل
   React.useEffect(() => {
     fetchPosts();
   }, [fetchPosts]);

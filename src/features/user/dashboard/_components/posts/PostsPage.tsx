@@ -10,6 +10,7 @@ import ScheduleModal from "@/widgets/scheduler/ScheduleModal";
 import { PostsTabs } from "../PostsTabs";
 
 import { toast } from "sonner";
+import React from "react";
 
 const safeJson = async (res: Response) => {
   const text = await res.text();
@@ -26,7 +27,7 @@ export default function PostsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const [hasFacebook, setHasFacebook] = useState(false);
+  const [hasFacebook, setHasFacebook] = React.useState<boolean | null>(null);
   const [isScheduleOpen, setIsScheduleOpen] = useState(false);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [isScheduling, setIsScheduling] = useState(false);

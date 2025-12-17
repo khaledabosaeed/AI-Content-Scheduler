@@ -12,6 +12,7 @@ import { Skeleton } from "@/shared/components/ui/skeleton";
 import { toast } from "sonner";
 import { PostsUIProvider } from "@/app/_providers/PostsUIContext";
 import { usePostsContext } from "@/app/_providers/PostContext";
+import React from "react";
 
 async function safeJson(res: Response) {
   try {
@@ -28,7 +29,7 @@ export default function Dashboard() {
   const [error, setError] = useState<string | null>(null);
 
   const [publishingId, setPublishingId] = useState<string | null>(null);
-  const [hasFacebook, setHasFacebook] = useState(false);
+  const [hasFacebook, setHasFacebook] = React.useState<boolean | null>(null);
 
   const fetchUser = async () => {
     try {
