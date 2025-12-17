@@ -4,6 +4,8 @@ import * as React from "react";
 import type { Message } from "@/entities/chat";
 import ScheduleModal from "@/widgets/scheduler/ScheduleModal";
 import { useSaveAsPost } from "../model/use-save-as-post";
+import { usePostsUI } from "@/app/_providers/PostsUIContext";
+import { toast } from "sonner";
 
 interface SaveButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -15,9 +17,14 @@ interface SaveButtonProps
 }
 
 const SaveButton = React.forwardRef<HTMLButtonElement, SaveButtonProps>(
-  ({ message, prompt, buttonText, onSaved, className, type,postId, ...rest }, ref) => {
+  (
+    { message, prompt, buttonText, onSaved, className, type, postId, ...rest },
+    ref
+  ) => {
     const { saveAsPost, isSaving } = useSaveAsPost();
     const [isModalOpen, setIsModalOpen] = React.useState(false);
+
+    const { refreshPosts } = usePostsUI();
 
     const handleSave = async (
       scheduledDate?: Date,
@@ -36,15 +43,20 @@ const SaveButton = React.forwardRef<HTMLButtonElement, SaveButtonProps>(
 
         onSaved?.();
 
-        alert(
+        console.log("SaveButton: refreshPosts type =", typeof refreshPosts);
+        await refreshPosts?.();
+        console.log("SaveButton: refreshPosts finished ✅");
+
+        toast.success(
           scheduledDate
             ? `✅ تم جدولة المنشور على ${platform} بتاريخ ${scheduledDate.toLocaleString()}`
             : "✅ تم حفظ المنشور بنجاح!"
         );
       } catch (err: any) {
-        alert("❌ " + (err?.message ?? "حدث خطأ"));
+        toast.error("❌ " + (err?.message ?? "حدث خطأ"));
       }
     };
+
     return (
       <>
         <button
@@ -62,16 +74,16 @@ const SaveButton = React.forwardRef<HTMLButtonElement, SaveButtonProps>(
         </button>
 
         {isModalOpen && (
-        <ScheduleModal
-          open={isModalOpen}
-          onOpenChange={setIsModalOpen}
-          initialContent={message.content}
-          onConfirm={(date, platform, content) => {
-            handleSave(date ?? undefined, platform, content);
-            setIsModalOpen(false);
-          }}
-        />
-      )}
+          <ScheduleModal
+            open={isModalOpen}
+            onOpenChange={setIsModalOpen}
+            initialContent={message.content}
+            onConfirm={(date, platform, content) => {
+              handleSave(date ?? undefined, platform, content);
+              setIsModalOpen(false);
+            }}
+          />
+        )}
       </>
     );
   }

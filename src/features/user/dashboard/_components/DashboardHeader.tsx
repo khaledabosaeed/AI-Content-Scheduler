@@ -32,10 +32,10 @@ export function DashboardHeader() {
           </div>
           <SaveButton
             message={{
-              id: "",
+              id: "new",
               content: "",
-              role: "user",
-              createdAt: new Date(),
+              role: "user" as any,
+              createdAt: new Date() as any,
             }}
             prompt=""
             buttonText="+ Create Post"

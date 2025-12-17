@@ -234,9 +234,15 @@ export function MobileCreatePostSelect() {
           className="w-full justify-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-sm hover:shadow-md transition-all duration-200 font-medium"
         >
           <SaveButton
-            message={{ id: "", content: "", role: "user", createdAt: "" }}
+            message={{
+              id: "new",
+              content: "",
+              role: "user" as any,
+              createdAt: "" as any,
+            }}
             prompt=""
             buttonText="+ Create Post "
+            className="w-full justify-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-sm hover:shadow-md transition-all duration-200 font-medium h-9 rounded-md"
           />
         </Button>
       </DropdownMenuContent>
