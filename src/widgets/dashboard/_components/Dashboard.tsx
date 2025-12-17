@@ -12,7 +12,6 @@ import { Skeleton } from "@/shared/components/ui/skeleton";
 import { toast } from "sonner";
 import { PostsUIProvider } from "@/app/_providers/PostsUIContext";
 import { usePostsContext } from "@/app/_providers/PostContext";
-import React from "react";
 
 async function safeJson(res: Response) {
   try {
@@ -29,7 +28,8 @@ export default function Dashboard() {
   const [error, setError] = useState<string | null>(null);
 
   const [publishingId, setPublishingId] = useState<string | null>(null);
-  const [hasFacebook, setHasFacebook] = React.useState<boolean | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null); // ✅ جديد
+  const [hasFacebook, setHasFacebook] = useState(false);
 
   const fetchUser = async () => {
     try {
@@ -42,9 +42,12 @@ export default function Dashboard() {
     }
   };
 
-  const fetchPosts = async () => {
+  // ✅ صار يدعم showLoader عشان ما يعمل Skeleton بكل refresh
+  const fetchPosts = async (opts?: { showLoader?: boolean }) => {
+    const showLoader = opts?.showLoader ?? false;
+
     try {
-      setIsLoading(true);
+      if (showLoader) setIsLoading(true);
       setError(null);
 
       const res = await fetch("/api/posts");
@@ -58,12 +61,12 @@ export default function Dashboard() {
       setError(msg);
       toast.error(msg);
     } finally {
-      setIsLoading(false);
+      if (showLoader) setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchPosts();
+    fetchPosts({ showLoader: true }); // ✅ أول تحميل بس
     fetchUser();
   }, []);
 
@@ -87,7 +90,9 @@ export default function Dashboard() {
       }
 
       toast.success("Published successfully ✅", { id: `publish-${postId}` });
-      await fetchPosts();
+
+      // ✅ Refresh صامت بدون Skeleton
+      await fetchPosts({ showLoader: false });
     } catch (err: any) {
       toast.error(err?.message || "Publish failed", {
         id: `publish-${postId}`,
@@ -110,7 +115,8 @@ export default function Dashboard() {
       if (!res.ok) throw new Error(data?.error || "Failed to cancel schedule");
 
       toast.success("Schedule cancelled ✅", { id: `cancel-${postId}` });
-      await fetchPosts();
+
+      await fetchPosts({ showLoader: false });
     } catch (err: any) {
       toast.error(err?.message || "Failed to cancel schedule", {
         id: `cancel-${postId}`,
@@ -122,7 +128,14 @@ export default function Dashboard() {
   }
 
   const deletePost = async (postId: string) => {
+    const prev = posts;
+
     try {
+      setDeletingId(postId);
+      toast.loading("Deleting...", { id: `delete-${postId}` });
+
+      setPosts((p) => (p as any[]).filter((x: any) => x.id !== postId) as any);
+
       const res = await fetch(`/api/posts/${postId}/delete-post`, {
         method: "DELETE",
       });
@@ -131,9 +144,14 @@ export default function Dashboard() {
       if (!res.ok) throw new Error(data?.error || "Failed to delete post");
 
       toast.success("Deleted successfully ✅", { id: `delete-${postId}` });
-      await fetchPosts();
     } catch (err: any) {
-      toast.error("❌ " + (err?.message || "Failed to delete post"));
+      // ✅ rollback
+      setPosts(prev as any);
+      toast.error(err?.message || "Failed to delete post", {
+        id: `delete-${postId}`,
+      });
+    } finally {
+      setDeletingId(null);
     }
   };
 
@@ -186,10 +204,11 @@ export default function Dashboard() {
             value={{
               hasFacebook,
               publishingId,
+              deletingId,
               onPublish: publishToFacebook,
               onCancelSchedule: cancelSchedule,
               onDelete: deletePost,
-              refreshPosts: fetchPosts,
+              refreshPosts: () => fetchPosts({ showLoader: false }),
             }}
           >
             <PostsTabs />

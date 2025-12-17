@@ -239,7 +239,6 @@ export default function DashboardPage() {
                   </div>
 
                   <div className="space-x-2">
-                    {/* 🔹 زر نشر على فيسبوك يظهر فقط لو الحساب مربوط */}
                     {hasFacebook && (
                       <button
                         onClick={() => publishToFacebook(post.id)}
@@ -247,8 +246,8 @@ export default function DashboardPage() {
                         className="px-3 py-1 rounded-md bg-blue-600 text-white text-xs disabled:opacity-50"
                       >
                         {publishingId === post.id
-                          ? "جاري النشر..."
-                          : "نشر على فيسبوك"}
+                          ? "Publishing post..."
+                          : "Publish to Facebook"}
                       </button>
                     )}
                   </div>

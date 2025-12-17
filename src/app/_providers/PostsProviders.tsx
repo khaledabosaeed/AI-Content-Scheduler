@@ -5,6 +5,8 @@ import type { Post } from "@/entities/user/type/Post";
 import { PostsProvider } from "@/app/_providers/PostContext";
 import { PostsUIProvider } from "@/app/_providers/PostsUIContext";
 import ScheduleModal from "@/widgets/scheduler/ScheduleModal";
+// import { toast } from "sonner"; // لو عندك toast من sonner
+// أو لو toast جاهز عندك خليّه زي ما هو بالمشروع
 
 async function safeJson(res: Response) {
   try {
@@ -21,7 +23,26 @@ export default function PostsProviders({
 }) {
   const [posts, setPosts] = React.useState<Post[]>([]);
   const [publishingId, setPublishingId] = React.useState<string | null>(null);
-  const [hasFacebook, setHasFacebook] = React.useState(false);
+  const [deletingId, setDeletingId] = React.useState<string | null>(null);
+
+  const [hasFacebook, setHasFacebook] = React.useState<boolean | null>(() => {
+    if (typeof window === "undefined") return null;
+    const v = window.localStorage.getItem("hasFacebook");
+    return v === null ? null : v === "1";
+  });
+
+  const fetchFacebookStatus = React.useCallback(async () => {
+    try {
+      const res = await fetch("/api/facebook/me");
+      const data = await safeJson(res);
+      const ok = !!data?.hasFacebook;
+      setHasFacebook(ok);
+      window.localStorage.setItem("hasFacebook", ok ? "1" : "0");
+    } catch {
+      setHasFacebook(false);
+      window.localStorage.setItem("hasFacebook", "0");
+    }
+  }, []);
 
   const [isScheduleOpen, setIsScheduleOpen] = React.useState(false);
   const [scheduleInitialContent, setScheduleInitialContent] =
@@ -42,10 +63,33 @@ export default function PostsProviders({
 
   const deletePost = React.useCallback(
     async (postId: string) => {
-      await fetch(`/api/posts/${postId}/delete-post`, { method: "DELETE" });
-      await fetchPosts();
+      const prev = posts; // snapshot للـ rollback
+
+      try {
+        setDeletingId(postId);
+
+        // ✅ optimistic remove
+        setPosts((p) => p.filter((x) => x.id !== postId));
+
+        const res = await fetch(`/api/posts/${postId}/delete-post`, {
+          method: "DELETE",
+        });
+
+        const data = await safeJson(res);
+        if (!res.ok) {
+          throw new Error(data?.error || "Delete failed");
+        }
+
+      } catch (err: any) {
+        // ✅ rollback
+        setPosts(prev);
+        // toast.error("❌ " + (err?.message || "Delete failed"));
+        throw err;
+      } finally {
+        setDeletingId(null);
+      }
     },
-    [fetchPosts]
+    [posts]
   );
 
   const cancelSchedule = React.useCallback(
@@ -55,6 +99,10 @@ export default function PostsProviders({
     },
     [fetchPosts]
   );
+
+  React.useEffect(() => {
+    fetchFacebookStatus();
+  }, [fetchFacebookStatus]);
 
   const publishToFacebook = React.useCallback(
     async (postId: string) => {
@@ -78,8 +126,9 @@ export default function PostsProviders({
 
   const uiValue = React.useMemo(
     () => ({
-      hasFacebook,
+      hasFacebook: !!hasFacebook,
       publishingId,
+      deletingId,
       onPublish: publishToFacebook,
       onCancelSchedule: cancelSchedule,
       onDelete: deletePost,
@@ -89,6 +138,7 @@ export default function PostsProviders({
     [
       hasFacebook,
       publishingId,
+      deletingId,
       publishToFacebook,
       cancelSchedule,
       deletePost,
@@ -97,7 +147,6 @@ export default function PostsProviders({
     ]
   );
 
-  // أول تحميل
   React.useEffect(() => {
     fetchPosts();
   }, [fetchPosts]);

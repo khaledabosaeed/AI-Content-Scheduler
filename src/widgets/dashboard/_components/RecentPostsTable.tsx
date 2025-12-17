@@ -2,12 +2,12 @@
 
 import type { Post } from "@/entities/user/type/Post";
 import { Button } from "@/shared/components/ui/button";
-
 import { buttonVariants } from "@/shared/components/ui/button";
 import SaveButton from "@/features/chat/save-as-post/ui/SaveButton";
 import { cn } from "@/shared/libs/chadcn/utils";
 import { usePostsUI } from "@/app/_providers/PostsUIContext";
 import { usePostsContext } from "@/app/_providers/PostContext";
+// import { toast } from "sonner";
 
 type Props = {
   posts: Post[];
@@ -25,9 +25,11 @@ type Props = {
 
 export function RecentPostsTable({ posts, emptyText = "No posts." }: Props) {
   const { setPosts } = usePostsContext();
+
   const {
     hasFacebook,
     publishingId,
+    deletingId,
     onPublish,
     onCancelSchedule,
     onDelete,
@@ -65,14 +67,20 @@ export function RecentPostsTable({ posts, emptyText = "No posts." }: Props) {
         scheduled_at: null as any,
       } as any);
     } catch (err: any) {
-      alert("❌ Faild Publish " + (err?.message || "Unexpected error"));
+      // toast.error("❌ Publish failed: " + (err?.message || "Unexpected error"));
+      alert("❌ Publish failed: " + (err?.message || "Unexpected error"));
     }
   };
 
   const handleDeleteClick = async (postId: string) => {
-    // optimistic
-    setPosts((prev) => prev.filter((p) => p.id !== postId));
-    await onDelete(postId);
+    try {
+      if (!onDelete) return;
+      await onDelete(postId); //
+      // toast.success("✅ Deleted");
+    } catch (err: any) {
+      // toast.error("❌ Delete failed: " + (err?.message || "Unexpected error"));
+      alert("❌ Delete failed: " + (err?.message || "Unexpected error"));
+    }
   };
 
   const handleCancelClick = async (postId: string) => {
@@ -86,9 +94,11 @@ export function RecentPostsTable({ posts, emptyText = "No posts." }: Props) {
         scheduled_at: null as any,
       } as any);
     } catch (err: any) {
-      alert("❌ Faild  " + (err?.message || "Unexpected error"));
+      // toast.error("❌ Cancel failed: " + (err?.message || "Unexpected error"));
+      alert("❌ Cancel failed: " + (err?.message || "Unexpected error"));
     }
   };
+
   const formatDate = (date?: string | null) => {
     if (!date) return "-";
     return new Date(date).toLocaleString();
@@ -122,7 +132,9 @@ export function RecentPostsTable({ posts, emptyText = "No posts." }: Props) {
               const isDraft = s === "draft";
               const isScheduled = s === "scheduled";
               const isPublished = s === "published";
+
               const isPublishing = publishingId === post.id;
+              const isDeleting = deletingId === post.id;
 
               const showSchedule = isDraft;
               const showDelete = isDraft;
@@ -136,11 +148,13 @@ export function RecentPostsTable({ posts, emptyText = "No posts." }: Props) {
                   <td className="p-3 max-w-[600px] line-clamp-2">
                     {post.content}
                   </td>
+
                   <td className="p-3 text-xs text-muted-foreground">
                     {post.scheduled_at
                       ? formatDate(post.scheduled_at)
                       : formatDate(post.createdAt)}
                   </td>
+
                   <td className="p-3 capitalize">{s}</td>
 
                   <td className="p-3">
@@ -173,9 +187,7 @@ export function RecentPostsTable({ posts, emptyText = "No posts." }: Props) {
                           prompt={post.prompt}
                           buttonText="Schedule"
                           onSaved={async () => {
-                            console.log("onSaved fired ✅");
                             await refreshPosts?.();
-                            console.log("refreshPosts finished ✅");
                           }}
                           className={cn(
                             buttonVariants({ variant: "outline", size: "sm" }),
@@ -190,6 +202,7 @@ export function RecentPostsTable({ posts, emptyText = "No posts." }: Props) {
                           size="sm"
                           variant="destructive"
                           onClick={() => handleCancelClick(post.id)}
+                          disabled={isPublishing || isDeleting}
                         >
                           Cancel
                         </Button>
@@ -198,7 +211,7 @@ export function RecentPostsTable({ posts, emptyText = "No posts." }: Props) {
                       {showPublish && (
                         <Button
                           size="sm"
-                          disabled={isPublishing}
+                          disabled={isPublishing || isDeleting}
                           onClick={() => handlePublishClick(post.id)}
                         >
                           {isPublishing ? "Publishing..." : "Publish"}
@@ -210,8 +223,9 @@ export function RecentPostsTable({ posts, emptyText = "No posts." }: Props) {
                           size="sm"
                           variant="destructive"
                           onClick={() => handleDeleteClick(post.id)}
+                          disabled={isDeleting || isPublishing}
                         >
-                          Delete
+                          {isDeleting ? "Deleting..." : "Delete"}
                         </Button>
                       )}
                     </div>
