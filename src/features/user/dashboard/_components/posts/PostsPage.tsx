@@ -26,231 +26,239 @@ export default function PostsPage() {
   const [publishingId, setPublishingId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+const [deletingId, setDeletingId] = useState<string | null>(null);
 
-  const [hasFacebook, setHasFacebook] = React.useState<boolean | null>(null);
-  const [isScheduleOpen, setIsScheduleOpen] = useState(false);
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-  const [isScheduling, setIsScheduling] = useState(false);
+const [hasFacebook, setHasFacebook] = React.useState<boolean | null>(null);
+const [isScheduleOpen, setIsScheduleOpen] = useState(false);
+const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+const [isScheduling, setIsScheduling] = useState(false);
 
-  const fetchUser = async () => {
-    try {
-      const res = await fetch("/api/facebook/me");
-      if (!res.ok) return;
-      const data = await safeJson(res);
-      setHasFacebook(!!data.hasFacebook);
-    } catch (err) {
-      console.error(err);
+const fetchUser = async () => {
+  try {
+    const res = await fetch("/api/facebook/me");
+    if (!res.ok) return;
+    const data = await safeJson(res);
+    setHasFacebook(!!data.hasFacebook);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+const fetchPosts = async (opts?: { showLoader?: boolean }) => {
+  const showLoader = opts?.showLoader ?? false;
+
+  try {
+    if (showLoader) setIsLoading(true);
+    setError(null);
+
+    const res = await fetch("/api/posts");
+    const data = await safeJson(res);
+
+    if (!res.ok)
+      throw new Error(data?.error || data?.raw || "Failed to load posts");
+
+    setPosts(Array.isArray(data.posts) ? data.posts : []);
+  } catch (err: any) {
+    const msg = err?.message || "Unexpected error";
+    setError(msg);
+    toast.error(msg);
+  } finally {
+    if (showLoader) setIsLoading(false);
+  }
+};
+
+useEffect(() => {
+  fetchPosts({ showLoader: true });
+  fetchUser();
+}, []);
+
+const publishToFacebook = async (postId: string) => {
+  try {
+    setPublishingId(postId);
+    toast.loading("Publishing to Facebook...", { id: `publish-${postId}` });
+
+    const res = await fetch("/api/facebook/publish", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ postId }),
+    });
+
+    const data = await res.json();
+
+    if (!res.ok || data.success === false) {
+      throw new Error(data?.error?.message || data?.error || "Publish failed");
     }
-  };
 
-  const fetchPosts = async () => {
-    try {
-      setIsLoading(true);
-      setError(null);
+    toast.success("Published successfully ✅", { id: `publish-${postId}` });
+    await fetchPosts();
+  } catch (err: any) {
+    toast.error(err?.message || "Publish failed", {
+      id: `publish-${postId}`,
+    });
+    throw err;
+  } finally {
+    setPublishingId(null);
+  }
+};
 
-      const res = await fetch("/api/posts");
-      const data = await safeJson(res);
+const cancelSchedule = async (postId: string) => {
+  try {
+    toast.loading("Canceling schedule...", { id: `cancel-${postId}` });
 
-      if (!res.ok)
-        throw new Error(data?.error || data?.raw || "Failed to load posts");
+    const res = await fetch(`/api/posts/${postId}/cancel-schedule`, {
+      method: "POST",
+    });
+    const data = await safeJson(res);
 
-      setPosts(Array.isArray(data.posts) ? data.posts : []);
-    } catch (err: any) {
-      const msg = err?.message || "Unexpected error";
-      setError(msg);
-      toast.error(msg);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    if (!res.ok)
+      throw new Error(data?.error || data?.raw || "Failed to cancel schedule");
 
-  useEffect(() => {
-    fetchPosts();
-    fetchUser();
-  }, []);
+    setPosts((prev) =>
+      prev.map((p) =>
+        p.id === postId
+          ? ({
+              ...p,
+              status: "draft" as any,
+              scheduled_at: null as any,
+            } as any)
+          : p
+      )
+    );
 
-  const publishToFacebook = async (postId: string) => {
-    try {
-      setPublishingId(postId);
-      toast.loading("Publishing to Facebook...", { id: `publish-${postId}` });
+    toast.success("Schedule canceled ", { id: `cancel-${postId}` });
+    await fetchPosts();
+  } catch (err: any) {
+    alert("❌ " + (err?.message || "فشل إلغاء الجدولة"));
+  }
+};
 
-      const res = await fetch("/api/facebook/publish", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ postId }),
-      });
+const deletePost = async (postId: string) => {
+  const prev = posts;
 
-      const data = await res.json();
+  try {
+    setDeletingId(postId);
 
-      if (!res.ok || data.success === false) {
-        throw new Error(
-          data?.error?.message || data?.error || "Publish failed"
-        );
-      }
+    setPosts((p) => p.filter((x) => x.id !== postId));
 
-      toast.success("Published successfully ✅", { id: `publish-${postId}` });
-      await fetchPosts();
-    } catch (err: any) {
-      toast.error(err?.message || "Publish failed", {
-        id: `publish-${postId}`,
-      });
-      throw err;
-    } finally {
-      setPublishingId(null);
-    }
-  };
+    const res = await fetch(`/api/posts/${postId}/delete-post`, {
+      method: "DELETE",
+    });
 
-  const cancelSchedule = async (postId: string) => {
-    try {
-      toast.loading("Canceling schedule...", { id: `cancel-${postId}` });
+    const data = await safeJson(res);
+    if (!res.ok) throw new Error(data?.error || "Delete failed");
 
-      const res = await fetch(`/api/posts/${postId}/cancel-schedule`, {
-        method: "POST",
-      });
-      const data = await safeJson(res);
+    toast.success("Post deleted ✅", { id: `delete-${postId}` });
+  } catch (err: any) {
+    setPosts(prev);
+    toast.error(err?.message || "Failed to delete post");
+  } finally {
+    setDeletingId(null);
+  }
+};
 
-      if (!res.ok)
-        throw new Error(
-          data?.error || data?.raw || "Failed to cancel schedule"
-        );
+// ===== Open schedule modal =====
+const openScheduleModal = (post: Post) => {
+  setSelectedPost(post);
+  setIsScheduleOpen(true);
+};
 
-      setPosts((prev) =>
-        prev.map((p) =>
-          p.id === postId
-            ? ({
-                ...p,
-                status: "draft" as any,
-                scheduled_at: null as any,
-              } as any)
-            : p
-        )
-      );
+const confirmSchedule = async (
+  date: Date,
+  platform: string,
+  content: string
+) => {
+  if (!selectedPost?.id) return;
 
-      toast.success("Schedule canceled ", { id: `cancel-${postId}` });
-      await fetchPosts();
-    } catch (err: any) {
-      alert("❌ " + (err?.message || "فشل إلغاء الجدولة"));
-    }
-  };
+  const id = selectedPost.id;
 
-  const deletePost = async (postId: string) => {
-    try {
-      const res = await fetch(`/api/posts/${postId}/delete-post`, {
-        method: "DELETE",
-      });
-      const data = await safeJson(res);
+  try {
+    setIsScheduling(true);
+    toast.loading("Scheduling post...", { id: `schedule-${id}` });
 
-      if (!res.ok) throw new Error(data?.error || "Delete failed");
+    const res = await fetch(`/api/posts/${selectedPost.id}/update`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        scheduledAt: date.toISOString(),
+        platform,
+        content,
+        status: "scheduled",
+      }),
+    });
 
-      setPosts((prev) => prev.filter((p) => p.id !== postId));
-      toast.success("Post deleted");
-    } catch (err: any) {
-      toast.error(err?.message || "Failed to delete post");
-    }
-  };
+    const data = await safeJson(res);
 
-  // ===== Open schedule modal =====
-  const openScheduleModal = (post: Post) => {
-    setSelectedPost(post);
-    setIsScheduleOpen(true);
-  };
+    if (!res.ok)
+      throw new Error(data?.error || data?.raw || "Failed to schedule post");
 
-  const confirmSchedule = async (
-    date: Date,
-    platform: string,
-    content: string
-  ) => {
-    if (!selectedPost?.id) return;
+    setPosts((prev) =>
+      prev.map((p) =>
+        p.id === id
+          ? ({
+              ...p,
+              status: "scheduled" as any,
+              platform: platform as any,
+              content: content as any,
+              scheduled_at: date.toISOString() as any,
+            } as any)
+          : p
+      )
+    );
+    setIsScheduleOpen(false);
+    setSelectedPost(null);
 
-    const id = selectedPost.id;
+    toast.success("Scheduled successfully ", { id: `schedule-${id}` });
+    await fetchPosts();
+  } catch (err: any) {
+    toast.error(err?.message || "Schedule failed");
+  } finally {
+    setIsScheduling(false);
+  }
+};
 
-    try {
-      setIsScheduling(true);
-      toast.loading("Scheduling post...");
+const uiValue = useMemo(
+  () => ({
+    hasFacebook: !!hasFacebook,
+    publishingId,
+    deletingId,
+    onPublish: publishToFacebook,
+    onCancelSchedule: cancelSchedule,
+    onDelete: deletePost,
+    refreshPosts: () => fetchPosts({ showLoader: false }),
+    onSchedule: openScheduleModal,
+  }),
+  [
+    hasFacebook,
+    publishingId,
+    deletingId,
+    publishToFacebook,
+    cancelSchedule,
+    deletePost,
+    openScheduleModal,
+  ]
+);
 
-      const res = await fetch(`/api/posts/${selectedPost.id}/update`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          scheduledAt: date.toISOString(),
-          platform,
-          content,
-          status: "scheduled",
-        }),
-      });
+console.log("refreshPosts type:", typeof uiValue.refreshPosts);
+return (
+  <div className="space-y-6">
+    {!hasFacebook && (
+      <div className="rounded-md border bg-card p-3 text-sm flex justify-between">
+        <span className="text-muted-foreground">
+          Your Facebook account is not connected.
+        </span>
+        <Button asChild variant="outline">
+          <a href="/api/oauth/facebook/login">Connect</a>
+        </Button>
+      </div>
+    )}
 
-      const data = await safeJson(res);
+    {error && (
+      <div className="rounded-md border p-3 text-sm text-destructive">
+        {error}
+      </div>
+    )}
 
-      if (!res.ok)
-        throw new Error(data?.error || data?.raw || "Failed to schedule post");
-
-      setPosts((prev) =>
-        prev.map((p) =>
-          p.id === id
-            ? ({
-                ...p,
-                status: "scheduled" as any,
-                platform: platform as any,
-                content: content as any,
-                scheduled_at: date.toISOString() as any,
-              } as any)
-            : p
-        )
-      );
-      setIsScheduleOpen(false);
-      setSelectedPost(null);
-
-      toast.success("Scheduled successfully ");
-      await fetchPosts();
-    } catch (err: any) {
-      toast.error(err?.message || "Schedule failed");
-    } finally {
-      setIsScheduling(false);
-    }
-  };
-
-  const uiValue = useMemo(
-    () => ({
-      hasFacebook,
-      publishingId,
-      onPublish: publishToFacebook,
-      onCancelSchedule: cancelSchedule,
-      onDelete: deletePost,
-      refreshPosts: fetchPosts,
-      onSchedule: openScheduleModal,
-    }),
-    [
-      hasFacebook,
-      publishingId,
-      fetchPosts,
-      publishToFacebook,
-      cancelSchedule,
-      deletePost,
-      openScheduleModal,
-    ]
-  );
-
-  console.log("refreshPosts type:", typeof uiValue.refreshPosts);
-  return (
-    <div className="space-y-6">
-      {!hasFacebook && (
-        <div className="rounded-md border bg-card p-3 text-sm flex justify-between">
-          <span className="text-muted-foreground">
-            Your Facebook account is not connected.
-          </span>
-          <Button asChild variant="outline">
-            <a href="/api/oauth/facebook/login">Connect</a>
-          </Button>
-        </div>
-      )}
-
-      {error && (
-        <div className="rounded-md border p-3 text-sm text-destructive">
-          {error}
-        </div>
-      )}
-
-      {/* <PostsTabs
+    {/* <PostsTabs
         posts={posts}
         hasFacebook={hasFacebook}
         setPosts={setPosts}
@@ -261,24 +269,24 @@ export default function PostsPage() {
         onDelete={(postId) => deletePost(postId)}
       /> */}
 
-      <PostsUIProvider value={uiValue}>
-        <PostsTabs />
-      </PostsUIProvider>
+    <PostsUIProvider value={uiValue}>
+      <PostsTabs />
+    </PostsUIProvider>
 
-      {isScheduleOpen && selectedPost && (
-        <ScheduleModal
-          open={isScheduleOpen}
-          onOpenChange={(v) => {
-            setIsScheduleOpen(v);
-            if (!v) setSelectedPost(null);
-          }}
-          initialContent={selectedPost.content || ""}
-          onConfirm={(date, platform, content) => {
-            if (!date) return; // أو alert للمستخدم
-            confirmSchedule(date, platform, content);
-          }}
-        />
-      )}
-    </div>
-  );
+    {isScheduleOpen && selectedPost && (
+      <ScheduleModal
+        open={isScheduleOpen}
+        onOpenChange={(v) => {
+          setIsScheduleOpen(v);
+          if (!v) setSelectedPost(null);
+        }}
+        initialContent={selectedPost.content || ""}
+        onConfirm={(date, platform, content) => {
+          if (!date) return;
+          confirmSchedule(date, platform, content);
+        }}
+      />
+    )}
+  </div>
+);
 }

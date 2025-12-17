@@ -72,7 +72,7 @@ const ui = usePostsUIOptional();
           disabled={isSaving}
           {...rest}
         >
-          {isSaving ? "جاري الحفظ..." : buttonText || "💾 save post"}
+          {isSaving ? "save loading.." : buttonText || "💾 save post"}
         </button>
 
         {isModalOpen && (
