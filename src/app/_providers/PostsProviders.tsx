@@ -5,8 +5,8 @@ import type { Post } from "@/entities/user/type/Post";
 import { PostsProvider } from "@/app/_providers/PostContext";
 import { PostsUIProvider } from "@/app/_providers/PostsUIContext";
 import ScheduleModal from "@/widgets/scheduler/ScheduleModal";
-// import { toast } from "sonner"; // لو عندك toast من sonner
-// أو لو toast جاهز عندك خليّه زي ما هو بالمشروع
+import { api } from "@/shared/api/api-client";
+
 
 async function safeJson(res: Response) {
   try {
@@ -33,9 +33,8 @@ export default function PostsProviders({
 
   const fetchFacebookStatus = React.useCallback(async () => {
     try {
-      const res = await fetch("/api/facebook/me");
-      const data = await safeJson(res);
-      const ok = !!data?.hasFacebook;
+      const res = await api.post("facebook/me");
+      const ok = !!res?.hasFacebook;
       setHasFacebook(ok);
       window.localStorage.setItem("hasFacebook", ok ? "1" : "0");
     } catch {
@@ -49,10 +48,9 @@ export default function PostsProviders({
     React.useState("");
 
   const fetchPosts = React.useCallback(async () => {
-    const res = await fetch("/api/posts", { cache: "no-store" });
-    const data = await safeJson(res);
+    const res = await api.get("posts", { cache: "no-store" });
 
-    const list = data?.posts ?? data ?? [];
+    const list = res?.posts ?? res ?? [];
     setPosts(Array.isArray(list) ? list : []);
   }, []);
 
@@ -71,14 +69,9 @@ export default function PostsProviders({
         // ✅ optimistic remove
         setPosts((p) => p.filter((x) => x.id !== postId));
 
-        const res = await fetch(`/api/posts/${postId}/delete-post`, {
-          method: "DELETE",
-        });
+        const res = await api.delete(`posts/${postId}/delete-post`);
 
-        const data = await safeJson(res);
-        if (!res.ok) {
-          throw new Error(data?.error || "Delete failed");
-        }
+        
 
       } catch (err: any) {
         // ✅ rollback

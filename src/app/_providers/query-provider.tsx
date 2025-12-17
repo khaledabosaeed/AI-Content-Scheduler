@@ -25,9 +25,7 @@ export default function QueryProvider({
   children: React.ReactNode;
   dehydratedState?: DehydratedState;
 }) {
-  // ⚠️ أنشئ QueryClient هنا داخل useState لتجنّب:
-  // - مشاركة الكاش بين requests مختلفة في SSR
-  // - re-initialization عند كل render
+
   const [queryClient] = useState(
     () =>
       new QueryClient({

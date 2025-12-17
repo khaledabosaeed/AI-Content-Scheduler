@@ -33,7 +33,6 @@ export async function apiClient(
       requestHeaders["Authorization"] = `Bearer ${token}`;
     }
   }
-
   // Build full URL
   const url = endpoint.startsWith("http")
     ? endpoint
@@ -105,6 +104,7 @@ export const api = {
     try {
       const response = await apiClient(endpoint, { ...options, method: "GET" });
       return handleResponse<T>(response, endpoint);
+      
     } catch (error) {
       if (error instanceof TypeError) {
         throw new NetworkError(

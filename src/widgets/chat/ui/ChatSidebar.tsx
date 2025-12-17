@@ -21,7 +21,6 @@ export const ChatSideBar = () => {
     fetchChatHistory,
   } = useChatStore();
 
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showTheme, setShowTheme] = useState(false);
 
   useEffect(() => {

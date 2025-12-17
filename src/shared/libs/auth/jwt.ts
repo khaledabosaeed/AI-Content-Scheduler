@@ -22,7 +22,7 @@ export async function createToken(payload: any) {
     .sign(SECRET);
   }catch (error) {
     console.error('Error creating JWT token:', error);
-    throw new Error('فشل في إنشاء token');
+    throw new Error('Failed token creation');
   }
 
 }

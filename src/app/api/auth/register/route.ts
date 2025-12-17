@@ -71,7 +71,7 @@ export const POST = async (req: NextRequest) => {
 
     if (dbError || !user) {
       console.error("Database insertion failed:", dbError);
-      return NextResponse.json({ error: "فشل في إنشاء المستخدم" }, { status: 500 });
+      return NextResponse.json({ error: "Failed to create user" }, { status: 500 });
     }
 
     // 8️⃣ إنشاء JWT Token

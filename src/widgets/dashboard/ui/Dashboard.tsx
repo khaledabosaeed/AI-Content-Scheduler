@@ -96,7 +96,7 @@ export default function DashboardPage() {
       });
       const data = await res.json();
 
-      if (!res.ok) throw new Error(data.error || "فشل إلغاء الجدولة");
+      if (!res.ok) throw new Error(data.error || "Cancellation failed");
 
       toast.success("The scheduled post has been cancelled successfully.");
       fetchPosts(); // تحديث البوستات

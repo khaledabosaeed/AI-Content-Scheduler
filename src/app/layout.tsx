@@ -17,7 +17,6 @@ async function PrefetchUserData() {
   const queryClient = new QueryClient();
 
   try {
-    // 🔹 prefetch بيانات اليوزر من السيرفر قبل العرض
     await queryClient.prefetchQuery({
       queryKey: userKeys.me(),
       queryFn: getUserServer,
@@ -25,17 +24,10 @@ async function PrefetchUserData() {
 
     // 🔹 تحويل الكاش إلى JSON يمكن إرساله للعميل
     const dehydratedState = dehydrate(queryClient);
-    // console.log("✅ User data prefetched successfully");
-    // console.log(
-    //   JSON.stringify(dehydratedState, null, 2),
-    //   "this is dehydratedState"
-    // );
-    // console.log("📊 Query State:", dehydratedState.queries[0]?.state);
 
     return dehydratedState;
   } catch (error) {
-    // console.error("❌ Failed to prefetch user data:", error);
-    // إرجع undefined وليس throw - سيسمح بالمتابعة بدون بيانات اليوزر
+
     return undefined;
   }
 }
