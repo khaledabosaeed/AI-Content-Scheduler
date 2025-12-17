@@ -10,21 +10,33 @@ import { AlertsPanel } from "./AlertsPanel";
 import { Skeleton } from "@/shared/components/ui/skeleton";
 
 import { toast } from "sonner";
+import { PostsUIProvider } from "@/app/_providers/PostsUIContext";
+import { usePostsContext } from "@/app/_providers/PostContext";
+import React from "react";
+
+async function safeJson(res: Response) {
+  try {
+    return await res.json();
+  } catch {
+    return null;
+  }
+}
 
 export default function Dashboard() {
-  const [posts, setPosts] = useState<Post[]>([]);
+  const { posts, setPosts } = usePostsContext();
+
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const [publishingId, setPublishingId] = useState<string | null>(null);
-  const [hasFacebook, setHasFacebook] = useState(false);
+  const [hasFacebook, setHasFacebook] = React.useState<boolean | null>(null);
 
   const fetchUser = async () => {
     try {
       const res = await fetch("/api/facebook/me");
       if (!res.ok) return;
-      const data = await res.json();
-      setHasFacebook(!!data.hasFacebook);
+      const data = await safeJson(res);
+      setHasFacebook(!!data?.hasFacebook);
     } catch (err) {
       console.error("fetchUser error:", err);
     }
@@ -36,13 +48,13 @@ export default function Dashboard() {
       setError(null);
 
       const res = await fetch("/api/posts");
-      const data = await res.json();
+      const data = await safeJson(res);
 
-      if (!res.ok) throw new Error(data.error || "Failed to load posts");
-      setPosts(data.posts || []);
+      if (!res.ok) throw new Error(data?.error || "Failed to load posts");
+      setPosts((data?.posts || []) as Post[]);
     } catch (err: any) {
       console.error(err);
-      const msg = err.message || "Unexpected error";
+      const msg = err?.message || "Unexpected error";
       setError(msg);
       toast.error(msg);
     } finally {
@@ -66,9 +78,9 @@ export default function Dashboard() {
         body: JSON.stringify({ postId }),
       });
 
-      const data = await res.json();
+      const data = await safeJson(res);
 
-      if (!res.ok || data.success === false) {
+      if (!res.ok || data?.success === false) {
         throw new Error(
           data?.error?.message || data?.error || "Publish failed"
         );
@@ -94,11 +106,11 @@ export default function Dashboard() {
         method: "POST",
       });
 
-      const data = await res.json();
-      if (!res.ok) throw new Error(data.error || "Failed to cancel schedule");
+      const data = await safeJson(res);
+      if (!res.ok) throw new Error(data?.error || "Failed to cancel schedule");
 
       toast.success("Schedule cancelled ✅", { id: `cancel-${postId}` });
-      fetchPosts();
+      await fetchPosts();
     } catch (err: any) {
       toast.error(err?.message || "Failed to cancel schedule", {
         id: `cancel-${postId}`,
@@ -108,6 +120,22 @@ export default function Dashboard() {
   const handleScheduleClick = ()=>{
     fetchPosts()
   }
+
+  const deletePost = async (postId: string) => {
+    try {
+      const res = await fetch(`/api/posts/${postId}/delete-post`, {
+        method: "DELETE",
+      });
+
+      const data = await safeJson(res);
+      if (!res.ok) throw new Error(data?.error || "Failed to delete post");
+
+      toast.success("Deleted successfully ✅", { id: `delete-${postId}` });
+      await fetchPosts();
+    } catch (err: any) {
+      toast.error("❌ " + (err?.message || "Failed to delete post"));
+    }
+  };
 
   const normalizedPosts = useMemo(() => {
     return (posts as any[]).map((p) => ({
@@ -149,23 +177,23 @@ export default function Dashboard() {
         </div>
       )}
 
-      {/* Row 1 */}
       <StatsCards posts={normalizedPosts as any} />
-      
-    
-      {/* Row 2 */}
+
+
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         <div className="lg:col-span-8">
-          <PostsTabs
-            posts={normalizedPosts as any}
-            hasFacebook={hasFacebook}
-            publishingId={publishingId}
-            onPublish={(postId) => publishToFacebook(postId)}
-            onCancelSchedule={cancelSchedule}
-            onRefresh={fetchPosts}
-            onSchedule={handleScheduleClick}
-            onDelete={() => {}}
-          />
+          <PostsUIProvider
+            value={{
+              hasFacebook,
+              publishingId,
+              onPublish: publishToFacebook,
+              onCancelSchedule: cancelSchedule,
+              onDelete: deletePost,
+              refreshPosts: fetchPosts,
+            }}
+          >
+            <PostsTabs />
+          </PostsUIProvider>
         </div>
 
         <div className="lg:col-span-4 space-y-6">

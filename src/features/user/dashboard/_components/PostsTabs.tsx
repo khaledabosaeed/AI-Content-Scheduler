@@ -1,44 +1,31 @@
 "use client";
 
-import type { Post } from "@/entities/user/type/Post";
+import { useMemo } from "react";
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
 } from "@/shared/components/ui/tabs";
-import { RecentPostsTable } from "./RecentPostsTable"; 
 
-type Props = {
-  posts: Post[];
-  hasFacebook: boolean;
-  onSchedule?: (post: Post) => void;
-  onPublish?: (postId: string) => Promise<void> | void;
-  onCancelSchedule?: (postId: string) => Promise<void> | void;
-  publishingId?: string | null;
-  onDelete: (postId: string) => Promise<void> | void;
-  onRefresh: () => Promise<void>;
-  setPosts?: React.Dispatch<React.SetStateAction<Post[]>>;
-};
+import { RecentPostsTable } from "./RecentPostsTable";
+import { usePostsContext } from "@/app/_providers/PostContext";
 
-export function PostsTabs({
-  posts,
-  onSchedule,
-  onPublish,
-  onCancelSchedule,
-  onDelete,
-  setPosts,
-}: Props) {
-  const all = posts;
-  const scheduled = posts.filter(
-    (p: any) => (p.status || "").toLowerCase() === "scheduled"
-  );
-  const drafts = posts.filter(
-    (p: any) => (p.status || "").toLowerCase() === "draft"
-  );
-  const published = posts.filter(
-    (p: any) => (p.status || "").toLowerCase() === "published"
-  );
+export function PostsTabs() {
+  const { posts } = usePostsContext();
+
+  const { all, scheduled, drafts, published } = useMemo(() => {
+    const norm = (s: any) => (s || "").toString().toLowerCase();
+    const list = posts ?? [];
+    console.log("PostsTabs props keys", Object.keys(arguments?.[0] ?? {}));
+    console.log("PostsTabs ctx posts len", posts.length);
+    return {
+      all: list,
+      scheduled: list.filter((p: any) => norm(p.status) === "scheduled"),
+      drafts: list.filter((p: any) => norm(p.status) === "draft"),
+      published: list.filter((p: any) => norm(p.status) === "published"),
+    };
+  }, [posts]);
 
   return (
     <div className="space-y-4">
@@ -58,46 +45,19 @@ export function PostsTabs({
         </TabsList>
 
         <TabsContent value="all" className="mt-4">
-          <RecentPostsTable
-            posts={all}
-            emptyText="No posts yet."
-            onSchedule={onSchedule}
-            onPublish={onPublish}
-            onCancelSchedule={onCancelSchedule}
-            onDelete={onDelete}
-            setPosts={setPosts}
-          />
+          <RecentPostsTable posts={all} emptyText="No posts yet." />
         </TabsContent>
 
         <TabsContent value="scheduled" className="mt-4">
-          <RecentPostsTable
-            posts={scheduled}
-            emptyText="No scheduled posts."
-            onPublish={onPublish}
-            onCancelSchedule={onCancelSchedule}
-            onDelete={onDelete}
-            setPosts={setPosts}
-          />
+          <RecentPostsTable posts={scheduled} emptyText="No scheduled posts." />
         </TabsContent>
 
         <TabsContent value="drafts" className="mt-4">
-          <RecentPostsTable
-            posts={drafts}
-            emptyText="No drafts."
-            onSchedule={onSchedule}
-            onDelete={onDelete}
-            setPosts={setPosts}
-          />
+          <RecentPostsTable posts={drafts} emptyText="No drafts." />
         </TabsContent>
+
         <TabsContent value="published" className="mt-4">
-          <RecentPostsTable
-            posts={published}
-            emptyText="No published posts."
-            onPublish={onPublish}
-            onDelete={onDelete}
-            setPosts={setPosts}
-            // publishingId={publishingId}
-          />
+          <RecentPostsTable posts={published} emptyText="No published posts." />
         </TabsContent>
       </Tabs>
     </div>

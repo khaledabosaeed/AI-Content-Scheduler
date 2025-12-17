@@ -3,14 +3,14 @@
 import { useEffect, useMemo, useState } from "react";
 import type { Post } from "@/entities/user/type/Post";
 import Link from "next/link";
-
+import { usePostsContext } from "@/app/_providers/PostContext";
+import { PostsUIProvider } from "@/app/_providers/PostsUIContext";
 import { Button } from "@/shared/components/ui/button";
 import ScheduleModal from "@/widgets/scheduler/ScheduleModal";
 import { PostsTabs } from "../PostsTabs";
 
 import { toast } from "sonner";
-
-type StatusFilter = "all" | "draft" | "scheduled" | "published" | "failed";
+import React from "react";
 
 const safeJson = async (res: Response) => {
   const text = await res.text();
@@ -22,16 +22,12 @@ const safeJson = async (res: Response) => {
 };
 
 export default function PostsPage() {
-  const [posts, setPosts] = useState<Post[]>([]);
+  const { posts, setPosts } = usePostsContext();
+  const [publishingId, setPublishingId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const [hasFacebook, setHasFacebook] = useState(false);
-  const [publishingId, setPublishingId] = useState<string | null>(null);
-
-  const [status, setStatus] = useState<StatusFilter>("all");
-  const [query, setQuery] = useState("");
-
+  const [hasFacebook, setHasFacebook] = React.useState<boolean | null>(null);
   const [isScheduleOpen, setIsScheduleOpen] = useState(false);
   const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [isScheduling, setIsScheduling] = useState(false);
@@ -76,7 +72,7 @@ export default function PostsPage() {
   const publishToFacebook = async (postId: string) => {
     try {
       setPublishingId(postId);
-      toast.loading("Publishing to Facebook...");
+      toast.loading("Publishing to Facebook...", { id: `publish-${postId}` });
 
       const res = await fetch("/api/facebook/publish", {
         method: "POST",
@@ -92,7 +88,7 @@ export default function PostsPage() {
         );
       }
 
-      toast.success("Published successfully ");
+      toast.success("Published successfully ✅", { id: `publish-${postId}` });
       await fetchPosts();
     } catch (err: any) {
       toast.error(err?.message || "Publish failed", {
@@ -106,7 +102,7 @@ export default function PostsPage() {
 
   const cancelSchedule = async (postId: string) => {
     try {
-      toast.loading("Canceling schedule...");
+      toast.loading("Canceling schedule...", { id: `cancel-${postId}` });
 
       const res = await fetch(`/api/posts/${postId}/cancel-schedule`, {
         method: "POST",
@@ -130,7 +126,7 @@ export default function PostsPage() {
         )
       );
 
-      toast.success("Schedule canceled ");
+      toast.success("Schedule canceled ", { id: `cancel-${postId}` });
       await fetchPosts();
     } catch (err: any) {
       alert("❌ " + (err?.message || "فشل إلغاء الجدولة"));
@@ -143,10 +139,13 @@ export default function PostsPage() {
         method: "DELETE",
       });
       const data = await safeJson(res);
-    console.log("clicked");
-    
+
+      if (!res.ok) throw new Error(data?.error || "Delete failed");
+
+      setPosts((prev) => prev.filter((p) => p.id !== postId));
+      toast.success("Post deleted");
     } catch (err: any) {
-      alert("❌ " + (err?.message || "Failed to delete post"));
+      toast.error(err?.message || "Failed to delete post");
     }
   };
 
@@ -210,6 +209,28 @@ export default function PostsPage() {
   //   }
   // };
 
+  const uiValue = useMemo(
+    () => ({
+      hasFacebook,
+      publishingId,
+      onPublish: publishToFacebook,
+      onCancelSchedule: cancelSchedule,
+      onDelete: deletePost,
+      refreshPosts: fetchPosts,
+      onSchedule: openScheduleModal,
+    }),
+    [
+      hasFacebook,
+      publishingId,
+      fetchPosts,
+      publishToFacebook,
+      cancelSchedule,
+      deletePost,
+      openScheduleModal,
+    ]
+  );
+
+  console.log("refreshPosts type:", typeof uiValue.refreshPosts);
   return (
     <div className="space-y-6">
       {!hasFacebook && (
@@ -229,18 +250,20 @@ export default function PostsPage() {
         </div>
       )}
 
-      <PostsTabs
+      {/* <PostsTabs
         posts={posts}
         hasFacebook={hasFacebook}
         setPosts={setPosts}
         onSchedule={(post) => openScheduleModal(post)}
         onPublish={(id) => publishToFacebook(id)}
         onCancelSchedule={(postId) => cancelSchedule(postId)}
-
         onRefresh={fetchPosts}
-
         onDelete={(postId) => deletePost(postId)}
-      />
+      /> */}
+
+      <PostsUIProvider value={uiValue}>
+        <PostsTabs />
+      </PostsUIProvider>
 
       {/* {isScheduleOpen && selectedPost && (
         <ScheduleModal
@@ -254,7 +277,6 @@ export default function PostsPage() {
             if (!date) return; // أو alert للمستخدم
             confirmSchedule(date, platform, content);
           }}
-          
         />
       )} */}
     </div>

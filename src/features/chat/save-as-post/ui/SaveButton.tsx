@@ -4,6 +4,8 @@ import * as React from "react";
 import type { Message } from "@/entities/chat";
 import ScheduleModal from "@/widgets/scheduler/ScheduleModal";
 import { useSaveAsPost } from "../model/use-save-as-post";
+
+import { usePostsUI, usePostsUIOptional } from "@/app/_providers/PostsUIContext";
 import { toast } from "sonner";
 
 interface SaveButtonProps
@@ -12,15 +14,23 @@ interface SaveButtonProps
   postId?: string;
   prompt?: string;
   buttonText?: string;
-  onSaved: () => void;
+  onSaved?: () => void;
 }
 
 const SaveButton = React.forwardRef<HTMLButtonElement, SaveButtonProps>(
-  ({ message, prompt, buttonText, onSaved, className, type,postId, ...rest }, ref) => {
+  (
+    { message, prompt, buttonText, onSaved, className, type, postId, ...rest },
+    ref
+  ) => {
     const { saveAsPost, isSaving } = useSaveAsPost();
     const [isModalOpen, setIsModalOpen] = React.useState(false);
 
-     const handleSave = async (
+
+
+const ui = usePostsUIOptional();
+    const refreshPosts = ui?.refreshPosts;
+    
+    const handleSave = async (
       scheduledDate?: Date,
       platform?: string,
       contentOverride?: string
@@ -35,17 +45,23 @@ const SaveButton = React.forwardRef<HTMLButtonElement, SaveButtonProps>(
           scheduledAt: scheduledDate ? scheduledDate.toISOString() : null,
         });
 
-        onSaved();
+        onSaved?.(); 
 
-       toast.success(
-        scheduledDate
-          ? `Your post is scheduled on ${platform} for ${scheduledDate.toLocaleString()}`
-          : "Your post has been saved successfully."
-      );
+
+        console.log("SaveButton: refreshPosts type =", typeof refreshPosts);
+        await refreshPosts?.();
+        console.log("SaveButton: refreshPosts finished ✅");
+
+    toast.success(
+      scheduledDate
+        ? `The post has been successfully scheduled on ${platform}.`
+        : "The post has been saved successfully."
+    );
       } catch (err: any) {
-      toast.error(err?.message || "Something went wrong!");
+        toast.error("❌ " + (err?.message ?? `Failed to save post`));
       }
     };
+
     return (
       <>
         <button
@@ -63,16 +79,16 @@ const SaveButton = React.forwardRef<HTMLButtonElement, SaveButtonProps>(
         </button>
 
         {isModalOpen && (
-        <ScheduleModal
-          open={isModalOpen}
-          onOpenChange={setIsModalOpen}
-          initialContent={message.content}
-          onConfirm={(date, platform, content) => {
-            handleSave(date ?? undefined, platform, content);
-            setIsModalOpen(false);
-          }}
-        />
-      )}
+          <ScheduleModal
+            open={isModalOpen}
+            onOpenChange={setIsModalOpen}
+            initialContent={message.content}
+            onConfirm={(date, platform, content) => {
+              handleSave(date ?? undefined, platform, content);
+              setIsModalOpen(false);
+            }}
+          />
+        )}
       </>
     );
   }

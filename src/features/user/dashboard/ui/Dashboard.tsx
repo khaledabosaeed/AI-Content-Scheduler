@@ -5,6 +5,7 @@ import { useEffect, useState } from "react";
 import type { Post } from "@/entities/user/type/Post";
 import { SaveButton } from "@/features/chat";
 import { toast } from "sonner";
+import React from "react";
 
 export default function DashboardPage() {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -13,7 +14,7 @@ export default function DashboardPage() {
   const [publishingId, setPublishingId] = useState<string | null>(null);
 
   //  أهم شيء: حالة ربط الفيسبوك
-  const [hasFacebook, setHasFacebook] = useState(false);
+  const [hasFacebook, setHasFacebook] = React.useState<boolean | null>(null);
 
   //  جلب حالة المستخدم (وربط فيسبوك)
   const fetchUser = async () => {
