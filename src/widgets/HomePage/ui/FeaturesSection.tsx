@@ -37,7 +37,7 @@ const FeaturesSection: FC = () => (
         items-center 
         px-4 sm:px-6 lg:px-8
         bg-[hsl(var(--background))] text-[hsl(var(--foreground))]
-        mt-20
+        pt-20
         "
     initial="hidden"
     whileInView="show"

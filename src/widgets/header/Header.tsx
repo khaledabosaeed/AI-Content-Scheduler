@@ -162,12 +162,12 @@ export default function Header() {
 
       {/* Mobile Menu */}
       {mobileMenuOpen && (
-        <div className="lg:hidden px-4 py-4 flex flex-col gap-2 border-t border-white/20 bg-black/20 animate-in">
+        <div className="lg:hidden px-4 py-4 flex flex-col gap-2 border-t border-white/20 bg-black/50 animate-in">
           {sectionLinks.map((link, idx) => (
             <button
               key={link.href}
               onClick={() => handleSectionClick(idx)}
-              className="text-black px-3 py-2 rounded-md hover:bg-white/10 transition text-sm font-medium"
+              className="text-white px-3 py-2 rounded-md hover:bg-white/10 transition text-sm font-medium"
             >
               {link.label}
             </button>

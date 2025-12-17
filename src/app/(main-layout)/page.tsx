@@ -67,7 +67,7 @@ export default function HomePage() {
   }
 
   return (
-    <div style={{ width: "100%", height: "100vh", position: "relative",backgroundColor:"aliceblue" }}>
+    <div style={{ width: "100%", height: "100vh", position: "relative",backgroundColor:"aliceblue",top:0 }}>
       <AnimatePresence mode="wait">
         <motion.div
           key={visibleIndex}
@@ -90,6 +90,7 @@ export default function HomePage() {
             style={{
               height: "100%",
               overflowY: "auto",
+              
             }}
           >
             {React.createElement(sections[visibleIndex])}

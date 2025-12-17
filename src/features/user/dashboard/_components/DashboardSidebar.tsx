@@ -140,7 +140,7 @@ export function MobileCreatePostSelect() {
         <DropdownMenuGroup>
           <DropdownMenuItem
             onSelect={() => router.push("/chat")}
-            className="flex items-center gap-3 px-3 py-2.5 cursor-pointer rounded-md transition-colors hover:bg-accent focus:bg-accent"
+            className="flex items-center gap-3 px-3 py-2.5 cursor-pointer rounded-md transition-colors hover:bg-action-hover focus:bg-accent"
           >
             <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-blue-500/10 text-blue-600 dark:bg-blue-500/20 dark:text-blue-400">
               <MessageSquare className="h-4 w-4" />
@@ -157,7 +157,7 @@ export function MobileCreatePostSelect() {
 
           <DropdownMenuItem
             onSelect={() => router.push("/dashboard/posts?new=draft")}
-            className="flex items-center gap-3 px-3 py-2.5 cursor-pointer rounded-md transition-colors hover:bg-accent focus:bg-accent"
+            className="flex items-center gap-3 px-3 py-2.5 cursor-pointer rounded-md transition-colors hover:bg-action-hover focus:bg-accent"
           >
             <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-amber-500/10 text-amber-600 dark:bg-amber-500/20 dark:text-amber-400">
               <FileText className="h-4 w-4" />
@@ -174,7 +174,7 @@ export function MobileCreatePostSelect() {
 
           <DropdownMenuItem
             onSelect={() => router.push("/dashboard/posts?new=scheduled")}
-            className="flex items-center gap-3 px-3 py-2.5 cursor-pointer rounded-md transition-colors hover:bg-accent focus:bg-accent"
+            className="flex items-center gap-3 px-3 py-2.5 cursor-pointer rounded-md transition-colors hover:bg-action-hover focus:bg-accent"
           >
             <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-purple-500/10 text-purple-600 dark:bg-purple-500/20 dark:text-purple-400">
               <Calendar className="h-4 w-4" />
@@ -191,7 +191,7 @@ export function MobileCreatePostSelect() {
 
           <DropdownMenuItem
             onSelect={() => router.push("/dashboard/posts?new=facebook")}
-            className="flex items-center gap-3 px-3 py-2.5 cursor-pointer rounded-md transition-colors hover:bg-accent focus:bg-accent"
+            className="flex items-center gap-3 px-3 py-2.5 cursor-pointer rounded-md transition-colors hover:bg-action-hover focus:bg-accent"
           >
             <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-indigo-500/10 text-indigo-600 dark:bg-indigo-500/20 dark:text-indigo-400">
               <Share2 className="h-4 w-4" />
@@ -211,7 +211,7 @@ export function MobileCreatePostSelect() {
 
         <DropdownMenuItem
           onSelect={() => router.push("/dashboard/posts")}
-          className="flex items-center gap-3 px-3 py-2.5 cursor-pointer rounded-md transition-colors hover:bg-accent focus:bg-accent"
+          className="flex items-center gap-3 px-3 py-2.5 cursor-pointer rounded-md transition-colors hover:bg[hsl(var(--action-hover))/10] focus:bg-accent"
         >
           <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-slate-500/10 text-slate-600 dark:bg-slate-400/20 dark:text-slate-400">
             <FolderOpen className="h-4 w-4" />
@@ -242,6 +242,7 @@ export function MobileCreatePostSelect() {
             }}
             prompt=""
             buttonText="+ Create Post "
+            onSaved={()=>console.log("Done!")}
             className="w-full justify-center gap-2 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white shadow-sm hover:shadow-md transition-all duration-200 font-medium h-9 rounded-md"
           />
         </Button>

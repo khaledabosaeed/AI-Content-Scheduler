@@ -28,7 +28,7 @@ const platforms = [Instagram, Facebook, Twitter, Linkedin];
 const FunStepsSection: FC = () => (
   <motion.section
     id="fun-steps"
-    className="relative min-h-screen w-full flex flex-col justify-center items-center px-4 sm:px-6 lg:px-8 bg-background text-foreground transition-colors mt-20"
+    className="relative min-h-screen w-full flex flex-col justify-center items-center px-4 sm:px-6 lg:px-8 bg-background text-foreground transition-colors pt-20"
     initial="hidden"
     whileInView="show"
     viewport={{ once: true }}

@@ -12,6 +12,15 @@ import { usePostsContext } from "@/app/_providers/PostContext";
 type Props = {
   posts: Post[];
   emptyText?: string;
+  onSchedule: (post: Post) => void;
+  onPublish?: (postId: string) => Promise<void> | void;
+  onCancelSchedule?: (postId: string) => Promise<void> | void;
+
+  onDelete: (postId: string) => Promise<void> | void;
+  publishingId?: string | null;
+
+  setPosts?: React.Dispatch<React.SetStateAction<Post[]>>;
+
 };
 
 export function RecentPostsTable({ posts, emptyText = "No posts." }: Props) {
@@ -33,6 +42,19 @@ export function RecentPostsTable({ posts, emptyText = "No posts." }: Props) {
       prev.map((p) => (p.id === postId ? ({ ...p, ...patch } as Post) : p))
     );
   };
+
+  const handleScheduleClick = (post: Post) => {
+    updateLocal(post.id, { status: "scheduled" as any });
+    onSchedule?.(post);
+  };
+
+  const markAsScheduled = (postId: string) => {
+  if (!setPosts) return;
+  setPosts(prev =>
+    prev.map(p => (p.id === postId ? { ...p, status: "scheduled" } : p))
+  );
+  // onSchedule?.(postId)
+};
 
   const handlePublishClick = async (postId: string) => {
     try {
@@ -90,6 +112,7 @@ export function RecentPostsTable({ posts, emptyText = "No posts." }: Props) {
     );
   }
 
+  console.log(typeof onSchedule)
   return (
     <div className="rounded-md border">
       <div className="overflow-x-auto">
@@ -129,7 +152,7 @@ export function RecentPostsTable({ posts, emptyText = "No posts." }: Props) {
                   <td className="p-3 text-xs text-muted-foreground">
                     {post.scheduled_at
                       ? formatDate(post.scheduled_at)
-                      : formatDate(post.created_at)}
+                      : formatDate(post.createdAt)}
                   </td>
 
                   <td className="p-3 capitalize">{s}</td>
@@ -137,6 +160,22 @@ export function RecentPostsTable({ posts, emptyText = "No posts." }: Props) {
                   <td className="p-3">
                     <div className="flex justify-end gap-2">
                       {showSchedule && (
+// <<<<<<< HEAD
+//                         <Button asChild size="sm" variant="outline" >
+//                           <SaveButton
+//                             message={{
+//                               id: post.id,
+//                               content: post.content,
+//                               role: "user",
+//                               createdAt: "",
+//                             }}
+//                             prompt={post.prompt}
+//                             buttonText="Scheduale" // يظهر نص "جدولة"
+//                             postId={post.id}
+//                             onSaved={() => handleScheduleClick(post)}
+//                           />
+//                         </Button>
+
                         <SaveButton
                           message={{
                             id: post.id,
@@ -155,6 +194,7 @@ export function RecentPostsTable({ posts, emptyText = "No posts." }: Props) {
                             "h-9 px-3"
                           )}
                         />
+// >>>>>>> 65ca1fda81728a494f131339c5bffc6050adc06f
                       )}
 
                       {showCancel && (

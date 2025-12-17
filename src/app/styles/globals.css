@@ -54,7 +54,7 @@
 
     --divider: 220 10% 90%;
 
-    --action-hover: 265 75% 95%;
+    --action-hover: 238.74 84% 67% / 0.102;
     --action-selected: 265 75% 90%;
 
     --card: 0 0% 100%;
@@ -125,7 +125,7 @@
   --text-disabled: 220 10% 45%;
 
   --divider: 220 10% 25%;
-
+/* hsl(222deg 85% 65% / 43%) */
     --action-hover: 222 85% 30%;
   --action-selected: 222 85% 35%;    /* نسخة للتحديد Selected */
 

@@ -123,6 +123,9 @@ export default function Dashboard() {
       });
     }
   };
+  const handleScheduleClick = ()=>{
+    fetchPosts()
+  }
 
   const deletePost = async (postId: string) => {
     const prev = posts;
@@ -193,6 +196,7 @@ export default function Dashboard() {
       )}
 
       <StatsCards posts={normalizedPosts as any} />
+
 
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         <div className="lg:col-span-8">

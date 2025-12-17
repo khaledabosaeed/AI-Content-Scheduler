@@ -53,7 +53,7 @@ export function PostsTable({
     }
     onOpenSchedule(post);
   };
-
+console.log(posts)
   return (
     <Card>
       <CardHeader>
@@ -79,7 +79,7 @@ export function PostsTable({
                   <th className="p-3 text-right">Actions</th>
                 </tr>
               </thead>
-
+    
               <tbody>
                 {posts.map((p) => {
                   const status = (p.status || "draft").toLowerCase();
@@ -105,7 +105,6 @@ export function PostsTable({
                           ? new Date(p.scheduled_at).toLocaleString("en-GB")
                           : new Date(p.createdAt).toLocaleString("en-GB")}
                       </td>
-
                       <td className="p-3 text-right">
                         <div className="flex justify-end gap-2">
                           {/* ✅ Schedule (opens modal) */}

@@ -62,7 +62,7 @@ const PricingSection: FC = () => (
     bg-[hsl(var(--background))]
     text-[hsl(var(--foreground))]
     transition-colors
-    mt-20
+    pt-20
   "
   variants={container}
   initial="hidden"

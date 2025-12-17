@@ -7,6 +7,7 @@ import {
   TabsList,
   TabsTrigger,
 } from "@/shared/components/ui/tabs";
+
 import { RecentPostsTable } from "./RecentPostsTable";
 import { usePostsContext } from "@/app/_providers/PostContext";
 
