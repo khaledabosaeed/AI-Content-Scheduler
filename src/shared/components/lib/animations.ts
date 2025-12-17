@@ -30,7 +30,6 @@ export const item: Variants = {
     },
   },
 };
-
 /**
  * Fade in variant for simple opacity animations
  */

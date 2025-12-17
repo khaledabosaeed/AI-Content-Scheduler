@@ -142,6 +142,7 @@ export function RecentPostsTable({ posts, emptyText = "No posts." }: Props) {
                           )}
                         />
                       )}
+                     
 
                       {showCancel && (
                         <Button

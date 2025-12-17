@@ -10,12 +10,12 @@ import { useChatStore } from "@/entities/chat";
 // Skeleton loading component for AI messages
 const SkeletonLoading = () => (
   <div className="flex flex-col gap-3 py-2">
-    <p className="text-sm text-slate-500 dark:text-slate-400 animate-pulse font-medium">AI is thinking...</p>
+    <p className="text-sm text-text-secondary animate-pulse font-medium">AI is thinking...</p>
     <div className="flex flex-col gap-2.5">
-      <div className="h-3 bg-gray-300 dark:bg-gray-600 rounded-full w-3/4 animate-pulse"></div>
-      <div className="h-3 bg-gray-300 dark:bg-gray-600 rounded-full w-full animate-pulse"></div>
-      <div className="h-3 bg-gray-300 dark:bg-gray-600 rounded-full w-4/5 animate-pulse"></div>
-      <div className="h-3 bg-gray-300 dark:bg-gray-600 rounded-full w-2/3 animate-pulse"></div>
+      <div className="h-3 bg-muted rounded-full w-3/4 animate-pulse"></div>
+      <div className="h-3 bg-muted rounded-full w-full animate-pulse"></div>
+      <div className="h-3 bg-muted rounded-full w-4/5 animate-pulse"></div>
+      <div className="h-3 bg-muted rounded-full w-2/3 animate-pulse"></div>
     </div>
   </div>
 );
@@ -67,12 +67,12 @@ export default function MessageBubble({
     >
       {isAI ? (
         // AI Response - Full width with background
-        <div className="w-full bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-900 dark:to-slate-800 border-b border-slate-200 dark:border-slate-700 py-6">
+        <div className="w-full bg-gradient-to-r from-popover to-card border-b border-divider py-6">
           <div className="max-w-4xl mx-auto px-4 md:px-6">
             <div className="flex gap-4">
               <div className="flex-shrink-0">
-                <Avatar className="w-10 h-10 shadow-md ring-2 ring-blue-100 dark:ring-blue-900/40" title="AI Assistant">
-                  <AvatarFallback className="bg-gradient-to-br from-blue-500 to-blue-600 text-white font-semibold">
+                <Avatar className="w-10 h-10 shadow-md ring-2 ring-primary/20" title="AI Assistant">
+                  <AvatarFallback className="bg-gradient-to-br from-primary to-accent text-primary-foreground font-semibold">
                     <Bot className="w-5 h-5" />
                   </AvatarFallback>
                 </Avatar>
@@ -80,27 +80,27 @@ export default function MessageBubble({
 
               <div className="flex-1 flex flex-col gap-3">
                 <div className="flex items-center justify-between">
-                  <h3 className="font-semibold text-slate-900 dark:text-slate-100">AI Assistant</h3>
+                  <h3 className="font-semibold text-text-primary">AI Assistant</h3>
                   <div className="flex items-center gap-2">
                     {isStreaming && (
-                      <span className="text-xs text-blue-500 animate-pulse font-medium">responding...</span>
+                      <span className="text-xs text-primary animate-pulse font-medium">responding...</span>
                     )}
                     {!isStreaming && (
-                      <span className="text-sm text-slate-500 dark:text-slate-400">
+                      <span className="text-sm text-text-secondary">
                         {formatTime(message.createdAt)}
                       </span>
                     )}
                   </div>
                 </div>
 
-                <div className="text-slate-700 dark:text-slate-300 text-[15px] leading-relaxed whitespace-pre-wrap break-words">
+                <div className="text-text-primary text-[15px] leading-relaxed whitespace-pre-wrap break-words">
                   {!message.content ? (
                     <SkeletonLoading />
                   ) : (
                     <>
                       {message.content}
                       {isStreaming && (
-                        <span className="inline-block w-0.5 h-5 bg-blue-500 ml-1 animate-pulse"></span>
+                        <span className="inline-block w-0.5 h-5 bg-primary ml-1 animate-pulse"></span>
                       )}
                     </>
                   )}
@@ -116,13 +116,13 @@ export default function MessageBubble({
                   >
                     {/* <button
                       onClick={handleCopy}
-                      className="p-1.5 hover:bg-slate-200 dark:hover:bg-slate-700 rounded-md transition-colors"
+                      className="p-1.5 hover:bg-action-hover rounded-md transition-colors"
                       title={copied ? "Copied!" : "Copy"}
                     >
                       {copied ? (
                         <Check className="w-4 h-4 text-green-500" />
                       ) : (
-                        <Copy className="w-4 h-4 text-slate-600 dark:text-slate-400" />
+                        <Copy className="w-4 h-4 text-text-secondary" />
                       )}
                     </button> */}
                     <SaveButton
@@ -146,19 +146,19 @@ export default function MessageBubble({
         <div className="w-full px-4 md:px-6 py-6">
           <div className="max-w-4xl mx-auto flex gap-4 justify-end">
             <div className="flex-1 flex flex-col gap-2 max-w-xl items-end">
-              <div className="bg-blue-600 dark:bg-blue-700 text-white px-5 py-3 rounded-2xl rounded-br-none shadow-md">
+              <div className="bg-primary text-primary-foreground px-5 py-3 rounded-2xl rounded-br-none shadow-md">
                 <p className="text-[15px] leading-relaxed whitespace-pre-wrap break-words">
                   {message.content}
                 </p>
               </div>
-              <span className="text-xs text-slate-500 dark:text-slate-400 px-2">
+              <span className="text-xs text-text-secondary px-2">
                 {formatTime(message.createdAt)}
               </span>
             </div>
 
             <div className="flex-shrink-0">
-              <Avatar className="w-10 h-10 shadow-md ring-2 ring-green-100 dark:ring-green-900/40" title="You">
-                <AvatarFallback className="bg-gradient-to-br from-green-500 to-emerald-600 text-white font-semibold">
+              <Avatar className="w-10 h-10 shadow-md ring-2 ring-secondary/20" title="You">
+                <AvatarFallback className="bg-gradient-to-br from-secondary to-accent text-primary-foreground font-semibold">
                   <User className="w-5 h-5" />
                 </AvatarFallback>
               </Avatar>

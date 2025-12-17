@@ -17,7 +17,7 @@ const FAQSection: FC = () => (
     <div className="max-w-6xl mx-auto">
       {/* Section Title */}
       <div className="text-center mb-12 sm:mb-14 md:mb-16 lg:mb-20">
-        <h3 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold mb-3 sm:mb-4 tracking-tight text-primary transition-colors">
+        <h3 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold mb-3 sm:mb-4 tracking-tight text-[hsl(var(--text-primary))]  transition-colors">
           Frequently Asked Questions
         </h3>
         <p className="text-base sm:text-lg md:text-xl max-w-3xl mx-auto leading-relaxed text-text-secondary transition-colors">

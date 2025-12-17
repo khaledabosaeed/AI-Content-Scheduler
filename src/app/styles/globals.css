@@ -5,10 +5,29 @@
 @layer base {
   :root {
     /* ===================== */
-    /* Light Mode – Gray */
+    /* Light Mode – Purple & Teal */
     /* ===================== */
     --background: 0 0% 100%;
     --foreground: 220 15% 20%;
+
+    /* Purple Primary Colors */
+   --primary-purple: 222 80% 50%;
+  --primary-purple-light: 222 85% 65%;
+  --primary-purple-dark: 222 75% 40%;
+
+    /* Teal Secondary Colors */
+    --teal: 180 65% 45%;
+    --teal-light: 180 65% 60%;
+
+    /* Surface Colors */
+    --surface-1: 0 0% 100%;
+    --surface-2: 0 0% 98%;
+
+    /* Brand Colors */
+    --brand-secondary: 265 50% 50%;
+
+    /* CTA Colors */
+    --cta-foreground: 0 0% 100%;
 
     --primary: 220 10% 35%;
     --primary-foreground: 0 0% 100%;
@@ -35,12 +54,12 @@
 
     --divider: 220 10% 90%;
 
-    --action-hover: 220 10% 30%;
-    --action-selected: 220 10% 35%;
+    --action-hover: 265 75% 95%;
+    --action-selected: 265 75% 90%;
 
     --card: 0 0% 100%;
     --card-foreground: 220 15% 20%;
-    --popover: 0 0% 100%;
+    --popover: 0 0% 98%;
     --popover-foreground: 220 15% 20%;
 
     /* ✅ Border Radius */
@@ -57,46 +76,65 @@
   }
 
   /* ===================== */
-  /* Dark Mode – Dark Gray */
+  /* Dark Mode – Dark Purple & Teal */
   /* ===================== */
   .dark {
-    --background: 220 15% 10%;
-    --foreground: 0 0% 95%;
+  --background: 220 15% 10%;
+  --foreground: 0 0% 95%;
 
-    --primary: 220 10% 65%;
-    --primary-foreground: 220 15% 10%;
+  /* Purple Primary Colors – Dark Mode */
+  --primary-purple: 222 85% 65%;
+  --primary-purple-light: 222 90% 75%;
+  --primary-purple-dark: 222 80% 50%; /* نسخة داكنة للعناصر الثانوية */
 
-    --muted: 220 15% 18%;
-    --muted-foreground: 220 10% 65%;
+  /* Teal Secondary Colors */
+  --teal: 180 65% 50%;
+  --teal-light: 180 65% 65%;
 
-    --accent: 220 10% 25%;
-    --accent-foreground: 220 15% 10%;
+  /* Surface Colors */
+  --surface-1: 220 15% 15%;
+  --surface-2: 220 15% 20%;
 
-    --destructive: 0 70% 45%;
-    --destructive-foreground: 0 0% 95%;
+  /* Brand Colors */
+  --brand-secondary: 265 50% 60%;
 
-    --border: 220 10% 25%;
-    --input: 220 15% 20%;
-    --ring: 220 10% 60%;
+  /* CTA Colors */
+  --cta-foreground: 0 0% 100%;
 
-    --paper: 220 15% 15%;
-    --elevated: 220 15% 20%;
+  --primary: 220 10% 65%;
+  --primary-foreground: 220 15% 10%;
 
-    --text-primary: 0 0% 95%;
-    --text-secondary: 220 10% 65%;
-    --text-disabled: 220 10% 45%;
+  --muted: 220 15% 18%;
+  --muted-foreground: 220 10% 65%;
 
-    --divider: 220 10% 25%;
+  --accent: 220 10% 25%;
+  --accent-foreground: 220 15% 10%;
 
-    --action-hover: 220 10% 70%;
-    --action-selected: 220 10% 65%;
+  --destructive: 0 70% 45%;
+  --destructive-foreground: 0 0% 95%;
 
-    --card: 220 15% 15%;
-    --card-foreground: 0 0% 95%;
-    --popover: 220 15% 15%;
-    --popover-foreground: 0 0% 95%;
+  --border: 220 10% 25%;
+  --input: 220 15% 20%;
+  --ring: 220 10% 60%;
 
-     --toast-success-bg: #16a34a;
+  --paper: 220 15% 15%;
+  --elevated: 220 15% 20%;
+
+  --text-primary: 0 0% 95%;
+  --text-secondary: 220 10% 65%;
+  --text-disabled: 220 10% 45%;
+
+  --divider: 220 10% 25%;
+
+    --action-hover: 222 85% 30%;
+  --action-selected: 222 85% 35%;    /* نسخة للتحديد Selected */
+
+  --card: 220 15% 15%;
+  --card-foreground: 0 0% 95%;
+  --popover: 220 15% 20%;
+  --popover-foreground: 0 0% 95%;
+
+  --toast-success-bg: #16a34a;
   --toast-success-color: white;
 
   --toast-error-bg: #dc2626;
@@ -104,8 +142,8 @@
 
   --toast-loading-bg: #fbbf24;
   --toast-loading-color: black;
+}
 
-  }
 
   /* ===================== */
   /* Base styles */

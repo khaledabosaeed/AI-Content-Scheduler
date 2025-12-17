@@ -49,33 +49,33 @@ const plans = [
 ];
 
 const PricingSection: FC = () => (
-  <motion.section
-    id="pricing"
-    className="
-      relative 
-      min-h-screen
-      w-full 
-      flex flex-col 
-      justify-center 
-      items-center 
-      px-4 sm:px-6 lg:px-8
-      bg-[hsl(var(--background))]
-      text-[hsl(var(--foreground))]
-      transition-colors
-      mt-20
-    "
-    initial="hidden"
-    animate="show"
-    exit="exit"
-    variants={container}
-  >
+<motion.section
+  id="pricing"
+  className="
+    relative 
+    min-h-screen
+    w-full 
+    flex flex-col 
+    justify-center 
+    items-center 
+    px-4 sm:px-6 lg:px-8
+    bg-[hsl(var(--background))]
+    text-[hsl(var(--foreground))]
+    transition-colors
+    mt-20
+  "
+  variants={container}
+  initial="hidden"
+  whileInView="show"
+  viewport={{ once: false, amount: 0.2 }}
+>
+
     <FloatingIcons/>
     {/* Title */}
     <div className="max-w-6xl mx-auto text-center mb-12 sm:mb-14 md:mb-16 lg:mb-20">
       <motion.h2
         variants={item}
         className="
-          text-[hsl(var(--primary))]
           text-3xl sm:text-4xl md:text-5xl lg:text-6xl 
           font-extrabold 
           mb-2 sm:mb-4 
@@ -87,7 +87,7 @@ const PricingSection: FC = () => (
       </motion.h2>
 
       <motion.p
-        variants={item}
+        // variants={item}
         className="
           text-[hsl(var(--text-secondary))]
           text-base sm:text-lg 

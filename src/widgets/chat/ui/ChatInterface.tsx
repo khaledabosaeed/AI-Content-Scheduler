@@ -5,7 +5,7 @@ import { useSendMessage } from "@/features/chat/start-chat/model/use-send-messag
 import MessageBubble from "./MessageBubble";
 import { ChatInput } from "@/features/chat";
 import { ScrollArea } from "@/shared/components/ui/scroll-area";
-import { Sparkles } from "lucide-react";
+import { BarChart3, Lightbulb, PenLine, Sparkles, Target } from "lucide-react";
 
 export default function ChatInterface() {
   const { messages, isSending } = useChatStore();
@@ -23,7 +23,7 @@ export default function ChatInterface() {
   };
 
   return (
-    <div className="flex flex-col h-full bg-gradient-to-b from-gray-50 via-white to-gray-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 overflow-hidden">
+    <div className="flex flex-col h-full bg-gradient-to-b from-background via-card to-background overflow-hidden">
       {/* Messages Container */}
       <ScrollArea className="flex-1">
         <div className="flex flex-col items-center justify-start min-h-full px-4 md:px-6 py-6">
@@ -31,13 +31,14 @@ export default function ChatInterface() {
             <div className="flex items-center justify-center h-full w-full text-center pt-32 md:pt-48">
               <div className="space-y-8 w-full max-w-2xl px-4">
                 <div className="space-y-3">
-                  <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 shadow-lg mb-4">
-                    <Sparkles className="w-8 h-8 text-white" />
+                  <div className=" inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-primary/10 dark:bg-primary/20 text-primary shadow-sm transition-all duration-300 hover:scale-105 hover:bg-primary/20 dark:hover:bg-primary/30 hover:shadow-md cursor-pointer">
+                    <Sparkles className="w-8 h-8 stroke-[1.5]" />
                   </div>
-                  <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-blue-600 to-blue-400 dark:from-blue-400 dark:to-blue-300 bg-clip-text text-transparent">
+
+                  <h1 className="text-3xl md:text-4xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                     Welcome to AI Chat
                   </h1>
-                  <p className="text-base md:text-lg text-gray-600 dark:text-gray-400 font-light">
+                  <p className="text-base md:text-lg text-text-secondary font-light">
                     Start a conversation and get intelligent answers instantly
                   </p>
                 </div>
@@ -45,28 +46,28 @@ export default function ChatInterface() {
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                   {[
                     {
-                      icon: "✍️",
+                      icon: <PenLine className="w-7 h-7 text-primary" />,
                       title: "Write Content",
                       desc: "Get help writing professional content",
                       prompt:
                         "Help me write professional content for my social media",
                     },
                     {
-                      icon: "💡",
+                      icon: <Lightbulb className="w-7 h-7 text-primary" />,
                       title: "Creative Ideas",
                       desc: "Get fresh and innovative ideas",
                       prompt:
                         "Give me creative ideas for engaging social media posts",
                     },
                     {
-                      icon: "📊",
+                      icon: <BarChart3 className="w-7 h-7 text-primary" />,
                       title: "Analysis",
                       desc: "Analyze data and information",
                       prompt:
                         "Help me analyze my content strategy and engagement",
                     },
                     {
-                      icon: "🎯",
+                      icon: <Target className="w-7 h-7 text-primary" />,
                       title: "Strategy",
                       desc: "Build an effective strategy",
                       prompt:
@@ -77,15 +78,15 @@ export default function ChatInterface() {
                       key={idx}
                       onClick={() => handleSuggestionClick(item.prompt)}
                       disabled={isSending}
-                      className="p-4 md:p-5 rounded-xl border border-gray-200 dark:border-gray-700 hover:border-blue-400 dark:hover:border-blue-500 hover:bg-blue-50 dark:hover:bg-blue-950/20 transition-all duration-200 text-left group shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="p-4 md:p-5 rounded-xl border border-border hover:border-primary hover:bg-action-hover transition-all duration-200 text-left group shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       <div className="text-2xl md:text-3xl mb-2 group-hover:scale-110 transition-transform">
                         {item.icon}
                       </div>
-                      <h3 className="font-semibold text-gray-900 dark:text-white text-sm">
+                      <h3 className="font-semibold text-text-primary text-sm">
                         {item.title}
                       </h3>
-                      <p className="text-xs text-gray-600 dark:text-gray-400 mt-1">
+                      <p className="text-xs text-text-secondary mt-1">
                         {item.desc}
                       </p>
                     </button>
