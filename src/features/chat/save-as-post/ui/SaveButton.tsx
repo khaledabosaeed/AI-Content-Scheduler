@@ -13,7 +13,7 @@ interface SaveButtonProps
   postId?: string;
   prompt?: string;
   buttonText?: string;
-  onSaved: () => void;
+  onSaved?: () => void;
 }
 
 const SaveButton = React.forwardRef<HTMLButtonElement, SaveButtonProps>(
@@ -41,19 +41,19 @@ const SaveButton = React.forwardRef<HTMLButtonElement, SaveButtonProps>(
           scheduledAt: scheduledDate ? scheduledDate.toISOString() : null,
         });
 
-        onSaved();
+        onSaved?.(); 
 
         console.log("SaveButton: refreshPosts type =", typeof refreshPosts);
         await refreshPosts?.();
         console.log("SaveButton: refreshPosts finished ✅");
 
-        toast.success(
-          scheduledDate
-            ? `✅ تم جدولة المنشور على ${platform} بتاريخ ${scheduledDate.toLocaleString()}`
-            : "✅ تم حفظ المنشور بنجاح!"
-        );
+    toast.success(
+      scheduledDate
+        ? `The post has been successfully scheduled on ${platform}.`
+        : "The post has been saved successfully."
+    );
       } catch (err: any) {
-        toast.error("❌ " + (err?.message ?? "حدث خطأ"));
+        toast.error("❌ " + (err?.message ?? `Failed to save post`));
       }
     };
 

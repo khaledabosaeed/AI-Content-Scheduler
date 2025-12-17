@@ -43,7 +43,7 @@ export function RecentPostsTable({ posts, emptyText = "No posts." }: Props) {
         scheduled_at: null as any,
       } as any);
     } catch (err: any) {
-      alert("❌ فشل النشر: " + (err?.message || "Unexpected error"));
+      alert("❌ Faild Publish " + (err?.message || "Unexpected error"));
     }
   };
 
@@ -64,8 +64,12 @@ export function RecentPostsTable({ posts, emptyText = "No posts." }: Props) {
         scheduled_at: null as any,
       } as any);
     } catch (err: any) {
-      alert("❌ فشل الإلغاء: " + (err?.message || "Unexpected error"));
+      alert("❌ Faild  " + (err?.message || "Unexpected error"));
     }
+  };
+  const formatDate = (date?: string | null) => {
+    if (!date) return "-";
+    return new Date(date).toLocaleString();
   };
 
   if (!posts?.length) {
@@ -111,10 +115,8 @@ export function RecentPostsTable({ posts, emptyText = "No posts." }: Props) {
                   </td>
                   <td className="p-3 text-xs text-muted-foreground">
                     {post.scheduled_at
-                      ? new Date(post.scheduled_at).toLocaleString()
-                      : post.created_at
-                      ? new Date(post.created_at).toLocaleString()
-                      : "-"}
+                      ? formatDate(post.scheduled_at)
+                      : formatDate(post.created_at)}
                   </td>
                   <td className="p-3 capitalize">{s}</td>
 
@@ -142,7 +144,6 @@ export function RecentPostsTable({ posts, emptyText = "No posts." }: Props) {
                           )}
                         />
                       )}
-                     
 
                       {showCancel && (
                         <Button

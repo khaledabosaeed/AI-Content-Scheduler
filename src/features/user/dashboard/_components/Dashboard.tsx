@@ -99,7 +99,7 @@ export default function Dashboard() {
 
   const cancelSchedule = async (postId: string) => {
     try {
-      toast.loading("Canceling schedule...");
+      toast.loading("Canceling schedule...", { id: `cancel-${postId}` });
 
       const res = await fetch(`/api/posts/${postId}/cancel-schedule`, {
         method: "POST",
@@ -126,7 +126,7 @@ export default function Dashboard() {
       const data = await safeJson(res);
       if (!res.ok) throw new Error(data?.error || "Failed to delete post");
 
-      toast.success("Deleted successfully ✅", {});
+      toast.success("Deleted successfully ✅", { id: `delete-${postId}` });
       await fetchPosts();
     } catch (err: any) {
       toast.error("❌ " + (err?.message || "Failed to delete post"));
