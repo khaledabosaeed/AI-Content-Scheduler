@@ -6,6 +6,7 @@ import ScheduleModal from "@/widgets/scheduler/ScheduleModal";
 import { useSaveAsPost } from "../model/use-save-as-post";
 import { usePostsStore } from "@/entities/posts";
 import { toast } from "sonner";
+import { useState } from "react";
 
 interface SaveButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement> {
@@ -22,7 +23,7 @@ const SaveButton = React.forwardRef<HTMLButtonElement, SaveButtonProps>(
     ref
   ) => {
     const { saveAsPost, isSaving } = useSaveAsPost();
-    const [isModalOpen, setIsModalOpen] = React.useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     // ✅ Get fetchPosts from store
     const fetchPosts = usePostsStore((state) => state.fetchPosts);

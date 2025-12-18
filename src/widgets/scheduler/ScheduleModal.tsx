@@ -8,6 +8,7 @@ import { Popover, PopoverTrigger, PopoverContent } from "@/shared/components/ui/
 import { cn } from "@/shared/libs/chadcn/utils";
 import { format } from "date-fns";
 import { CalendarIcon, Clock } from "lucide-react";
+import { useState } from "react";
 
 interface ScheduleModalProps {
   open: boolean;
@@ -17,10 +18,10 @@ interface ScheduleModalProps {
 }
 
 export default function ScheduleModal({ open, onOpenChange, onConfirm, initialContent }: ScheduleModalProps) {
-  const [selectedDate, setSelectedDate] = React.useState<Date>();
-  const [selectedTime, setSelectedTime] = React.useState<string>("12:00");
-  const [platform, setPlatform] = React.useState("twitter");
-  const [content, setContent] = React.useState(initialContent);
+  const [selectedDate, setSelectedDate] = useState<Date>();
+  const [selectedTime, setSelectedTime] = useState<string>("12:00");
+  const [platform, setPlatform] = useState("twitter");
+  const [content, setContent] = useState(initialContent);
 
   const formatFullDate = () => {
     if (!selectedDate) return "No date selected";
