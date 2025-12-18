@@ -1,252 +1,39 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import type { Post } from "@/entities/user/type/Post";
-import { usePostsContext } from "@/app/_providers/PostContext";
-import { PostsUIProvider } from "@/app/_providers/PostsUIContext";
 import { Button } from "@/shared/components/ui/button";
-import ScheduleModal from "@/widgets/scheduler/ScheduleModal";
 import { PostsTabs } from "../PostsTabs";
 import { useSearchParams } from "next/navigation";
-
-import { toast } from "sonner";
-import React from "react";
-import { api } from "@/shared/api/api-client";
-
-
+import { usePostsStore } from "@/entities/posts";
 
 export default function PostsPage() {
   const searchParams = useSearchParams();
   const tabFromUrl = searchParams.get("tab") || "all";
 
-  const { posts, setPosts } = usePostsContext();
-  const [publishingId, setPublishingId] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-const [deletingId, setDeletingId] = useState<string | null>(null);
+  // ✅ Get state from Zustand store
+  const hasFacebook = usePostsStore((state) => state.hasFacebook);
+  const error = usePostsStore((state) => state.error);
 
-const [hasFacebook, setHasFacebook] = React.useState<boolean | null>(null);
-const [isScheduleOpen, setIsScheduleOpen] = useState(false);
-const [selectedPost, setSelectedPost] = useState<Post | null>(null);
-const [isScheduling, setIsScheduling] = useState(false);
+  return (
+    <div className="space-y-6">
+      {!hasFacebook && (
+        <div className="rounded-md border bg-card p-3 text-sm flex justify-between">
+          <span className="text-muted-foreground">
+            Your Facebook account is not connected.
+          </span>
+          <Button asChild variant="outline">
+            <a href="/api/oauth/facebook/login">Connect</a>
+          </Button>
+        </div>
+      )}
 
-const fetchUser = async () => {
-  try {
-    const res = await api.get("facebook/me");
+      {error && (
+        <div className="rounded-md border p-3 text-sm text-destructive">
+          {error}
+        </div>
+      )}
 
-    setHasFacebook(!!res.hasFacebook);
-  } catch (err) {
-    console.error(err);
-  }
-};
-
-const fetchPosts = async (opts?: { showLoader?: boolean }) => {
-  const showLoader = opts?.showLoader ?? false;
-
-  try {
-    if (showLoader) setIsLoading(true);
-    setError(null);
-
-    const res = await api.get("posts");
-
-    setPosts(Array.isArray(res.posts) ? res.posts : []);
-  } catch (err: any) {
-    const msg = err?.message || "Unexpected error";
-    setError(msg);
-    toast.error(msg);
-  } finally {
-    if (showLoader) setIsLoading(false);
-  }
-};
-
-useEffect(() => {
-  fetchPosts({ showLoader: true });
-  fetchUser();
-}, []);
-
-const publishToFacebook = async (postId: string) => {
-  try {
-    setPublishingId(postId);
-    toast.loading("Publishing to Facebook...", { id: `publish-${postId}` });
-
-     await api.post("facebook/publish", {
-       postId ,
-    });
-
-    toast.success("Published successfully ✅", { id: `publish-${postId}` });
-    await fetchPosts();
-  } catch (err: any) {
-    toast.error(err?.message || "Publish failed", {
-      id: `publish-${postId}`,
-    });
-    throw err;
-  } finally {
-    setPublishingId(null);
-  }
-};
-
-const cancelSchedule = async (postId: string) => {
-  try {
-    toast.loading("Canceling schedule...", { id: `cancel-${postId}` });
-
-     await api.post(`posts/${postId}/cancel-schedule`);
-
-
-
-    setPosts((prev) =>
-      prev.map((p) =>
-        p.id === postId
-          ? ({
-              ...p,
-              status: "draft" as any,
-              scheduled_at: null as any,
-            } as any)
-          : p
-      )
-    );
-
-    toast.success("Schedule canceled ", { id: `cancel-${postId}` });
-    await fetchPosts();
-  } catch (err: any) {
-    alert("❌ " + (err?.message || "Cancellation failed"));
-  }
-};
-
-const deletePost = async (postId: string) => {
-  const prev = posts;
-
-  try {
-    setDeletingId(postId);
-
-    setPosts((p) => p.filter((x) => x.id !== postId));
-
-    await api.delete(`posts/${postId}/delete-post`, );
-
-
-    toast.success("Post deleted ✅", { id: `delete-${postId}` });
-  } catch (err: any) {
-    setPosts(prev);
-    toast.error(err?.message || "Failed to delete post");
-  } finally {
-    setDeletingId(null);
-  }
-};
-
-// ===== Open schedule modal =====
-const openScheduleModal = (post: Post) => {
-  setSelectedPost(post);
-  setIsScheduleOpen(true);
-};
-
-const confirmSchedule = async (
-  date: Date,
-  platform: string,
-  content: string
-) => {
-  if (!selectedPost?.id) return;
-
-  const id = selectedPost.id;
-
-  try {
-    setIsScheduling(true);
-    toast.loading("Scheduling post...", { id: `schedule-${id}` });
-
-     await api.post(`posts/${selectedPost.id}/update`, {
-  
-        scheduledAt: date.toISOString(),
-        platform,
-        content,
-        status: "scheduled",
-
-    });
-
-
-
-
-    setPosts((prev) =>
-      prev.map((p) =>
-        p.id === id
-          ? ({
-              ...p,
-              status: "scheduled" as any,
-              platform: platform as any,
-              content: content as any,
-              scheduled_at: date.toISOString() as any,
-            } as any)
-          : p
-      )
-    );
-    setIsScheduleOpen(false);
-    setSelectedPost(null);
-
-    toast.success("Scheduled successfully ", { id: `schedule-${id}` });
-    await fetchPosts();
-  } catch (err: any) {
-    toast.error(err?.message || "Schedule failed");
-  } finally {
-    setIsScheduling(false);
-  }
-};
-
-const uiValue = useMemo(
-  () => ({
-    hasFacebook: !!hasFacebook,
-    publishingId,
-    deletingId,
-    onPublish: publishToFacebook,
-    onCancelSchedule: cancelSchedule,
-    onDelete: deletePost,
-    refreshPosts: () => fetchPosts({ showLoader: false }),
-    onSchedule: openScheduleModal,
-  }),
-  [
-    hasFacebook,
-    publishingId,
-    deletingId,
-    publishToFacebook,
-    cancelSchedule,
-    deletePost,
-    openScheduleModal,
-  ]
-);
-
-return (
-  <div className="space-y-6">
-    {!hasFacebook && (
-      <div className="rounded-md border bg-card p-3 text-sm flex justify-between">
-        <span className="text-muted-foreground">
-          Your Facebook account is not connected.
-        </span>
-        <Button asChild variant="outline">
-          <a href="/api/oauth/facebook/login">Connect</a>
-        </Button>
-      </div>
-    )}
-
-    {error && (
-      <div className="rounded-md border p-3 text-sm text-destructive">
-        {error}
-      </div>
-    )}
-
-    <PostsUIProvider value={uiValue}>
+      {/* PostsTabs now uses Zustand store directly */}
       <PostsTabs defaultTab={tabFromUrl} />
-    </PostsUIProvider>
-
-    {isScheduleOpen && selectedPost && (
-      <ScheduleModal
-        open={isScheduleOpen}
-        onOpenChange={(v) => {
-          setIsScheduleOpen(v);
-          if (!v) setSelectedPost(null);
-        }}
-        initialContent={selectedPost.content || ""}
-        onConfirm={(date, platform, content) => {
-          if (!date) return;
-          confirmSchedule(date, platform, content);
-        }}
-      />
-    )}
-  </div>
-);
+    </div>
+  );
 }

@@ -19,17 +19,6 @@ export async function POST(req: NextRequest) {
     const aiResponse = await generateContentStream(message.trim());
 
 
-    /***
-     * to get str from ReadableStream
-     * you can't use the NextResponse.json , josn will not work with ReadableStream
-     * and the steam must work with Response
-     */
-    // إرجاع النتيجة مباشرة (بدون حفظ)
-    // return NextResponse.json(aiResponse, {
-    //   headers: {
-    //     'Content-Type': 'text/event-stream',
-    //   },
-    // });
 
     return new Response(aiResponse, {
       headers: {

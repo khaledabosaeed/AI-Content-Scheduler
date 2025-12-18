@@ -1,8 +1,9 @@
 "use client";
 
-import PostsProviders from "@/app/_providers/PostsProviders";
+import { PostsLoader } from "@/features/posts";
 import { DashboardHeader } from "./DashboardHeader";
 import { DashboardSidebar } from "./DashboardSidebar";
+import { ScheduleModalContainer } from "./ScheduleModalContainer";
 
 export default function DashboardLayout({
   children,
@@ -10,7 +11,7 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   return (
-    <PostsProviders>
+    <PostsLoader>
       <div dir="ltr" className="min-h-screen bg-muted/40">
         <div className="sticky top-0 z-40">
           <DashboardHeader />
@@ -22,7 +23,8 @@ export default function DashboardLayout({
             {children}
           </main>
         </div>
+        <ScheduleModalContainer />
       </div>
-    </PostsProviders>
+    </PostsLoader>
   );
 }

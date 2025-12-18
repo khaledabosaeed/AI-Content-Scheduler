@@ -4,8 +4,7 @@ import * as React from "react";
 import type { Message } from "@/entities/chat";
 import ScheduleModal from "@/widgets/scheduler/ScheduleModal";
 import { useSaveAsPost } from "../model/use-save-as-post";
-
-import { usePostsUI, usePostsUIOptional } from "@/app/_providers/PostsUIContext";
+import { usePostsStore } from "@/entities/posts";
 import { toast } from "sonner";
 
 interface SaveButtonProps
@@ -25,10 +24,8 @@ const SaveButton = React.forwardRef<HTMLButtonElement, SaveButtonProps>(
     const { saveAsPost, isSaving } = useSaveAsPost();
     const [isModalOpen, setIsModalOpen] = React.useState(false);
 
-
-
-const ui = usePostsUIOptional();
-    const refreshPosts = ui?.refreshPosts;
+    // ✅ Get fetchPosts from store
+    const fetchPosts = usePostsStore((state) => state.fetchPosts);
     
     const handleSave = async (
       scheduledDate?: Date,
@@ -45,10 +42,10 @@ const ui = usePostsUIOptional();
           scheduledAt: scheduledDate ? scheduledDate.toISOString() : null,
         });
 
-        onSaved?.(); 
+        onSaved?.();
 
-
-        await refreshPosts?.();
+        // ✅ Refresh posts from store
+        await fetchPosts();
 
     toast.success(
       scheduledDate

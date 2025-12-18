@@ -9,7 +9,7 @@ import {
 } from "@/shared/components/ui/tabs";
 
 import { RecentPostsTable } from "./RecentPostsTable";
-import { usePostsContext } from "@/app/_providers/PostContext";
+import { usePostsStore } from "@/entities/posts";
 
 interface PostsTabsProps {
   defaultTab?: string;
@@ -18,7 +18,7 @@ interface PostsTabsProps {
 
 export function PostsTabs({ defaultTab = "all", onTabChange }: PostsTabsProps) {
   const [activeTab, setActiveTab] = useState(defaultTab);
-  const { posts } = usePostsContext();
+  const posts = usePostsStore((state) => state.posts);
 
   useEffect(() => {
     setActiveTab(defaultTab);

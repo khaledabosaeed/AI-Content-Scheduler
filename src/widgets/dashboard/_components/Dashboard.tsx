@@ -1,128 +1,18 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
-import type { Post } from "@/entities/user/type/Post";
-
+import { useMemo } from "react";
 import { StatsCards } from "./StatsCards";
 import { PostsTabs } from "./PostsTabs";
 import { UpcomingQueue } from "./UpcomingQueue";
 import { AlertsPanel } from "./AlertsPanel";
 import { Skeleton } from "@/shared/components/ui/skeleton";
-
-import { toast } from "sonner";
-import { PostsUIProvider } from "@/app/_providers/PostsUIContext";
-import { usePostsContext } from "@/app/_providers/PostContext";
-import { api } from "@/shared/api/api-client";
-
-
+import { usePostsStore } from "@/entities/posts";
 
 export default function Dashboard() {
-  const { posts, setPosts } = usePostsContext();
-
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  const [publishingId, setPublishingId] = useState<string | null>(null);
-  const [deletingId, setDeletingId] = useState<string | null>(null); // ✅ جديد
-  const [hasFacebook, setHasFacebook] = useState(false);
-
-  const fetchUser = async () => {
-    try {
-      const res = await api.get("facebook/me");
- 
-      setHasFacebook(!!res?.hasFacebook);
-      console.log(hasFacebook , 'this is has ');
-      
-    } catch (err) {
-      console.error("fetchUser error:", err);
-    }
-  };
-
-  // ✅ صار يدعم showLoader عشان ما يعمل Skeleton بكل refresh
-  const fetchPosts = async (opts?: { showLoader?: boolean }) => {
-    const showLoader = opts?.showLoader ?? false;
-
-    try {
-      if (showLoader) setIsLoading(true);
-      setError(null);
-
-      const res = await api.get("posts");
-
-      setPosts((res?.posts || []) as Post[]);
-    } catch (err: any) {
-      console.error(err);
-      const msg = err?.message || "Unexpected error";
-      setError(msg);
-      toast.error(msg);
-    } finally {
-      if (showLoader) setIsLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchPosts({ showLoader: true }); // ✅ أول تحميل بس
-    fetchUser();
-  }, []);
-
-  const publishToFacebook = async (postId: string) => {
-    try {
-      setPublishingId(postId);
-      toast.loading("Publishing...", { id: `publish-${postId}` });
-
-       await api.post("facebook/publish", {
-    postId 
-      });
-      toast.success("Published successfully ✅", { id: `publish-${postId}` });
-
-      // ✅ Refresh صامت بدون Skeleton
-      await fetchPosts({ showLoader: false });
-    } catch (err: any) {
-      toast.error(err?.message || "Publish failed", {
-        id: `publish-${postId}`,
-      });
-      throw err;
-    } finally {
-      setPublishingId(null);
-    }
-  };
-
-  const cancelSchedule = async (postId: string) => {
-    try {
-      toast.loading("Canceling schedule...", { id: `cancel-${postId}` });
-
-      await api.post(`posts/${postId}/cancel-schedule`);
-
-      toast.success("Schedule cancelled ✅", { id: `cancel-${postId}` });
-
-      await fetchPosts({ showLoader: false });
-    } catch (err: any) {
-      toast.error(err?.message || "Failed to cancel schedule", {
-        id: `cancel-${postId}`,
-      });
-    }
-  };
-
-  const deletePost = async (postId: string) => {
-    const prev = posts;
-
-    try {
-      setDeletingId(postId);
-      toast.loading("Deleting...", { id: `delete-${postId}` });
-      setPosts((p) => (p as any[]).filter((x: any) => x.id !== postId) as any);
-
-      await api.delete(`posts/${postId}/delete-post`);
-
-      toast.success("Deleted successfully ✅", { id: `delete-${postId}` });
-    } catch (err: any) {
-      // ✅ rollback
-      setPosts(prev as any);
-      toast.error(err?.message || "Failed to delete post", {
-        id: `delete-${postId}`,
-      });
-    } finally {
-      setDeletingId(null);
-    }
-  };
+  // ✅ Get data from Zustand store
+  const posts = usePostsStore((state) => state.posts);
+  const isFetching = usePostsStore((state) => state.isFetching);
+  const error = usePostsStore((state) => state.error);
 
   const normalizedPosts = useMemo(() => {
     return (posts as any[]).map((p) => ({
@@ -132,7 +22,8 @@ export default function Dashboard() {
     }));
   }, [posts]);
 
-  if (isLoading) {
+  // ✅ Show loading skeleton only on first fetch (when no posts yet)
+  if (isFetching && posts.length === 0) {
     return (
       <div className="space-y-6">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -166,22 +57,9 @@ export default function Dashboard() {
 
       <StatsCards posts={normalizedPosts as any} />
 
-
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         <div className="lg:col-span-8">
-          <PostsUIProvider
-            value={{
-              hasFacebook,
-              publishingId,
-              deletingId,
-              onPublish: publishToFacebook,
-              onCancelSchedule: cancelSchedule,
-              onDelete: deletePost,
-              refreshPosts: () => fetchPosts({ showLoader: false }),
-            }}
-          >
-            <PostsTabs />
-          </PostsUIProvider>
+          <PostsTabs />
         </div>
 
         <div className="lg:col-span-4 space-y-6">

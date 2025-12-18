@@ -5,8 +5,8 @@ import type { Post } from "@/entities/user/type/Post";
 import { Button, buttonVariants } from "@/shared/components/ui/button";
 import SaveButton from "@/features/chat/save-as-post/ui/SaveButton";
 import { cn } from "@/shared/libs/chadcn/utils";
-import { usePostsUI } from "@/app/_providers/PostsUIContext";
-import { usePostsContext } from "@/app/_providers/PostContext";
+import { usePostsStore } from "@/entities/posts";
+import { toast } from "sonner";
 
 type Props = {
   posts: Post[];
@@ -14,61 +14,57 @@ type Props = {
 };
 
 export function RecentPostsTable({ posts, emptyText = "No posts." }: Props) {
-  const { setPosts } = usePostsContext();
+  // ✅ Get state and actions from store
+  const hasFacebook = usePostsStore((state) => state.hasFacebook);
+  const publishingId = usePostsStore((state) => state.publishingId);
+  const deletingId = usePostsStore((state) => state.deletingId);
 
-  const {
-    hasFacebook,
-    publishingId,
-    deletingId,
-    onPublish,
-    onCancelSchedule,
-    onDelete,
-    onSchedule,
-    refreshPosts,
-  } = usePostsUI();
-
-  const updateLocal = (postId: string, patch: Partial<Post>) => {
-    setPosts((prev) =>
-      prev.map((p) => (p.id === postId ? ({ ...p, ...patch } as Post) : p))
-    );
-  };
+  const updatePost = usePostsStore((state) => state.updatePost);
+  const deletePost = usePostsStore((state) => state.deletePost);
+  const publishToFacebook = usePostsStore((state) => state.publishToFacebook);
+  const cancelSchedule = usePostsStore((state) => state.cancelSchedule);
+  const openScheduleModal = usePostsStore((state) => state.openScheduleModal);
+  const fetchPosts = usePostsStore((state) => state.fetchPosts);
 
   const handlePublishClick = async (postId: string) => {
     try {
-      if (!onPublish) return;
+      toast.loading("Publishing...", { id: `publish-${postId}` });
+      await publishToFacebook(postId);
+      toast.success("Published successfully ✅", { id: `publish-${postId}` });
 
-      await onPublish(postId);
-
-      updateLocal(postId, {
+      // Update local state optimistically
+      updatePost(postId, {
         status: "published" as any,
         scheduled_at: null as any,
-      } as any);
+      });
     } catch (err: any) {
-      alert("❌ Publish failed: " + (err?.message || "Unexpected error"));
+      toast.error(err?.message || "Publish failed", { id: `publish-${postId}` });
     }
   };
 
   const handleDeleteClick = async (postId: string) => {
     try {
-      if (!onDelete) return;
-      await onDelete(postId);
+      toast.loading("Deleting...", { id: `delete-${postId}` });
+      await deletePost(postId);
+      toast.success("Deleted successfully ✅", { id: `delete-${postId}` });
     } catch (err: any) {
-      alert("❌ Delete failed: " + (err?.message || "Unexpected error"));
+      toast.error(err?.message || "Delete failed", { id: `delete-${postId}` });
     }
   };
 
   const handleCancelClick = async (postId: string) => {
     try {
-      if (!onCancelSchedule) return;
+      toast.loading("Canceling schedule...", { id: `cancel-${postId}` });
+      await cancelSchedule(postId);
+      toast.success("Schedule cancelled ✅", { id: `cancel-${postId}` });
 
-      await onCancelSchedule(postId);
-
-      updateLocal(postId, {
+      // Update local state optimistically
+      updatePost(postId, {
         status: "draft" as any,
         scheduled_at: null as any,
-      } as any);
+      });
     } catch (err: any) {
-      alert("❌ Cancel failed: " + (err?.message || "Unexpected error"));
+      toast.error(err?.message || "Failed to cancel schedule", { id: `cancel-${postId}` });
     }
   };
 
@@ -110,12 +106,8 @@ export function RecentPostsTable({ posts, emptyText = "No posts." }: Props) {
 
               const showSchedule = isDraft;
               const showDelete = isDraft;
-              const showCancel =
-                isScheduled && typeof onCancelSchedule === "function";
-              const showPublish =
-                !isPublished &&
-                !!hasFacebook &&
-                typeof onPublish === "function";
+              const showCancel = isScheduled;
+              const showPublish = !isPublished && !!hasFacebook;
 
               // ✅ يدعم created_at أو createdAt
               const created =
@@ -149,11 +141,11 @@ export function RecentPostsTable({ posts, emptyText = "No posts." }: Props) {
                           prompt={(post as any).prompt}
                           buttonText="Schedule"
                           onSaved={async () => {
-                            // ✅ إذا عندك مودال schedule بالـ provider
-                            onSchedule?.(post);
+                            // ✅ Open schedule modal
+                            openScheduleModal(post);
 
-                            // ✅ refresh صامت
-                            await refreshPosts?.();
+                            // ✅ Refresh posts
+                            await fetchPosts();
                           }}
                           className={cn(
                             buttonVariants({ variant: "outline", size: "sm" }),
