@@ -17,7 +17,7 @@ interface MessageActionsProps {
  * Copy for all messages, Regenerate for AI messages, Delete for user messages
  */
 
-export default function MessageActions({ messageId, content, isAI, prompt }: MessageActionsProps) {
+export default function MessageActions({  content, isAI, prompt }: MessageActionsProps) {
     const [copied, setCopied] = useState(false);
     const { sendMessage } = useSendMessage();
     

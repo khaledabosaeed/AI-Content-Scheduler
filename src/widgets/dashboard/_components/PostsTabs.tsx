@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 import {
   Tabs,
   TabsContent,
@@ -11,8 +11,23 @@ import {
 import { RecentPostsTable } from "./RecentPostsTable";
 import { usePostsContext } from "@/app/_providers/PostContext";
 
-export function PostsTabs() {
+interface PostsTabsProps {
+  defaultTab?: string;
+  onTabChange?: (tab: string) => void;
+}
+
+export function PostsTabs({ defaultTab = "all", onTabChange }: PostsTabsProps) {
+  const [activeTab, setActiveTab] = useState(defaultTab);
   const { posts } = usePostsContext();
+
+  useEffect(() => {
+    setActiveTab(defaultTab);
+  }, [defaultTab]);
+
+  const handleTabChange = (value: string) => {
+    setActiveTab(value);
+    onTabChange?.(value);
+  };
 
   const { all, scheduled, drafts, published } = useMemo(() => {
     const norm = (s: any) => (s || "").toString().toLowerCase();
@@ -35,7 +50,7 @@ export function PostsTabs() {
         </p>
       </div>
 
-      <Tabs defaultValue="all" className="w-full">
+      <Tabs value={activeTab} onValueChange={handleTabChange} className="w-full">
         <TabsList className="bg-muted">
           <TabsTrigger value="all">All Posts</TabsTrigger>
           <TabsTrigger value="scheduled">Scheduled</TabsTrigger>

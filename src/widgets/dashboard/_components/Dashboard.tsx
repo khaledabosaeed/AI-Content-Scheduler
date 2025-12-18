@@ -12,14 +12,9 @@ import { Skeleton } from "@/shared/components/ui/skeleton";
 import { toast } from "sonner";
 import { PostsUIProvider } from "@/app/_providers/PostsUIContext";
 import { usePostsContext } from "@/app/_providers/PostContext";
+import { api } from "@/shared/api/api-client";
 
-async function safeJson(res: Response) {
-  try {
-    return await res.json();
-  } catch {
-    return null;
-  }
-}
+
 
 export default function Dashboard() {
   const { posts, setPosts } = usePostsContext();
@@ -33,10 +28,11 @@ export default function Dashboard() {
 
   const fetchUser = async () => {
     try {
-      const res = await fetch("/api/facebook/me");
-      if (!res.ok) return;
-      const data = await safeJson(res);
-      setHasFacebook(!!data?.hasFacebook);
+      const res = await api.get("facebook/me");
+ 
+      setHasFacebook(!!res?.hasFacebook);
+      console.log(hasFacebook , 'this is has ');
+      
     } catch (err) {
       console.error("fetchUser error:", err);
     }
@@ -50,11 +46,9 @@ export default function Dashboard() {
       if (showLoader) setIsLoading(true);
       setError(null);
 
-      const res = await fetch("/api/posts");
-      const data = await safeJson(res);
+      const res = await api.get("posts");
 
-      if (!res.ok) throw new Error(data?.error || "Failed to load posts");
-      setPosts((data?.posts || []) as Post[]);
+      setPosts((res?.posts || []) as Post[]);
     } catch (err: any) {
       console.error(err);
       const msg = err?.message || "Unexpected error";
@@ -75,20 +69,9 @@ export default function Dashboard() {
       setPublishingId(postId);
       toast.loading("Publishing...", { id: `publish-${postId}` });
 
-      const res = await fetch("/api/facebook/publish", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ postId }),
+       await api.post("facebook/publish", {
+    postId 
       });
-
-      const data = await safeJson(res);
-
-      if (!res.ok || data?.success === false) {
-        throw new Error(
-          data?.error?.message || data?.error || "Publish failed"
-        );
-      }
-
       toast.success("Published successfully ✅", { id: `publish-${postId}` });
 
       // ✅ Refresh صامت بدون Skeleton
@@ -107,12 +90,7 @@ export default function Dashboard() {
     try {
       toast.loading("Canceling schedule...", { id: `cancel-${postId}` });
 
-      const res = await fetch(`/api/posts/${postId}/cancel-schedule`, {
-        method: "POST",
-      });
-
-      const data = await safeJson(res);
-      if (!res.ok) throw new Error(data?.error || "Failed to cancel schedule");
+      await api.post(`posts/${postId}/cancel-schedule`);
 
       toast.success("Schedule cancelled ✅", { id: `cancel-${postId}` });
 
@@ -123,9 +101,6 @@ export default function Dashboard() {
       });
     }
   };
-  const handleScheduleClick = ()=>{
-    fetchPosts()
-  }
 
   const deletePost = async (postId: string) => {
     const prev = posts;
@@ -133,15 +108,9 @@ export default function Dashboard() {
     try {
       setDeletingId(postId);
       toast.loading("Deleting...", { id: `delete-${postId}` });
-
       setPosts((p) => (p as any[]).filter((x: any) => x.id !== postId) as any);
 
-      const res = await fetch(`/api/posts/${postId}/delete-post`, {
-        method: "DELETE",
-      });
-
-      const data = await safeJson(res);
-      if (!res.ok) throw new Error(data?.error || "Failed to delete post");
+      await api.delete(`posts/${postId}/delete-post`);
 
       toast.success("Deleted successfully ✅", { id: `delete-${postId}` });
     } catch (err: any) {

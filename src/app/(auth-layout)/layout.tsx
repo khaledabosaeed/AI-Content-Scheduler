@@ -4,9 +4,12 @@ import { ThemeToggle } from "@/shared/ui/ThemeToggle";
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
     return (
         <div className="relative">
-            <div className="absolute top-4 right-4 z-10">
+            <div className="absolute flex flec-row  top-4 right-4 z-10">
+                <div className=" ml-5">
+                    <ThemeToggle/>
+                </div>
+                
                 <BackToHome />
-                <ThemeToggle/>
             </div>
             {children}
         </div>

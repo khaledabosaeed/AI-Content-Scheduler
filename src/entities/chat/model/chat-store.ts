@@ -131,14 +131,14 @@ export const useChatStore = create<ChatState>()(
         });
 
         try {
-          const res = await api.get(`chat/get-chat?sessionId=${sessionId}`, {});
+          const res = await api.get(`chat/get-chat?sessionId=${sessionId}`, {
+          });
 
-          const data = res;
 
           //  نضمن إن كل رسالة ليها id مش null
-          const messages: Message[] = (data.messages ?? []).map(
+          const messages: Message[] = (res.messages ?? []).map(
             (m: any, index: number) => ({
-              id: m.id ?? `msg-${data.sessionId}-${index}`,
+              id: m.id ?? `msg-${res.sessionId}-${index}`,
               role: m.role,
               content: m.content,
               createdAt: m.createdAt ?? new Date().toISOString(),
@@ -249,7 +249,6 @@ export const useChatStore = create<ChatState>()(
         try {
           const res = await api.get("chat/history");
 
-          const data = await res.json();
 
           const safeSessions = (res.sessions || []).filter(
             (s: any) => s.id !== null && s.id !== undefined

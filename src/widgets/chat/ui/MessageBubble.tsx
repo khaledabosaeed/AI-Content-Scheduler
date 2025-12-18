@@ -114,17 +114,7 @@ export default function MessageBubble({
                       ${showActions ? "opacity-100" : "opacity-0"}
                     `}
                   >
-                    {/* <button
-                      onClick={handleCopy}
-                      className="p-1.5 hover:bg-action-hover rounded-md transition-colors"
-                      title={copied ? "Copied!" : "Copy"}
-                    >
-                      {copied ? (
-                        <Check className="w-4 h-4 text-green-500" />
-                      ) : (
-                        <Copy className="w-4 h-4 text-text-secondary" />
-                      )}
-                    </button> */}
+
                     <SaveButton
                       message={message}
                       prompt={previousMessage?.content}

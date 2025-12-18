@@ -43,7 +43,7 @@ export default async function RootLayout({
 
   return (
     <html lang="ar" dir="rtl" suppressHydrationWarning>
-      <body className="w-full min-h-screen relative">
+      <body className="w-full min-h-screen relative font-sans">
         <ThemeProvider>
           <QueryProvider dehydratedState={dehydratedState}>
             <Suspense fallback={<div />}>

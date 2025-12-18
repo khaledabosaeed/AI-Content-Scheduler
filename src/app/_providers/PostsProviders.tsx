@@ -9,13 +9,7 @@ import { api } from "@/shared/api/api-client";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 
-async function safeJson(res: Response) {
-  try {
-    return await res.json();
-  } catch {
-    return null;
-  }
-}
+
 
 export default function PostsProviders({
   children,

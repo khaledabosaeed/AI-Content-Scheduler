@@ -7,6 +7,7 @@ import { PostsUIProvider } from "@/app/_providers/PostsUIContext";
 import { Button } from "@/shared/components/ui/button";
 import ScheduleModal from "@/widgets/scheduler/ScheduleModal";
 import { PostsTabs } from "../PostsTabs";
+import { useSearchParams } from "next/navigation";
 
 import { toast } from "sonner";
 import React from "react";
@@ -15,6 +16,9 @@ import { api } from "@/shared/api/api-client";
 
 
 export default function PostsPage() {
+  const searchParams = useSearchParams();
+  const tabFromUrl = searchParams.get("tab") || "all";
+
   const { posts, setPosts } = usePostsContext();
   const [publishingId, setPublishingId] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -225,9 +229,8 @@ return (
       </div>
     )}
 
-\
     <PostsUIProvider value={uiValue}>
-      <PostsTabs />
+      <PostsTabs defaultTab={tabFromUrl} />
     </PostsUIProvider>
 
     {isScheduleOpen && selectedPost && (

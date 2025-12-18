@@ -13,7 +13,7 @@ export function ThemeToggle({ className }: ThemeToggleProps) {
     <button
       onClick={toggleTheme}
       className={cn(
-        "relative p-2 rounded-lg transition-colors duration-200 text-white",
+        `relative p-2 rounded-lg transition-colors duration-200 ${theme === "light" ? "bg-gray-800 text-white" : "bg-gray-200 text-gray-800"}`,
         className
       )}
       aria-label="Toggle theme"
