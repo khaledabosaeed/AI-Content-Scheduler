@@ -28,7 +28,7 @@ const [isScheduling, setIsScheduling] = useState(false);
 
 const fetchUser = async () => {
   try {
-    const res = await api.get("/api/facebook/me");
+    const res = await api.get("facebook/me");
 
     setHasFacebook(!!res.hasFacebook);
   } catch (err) {
@@ -43,7 +43,7 @@ const fetchPosts = async (opts?: { showLoader?: boolean }) => {
     if (showLoader) setIsLoading(true);
     setError(null);
 
-    const res = await api.get("/api/posts");
+    const res = await api.get("posts");
 
     setPosts(Array.isArray(res.posts) ? res.posts : []);
   } catch (err: any) {

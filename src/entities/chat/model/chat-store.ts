@@ -248,14 +248,10 @@ export const useChatStore = create<ChatState>()(
         set({ isLoadingHistory: true, error: null });
 
         try {
-          const res = await fetch("/api/chat/history");
+          const res = await api.get("chat/history");
 
-          if (!res.ok) throw new Error("Failed to load history");
 
-          const data = await res.json();
-          console.log("history data:", data);
-
-          const safeSessions = (data.sessions || []).filter(
+          const safeSessions = (res.sessions || []).filter(
             (s: any) => s.id !== null && s.id !== undefined
           );
 
