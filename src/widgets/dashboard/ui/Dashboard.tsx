@@ -89,7 +89,6 @@ export default function DashboardPage() {
 
   // دالة إلغاء الجدولة
   const cancelSchedule = async (postId: string) => {
-    console.log("Cancelling schedule for postId:", postId);
     try {
       const res = await fetch(`/api/posts/${postId}/cancel-schedule`, {
         method: "POST",

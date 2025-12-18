@@ -3,7 +3,6 @@ import { withAuth } from '@/shared/libs/auth/auth-middleware';
 import { generateContentStream } from '@/shared/libs/ai/gemini-client';
 
 export async function POST(req: NextRequest) {
-  console.log(req)
   // return withAuth(req, async (req, user) => {
   try {
     const body = await req.json();

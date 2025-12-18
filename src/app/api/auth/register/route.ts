@@ -13,7 +13,6 @@ export const POST = async (req: NextRequest) => {
   try {
     // 1️⃣ استقبال البيانات
     const { email, name, password } = await req.json();
-    console.log("Payload received:", { email, name, password });
 
     // 2️⃣ التحقق من وجود البيانات المطلوبة
     if (!email || !password) {
@@ -45,7 +44,6 @@ export const POST = async (req: NextRequest) => {
       .select("id")
       .eq("email", email)
       .single();
-    console.log("Existing user:", existingUser, "Check error:", checkError);
 
     if (existingUser) {
       console.warn("Email already in use:", email);
@@ -54,7 +52,6 @@ export const POST = async (req: NextRequest) => {
 
     // 6️⃣ تشفير كلمة المرور
     const hashedPassword = await hashPassword(password);
-    console.log("Hashed password:", hashedPassword);
 
     // 7️⃣ إنشاء المستخدم في قاعدة البيانات
     const { data: user, error: dbError } = await supabaseServer
@@ -67,7 +64,6 @@ export const POST = async (req: NextRequest) => {
       })
       .select("id, email, name, created_at")
       .single();
-    console.log("Inserted user:", user, "DB error:", dbError);
 
     if (dbError || !user) {
       console.error("Database insertion failed:", dbError);
@@ -80,7 +76,6 @@ export const POST = async (req: NextRequest) => {
       email: user.email,
       name: user.name,
     });
-    console.log("JWT token created");
 
     // 9️⃣ إرجاع الاستجابة مع Cookie آمنة
     return createResponseWithSession(

@@ -17,8 +17,7 @@ export function PostsTabs() {
   const { all, scheduled, drafts, published } = useMemo(() => {
     const norm = (s: any) => (s || "").toString().toLowerCase();
     const list = posts ?? [];
-    console.log("PostsTabs props keys", Object.keys(arguments?.[0] ?? {}));
-    console.log("PostsTabs ctx posts len", posts.length);
+
     return {
       all: list,
       scheduled: list.filter((p: any) => norm(p.status) === "scheduled"),

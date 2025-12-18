@@ -257,7 +257,6 @@ export const useChatStore = create<ChatState>()(
           if (!res.ok) throw new Error("Failed to load history");
 
           const data = await res.json();
-          console.log("history data:", data);
 
           const safeSessions = (data.sessions || []).filter(
             (s: any) => s.id !== null && s.id !== undefined

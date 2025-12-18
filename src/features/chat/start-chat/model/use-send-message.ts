@@ -61,12 +61,10 @@ export function useSendMessage() {
           await new Promise((resolve) => setTimeout(resolve, 20));
         }
       }
-      console.log("✅ stream finished, saving session...");
 
       if (saveCurrentSession) {
         await saveCurrentSession();
       }
-      console.log("✅ session saved to DB + store");
 
       setController(null);
       controllerRef.current = null;

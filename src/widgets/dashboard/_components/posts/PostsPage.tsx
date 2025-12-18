@@ -238,7 +238,6 @@ const uiValue = useMemo(
   ]
 );
 
-console.log("refreshPosts type:", typeof uiValue.refreshPosts);
 return (
   <div className="space-y-6">
     {!hasFacebook && (

@@ -20,10 +20,8 @@ export async function checkAuth(request: NextRequest): Promise<{
 }> {
   const token = getSessionToken(request);
 
-  // console.log("🔍 checkAuth - Token from cookie:", token ? `${token.substring(0, 20)}...` : "NO TOKEN");
 
   if (!token) {
-    // console.log("❌ checkAuth - No token found");
     return {
       isAuthenticated: false,
       user: null,
@@ -33,10 +31,8 @@ export async function checkAuth(request: NextRequest): Promise<{
 
   const payload = await verifyToken(token);
 
-  console.log("🔍 checkAuth - Verify result:", payload ? "VALID" : "INVALID");
 
   if (!payload) {
-    console.log("❌ checkAuth - Token verification failed");
     return {
       isAuthenticated: false,
       user: null,
@@ -44,7 +40,6 @@ export async function checkAuth(request: NextRequest): Promise<{
     };
   }
 
-  // console.log("✅ checkAuth - User authenticated:", payload.email);
   return {
     isAuthenticated: true,
     user: payload as JWTPayload,

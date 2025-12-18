@@ -9,16 +9,6 @@ new Worker(
   async () => {
     console.log("Checking scheduled posts...");
 
-    // await axios.post(
-    //   `http://localhost:3000/api/facebook/publish`,
-    //   {},
-    //   {
-    //     headers: {
-    //       "x-publish-secret": "",
-    //     },
-    //   }
-    // );
-
     await fetch("http://localhost:3000/api/facebook/publish", {
       method: "POST",
       headers: {
@@ -41,4 +31,3 @@ publishQueue.add(
   }
 );
 
-console.log("Worker started...");

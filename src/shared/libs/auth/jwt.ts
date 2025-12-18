@@ -30,15 +30,11 @@ export async function createToken(payload: any) {
 
 export async function verifyToken(token: string):Promise<JWTPayload | null> {
   try {
-    console.log("🔐 Verifying token with SECRET length:", SECRET.length);
     const { payload } = await jwtVerify(token, SECRET);
-    console.log("✅ Token verified successfully:", payload);
     return payload as unknown as JWTPayload;
   } catch (error: any) {
     if (error instanceof errors.JWTExpired) {
-      console.log("❌ JWT token expired");
     } else if (error instanceof errors.JWTInvalid) {
-      console.log("❌ Invalid JWT token");
     } else {
       console.error("❌ Error verifying JWT token:", error);
     }

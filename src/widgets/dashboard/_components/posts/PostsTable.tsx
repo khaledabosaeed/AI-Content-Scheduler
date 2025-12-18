@@ -53,7 +53,6 @@ export function PostsTable({
     }
     onOpenSchedule(post);
   };
-console.log(posts)
   return (
     <Card>
       <CardHeader>

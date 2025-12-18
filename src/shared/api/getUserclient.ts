@@ -13,10 +13,8 @@ export const getUserServer = async () => {
         const cookieStore = await cookies();
         const sessionCookie = cookieStore.get("session");
         
-        // console.log("🍪 Cookie value:", sessionCookie?.value ? "Found" : "Not found");
         
         if (!sessionCookie?.value) {
-            // console.log("⚠️ No session cookie found");
             return null;
         }
 
@@ -24,7 +22,6 @@ export const getUserServer = async () => {
         const payload = await verifyToken(sessionCookie.value);
         
         if (!payload) {
-            // console.log("⚠️ Invalid or expired token");
             return null;
         }
 
@@ -40,7 +37,6 @@ export const getUserServer = async () => {
             return null;
         }
 
-        console.log("✅ User fetched successfully:", user.email);
         
         return {
             user: {

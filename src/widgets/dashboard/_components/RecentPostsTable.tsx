@@ -112,7 +112,6 @@ export function RecentPostsTable({ posts, emptyText = "No posts." }: Props) {
     );
   }
 
-  console.log(typeof onSchedule)
   return (
     <div className="rounded-md border">
       <div className="overflow-x-auto">

@@ -25,7 +25,6 @@ export async function GET(req: NextRequest) {
   try {
     
       const userId = user.userId;
-      console.log(userId , "this Is User ID ");
       
       const data = await supabaseServer.from("social_accounts")
       .select("access_token")
@@ -34,7 +33,6 @@ export async function GET(req: NextRequest) {
       .single();
 
       const facebookId = data.data?.access_token;
-      console.log(facebookId, "this is facebook id");
 
     // لو مفيش توكن → مفيش ربط فيسبوك
     if (!facebookId) {
@@ -55,7 +53,6 @@ export async function GET(req: NextRequest) {
         `https://graph.facebook.com/me?fields=id,name,picture&access_token=${facebookId}`
       );
 
-      console.log(fbRes.status , "this is the stusta");
       
       if (fbRes.ok) {
         const fbData = await fbRes.json();

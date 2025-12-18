@@ -16,7 +16,6 @@ export async function fetchUserData(): Promise<UserData> {
     credentials: "include", // مهم جدًا لإرسال الكوكيز
   });
   
-  console.log("Fetched user data:", response);
   return response;
 }
 

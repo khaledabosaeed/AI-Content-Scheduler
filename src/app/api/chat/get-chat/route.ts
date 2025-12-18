@@ -23,7 +23,6 @@ export const GET = (req: NextRequest) =>
       }
 
       const userId = String(user.userId);
-      console.log(userId, "this is user id in get-chat");
 
       const { data, error } = await supabaseServer
         .from("chat_sessions")

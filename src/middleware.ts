@@ -28,10 +28,8 @@ export async function middleware(request: NextRequest) {
     pathname.startsWith(route)
   );
 
-  // console.log("🔐 Middleware:", { pathname, isProtectedRoute, isAuthenticated });``
 
   if (isProtectedRoute && !isAuthenticated) {
-    console.log("❌ Redirecting to login - user not authenticated");
     const loginUrl = new URL("/login", request.url);
     loginUrl.searchParams.set("redirect", pathname);
     return NextResponse.redirect(loginUrl);

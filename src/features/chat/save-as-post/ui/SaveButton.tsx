@@ -48,9 +48,7 @@ const ui = usePostsUIOptional();
         onSaved?.(); 
 
 
-        console.log("SaveButton: refreshPosts type =", typeof refreshPosts);
         await refreshPosts?.();
-        console.log("SaveButton: refreshPosts finished ✅");
 
     toast.success(
       scheduledDate

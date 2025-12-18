@@ -3,9 +3,7 @@ import { cookies } from "next/headers"
 
 export const tstFun = async () => {
     const cookiesSession = await cookies();
-    // console.log("🍪 Cookies object:", cookiesSession);
     const sessionCookie = cookiesSession.get("session");
-    // console.log("🍪 Session cookie value:", sessionCookie?.value);
     try{
    const res = await fetch(`/api/users/me`, {
         method: "GET",
@@ -16,7 +14,6 @@ export const tstFun = async () => {
         // cache: "no-store", // Always fetch fresh data  
       });
           if (!res.ok) {
-      console.log("this is the error ");
       return null;
     }
       const data = await res.json();
