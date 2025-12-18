@@ -6,6 +6,7 @@ import type { Post } from "@/entities/user/type/Post";
 import { SaveButton } from "@/features/chat";
 import { toast } from "sonner";
 import React from "react";
+import { api } from "@/shared/api/api-client";
 
 export default function DashboardPage() {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -19,10 +20,9 @@ export default function DashboardPage() {
   //  جلب حالة المستخدم (وربط فيسبوك)
   const fetchUser = async () => {
     try {
-      const res = await fetch("/api/facebook/me");
-      if (!res.ok) return;
-      const data = await res.json();
-      setHasFacebook(!!data.hasFacebook);
+      const res = await api.get("facebook/me");
+
+      setHasFacebook(!!res.hasFacebook);
     } catch (err) {
       console.error("fetchUser error:", err);
     }
@@ -33,14 +33,11 @@ export default function DashboardPage() {
       setIsLoading(true);
       setError(null);
 
-      const res = await fetch("/api/posts");
-      const data = await res.json();
+      const res = await api.get("posts");
 
-      if (!res.ok) {
-        throw new Error(data.error || "Failed to load posts");
-      }
 
-      setPosts(data.posts || []);
+
+      setPosts(res.posts || []);
     } catch (err: any) {
       console.error(err);
       setError(err.message || "Unexpected error");
@@ -59,21 +56,13 @@ export default function DashboardPage() {
     try {
       setPublishingId(postId);
 
-      const res = await fetch("/api/facebook/publish", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ postId }),
+      const res = await api.post("facebook/publish", {
+ postId 
       });
 
-      const data = await res.json();
-
-      if (!res.ok || data.success === false) {
-        toast.error("Something went wrong!" + (data.error?.message || ""));
-        return;
-      }
 
       toast.success(
-        `🎉 The post has been published successfully on ${data.platform}!`
+        `🎉 The post has been published successfully on ${res.platform}!`
       );
       fetchPosts();
     } catch (err: unknown) {
@@ -90,12 +79,7 @@ export default function DashboardPage() {
   // دالة إلغاء الجدولة
   const cancelSchedule = async (postId: string) => {
     try {
-      const res = await fetch(`/api/posts/${postId}/cancel-schedule`, {
-        method: "POST",
-      });
-      const data = await res.json();
-
-      if (!res.ok) throw new Error(data.error || "Cancellation failed");
+       await api.post(`posts/${postId}/cancel-schedule`, {});
 
       toast.success("The scheduled post has been cancelled successfully.");
       fetchPosts(); // تحديث البوستات

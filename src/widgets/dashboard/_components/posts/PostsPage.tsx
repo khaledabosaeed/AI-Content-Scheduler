@@ -65,7 +65,7 @@ const publishToFacebook = async (postId: string) => {
     setPublishingId(postId);
     toast.loading("Publishing to Facebook...", { id: `publish-${postId}` });
 
-    const res = await api.post("facebook/publish", {
+     await api.post("facebook/publish", {
        postId ,
     });
 
@@ -85,10 +85,9 @@ const cancelSchedule = async (postId: string) => {
   try {
     toast.loading("Canceling schedule...", { id: `cancel-${postId}` });
 
-    const res = await api.post(`posts/${postId}/cancel-schedule`);
+     await api.post(`posts/${postId}/cancel-schedule`);
 
-    if (!res.ok)
-      throw new Error(res?.error || res?.raw || "Failed to cancel schedule");
+
 
     setPosts((prev) =>
       prev.map((p) =>
@@ -117,9 +116,8 @@ const deletePost = async (postId: string) => {
 
     setPosts((p) => p.filter((x) => x.id !== postId));
 
-    const res = await api.delete(`posts/${postId}/delete-post`, );
+    await api.delete(`posts/${postId}/delete-post`, );
 
-    if (!res.ok) throw new Error(res?.error || "Delete failed");
 
     toast.success("Post deleted ✅", { id: `delete-${postId}` });
   } catch (err: any) {
@@ -149,7 +147,7 @@ const confirmSchedule = async (
     setIsScheduling(true);
     toast.loading("Scheduling post...", { id: `schedule-${id}` });
 
-    const res = await api.post(`posts/${selectedPost.id}/update`, {
+     await api.post(`posts/${selectedPost.id}/update`, {
   
         scheduledAt: date.toISOString(),
         platform,
@@ -159,8 +157,7 @@ const confirmSchedule = async (
     });
 
 
-    if (!res.ok)
-      throw new Error(res?.error || res?.raw || "Failed to schedule post");
+
 
     setPosts((prev) =>
       prev.map((p) =>
