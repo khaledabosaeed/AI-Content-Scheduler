@@ -1,0 +1,173 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    /* ===================== */
+    /* Light Mode – Purple & Teal */
+    /* ===================== */
+    --background: 0 0% 100%;
+    --foreground: 220 15% 20%;
+
+    /* Purple Primary Colors */
+   --primary-purple: 222 80% 50%;
+  --primary-purple-light: 222 85% 65%;
+  --primary-purple-dark: 222 75% 40%;
+
+    /* Teal Secondary Colors */
+    --teal: 180 65% 45%;
+    --teal-light: 180 65% 60%;
+
+    /* Surface Colors */
+    --surface-1: 0 0% 100%;
+    --surface-2: 0 0% 98%;
+
+    /* Brand Colors */
+    --brand-secondary: 265 50% 50%;
+
+    /* CTA Colors */
+    --cta-foreground: 0 0% 100%;
+
+    --primary: 220 10% 35%;
+    --primary-foreground: 0 0% 100%;
+
+    --muted: 220 15% 96%;
+    --muted-foreground: 220 10% 45%;
+
+    --accent: 220 12% 45%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 70% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 220 10% 85%;
+    --input: 220 15% 95%;
+    --ring: 220 10% 40%;
+
+    --paper: 0 0% 100%;
+    --elevated: 220 15% 98%;
+
+    --text-primary: 220 15% 20%;
+    --text-secondary: 220 10% 45%;
+    --text-disabled: 220 10% 65%;
+
+    --divider: 220 10% 90%;
+
+    --action-hover: 238.74 84% 67% / 0.102;
+    --action-selected: 265 75% 90%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 220 15% 20%;
+    --popover: 0 0% 98%;
+    --popover-foreground: 220 15% 20%;
+
+    /* ✅ Border Radius */
+    --radius-sm: 0.375rem;   /* 6px */
+    --radius: 0.75rem;       /* 12px */
+    --radius-lg: 1rem;       /* 16px */
+    --radius-xl: 1.25rem;    /* 20px */
+
+    /* Toasts */
+    --toast-success-bg: #4b5563; /* gray-600 */
+    --toast-error-bg: #ef4444;
+    --toast-info-bg: #3b82f6;
+    --toast-warning-bg: #facc15;
+  }
+
+  /* ===================== */
+  /* Dark Mode – Dark Purple & Teal */
+  /* ===================== */
+  .dark {
+  --background: 220 15% 10%;
+  --foreground: 0 0% 95%;
+
+  /* Purple Primary Colors – Dark Mode */
+  --primary-purple: 222 85% 65%;
+  --primary-purple-light: 222 90% 75%;
+  --primary-purple-dark: 222 80% 50%; /* نسخة داكنة للعناصر الثانوية */
+
+  /* Teal Secondary Colors */
+  --teal: 180 65% 50%;
+  --teal-light: 180 65% 65%;
+
+  /* Surface Colors */
+  --surface-1: 220 15% 15%;
+  --surface-2: 220 15% 20%;
+
+  /* Brand Colors */
+  --brand-secondary: 265 50% 60%;
+
+  /* CTA Colors */
+  --cta-foreground: 0 0% 100%;
+
+  --primary: 220 10% 65%;
+  --primary-foreground: 220 15% 10%;
+
+  --muted: 220 15% 18%;
+  --muted-foreground: 220 10% 65%;
+
+  --accent: 220 10% 25%;
+  --accent-foreground: 220 15% 10%;
+
+  --destructive: 0 70% 45%;
+  --destructive-foreground: 0 0% 95%;
+
+  --border: 220 10% 25%;
+  --input: 220 15% 20%;
+  --ring: 220 10% 60%;
+
+  --paper: 220 15% 15%;
+  --elevated: 220 15% 20%;
+
+  --text-primary: 0 0% 95%;
+  --text-secondary: 220 10% 65%;
+  --text-disabled: 220 10% 45%;
+
+  --divider: 220 10% 25%;
+/* hsl(222deg 85% 65% / 43%) */
+    --action-hover: 222 85% 30%;
+  --action-selected: 222 85% 35%;    /* نسخة للتحديد Selected */
+
+  --card: 220 15% 15%;
+  --card-foreground: 0 0% 95%;
+  --popover: 220 15% 20%;
+  --popover-foreground: 0 0% 95%;
+
+  --toast-success-bg: #16a34a;
+  --toast-success-color: white;
+
+  --toast-error-bg: #dc2626;
+  --toast-error-color: white;
+
+  --toast-loading-bg: #fbbf24;
+  --toast-loading-color: black;
+}
+
+
+  /* ===================== */
+  /* Base styles */
+  /* ===================== */
+  * {
+    border-color: hsl(var(--border));
+    @apply border-border;
+  }
+
+  body {
+    background-color: hsl(var(--background));
+    color: hsl(var(--foreground));
+    @apply bg-background text-foreground;
+    transition: background-color 0.3s, color 0.3s;
+  }
+}
+
+/* ===================== */
+/* Scroll */
+html {
+  scroll-behavior: smooth;
+  overscroll-behavior: contain;
+}
+
+::-webkit-scrollbar {
+  display: none;
+}
