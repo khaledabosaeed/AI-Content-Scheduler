@@ -41,7 +41,7 @@ export async function generateContentStream(prompt: string): Promise<ReadableStr
 
   } catch (error: any) {
     console.error("Gemini API Error:", error);
-    throw new Error(`فشل في الاتصال بالذكاء الاصطناعي: ${error.message}`);
+    throw new Error(`Failed to connect to artificial intelligence: ${error.message}`);
   }
 }
 

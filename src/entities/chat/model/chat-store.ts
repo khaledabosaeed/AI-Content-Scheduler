@@ -2,6 +2,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { ChatState, ChatSession, Message } from "./types";
+import { api } from "@/shared/api/api-client";
 
 /***
  *
@@ -130,15 +131,9 @@ export const useChatStore = create<ChatState>()(
         });
 
         try {
-          const res = await fetch(`/api/chat/get-chat?sessionId=${sessionId}`, {
-            method: "GET",
-          });
+          const res = await api.get(`chat/get-chat?sessionId=${sessionId}`, {});
 
-          if (!res.ok) {
-            throw new Error("Failed to load chat");
-          }
-
-          const data = await res.json();
+          const data = res;
 
           //  نضمن إن كل رسالة ليها id مش null
           const messages: Message[] = (data.messages ?? []).map(
@@ -252,13 +247,11 @@ export const useChatStore = create<ChatState>()(
         set({ isLoadingHistory: true, error: null });
 
         try {
-          const res = await fetch("/api/chat/history");
-
-          if (!res.ok) throw new Error("Failed to load history");
+          const res = await api.get("chat/history");
 
           const data = await res.json();
 
-          const safeSessions = (data.sessions || []).filter(
+          const safeSessions = (res.sessions || []).filter(
             (s: any) => s.id !== null && s.id !== undefined
           );
 

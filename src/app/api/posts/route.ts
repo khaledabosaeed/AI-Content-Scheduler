@@ -13,7 +13,7 @@ export async function GET(req: NextRequest) {
       if (error) {
         console.error("Error fetching posts:", error);
         return NextResponse.json(
-          { error: "فشل في جلب المنشورات" },
+          { error: "Failed to retrieve the publications" },
           { status: 500 }
         );
       }
@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
     } catch (err: any) {
       console.error(err);
       return NextResponse.json(
-        { error: "حدث خطأ غير متوقع" },
+        { error: "An unexpected error occurred."},
         { status: 500 }
       );
     }

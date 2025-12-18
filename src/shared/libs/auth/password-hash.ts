@@ -10,7 +10,7 @@ export async function hashPassword(password: string): Promise<string> {
     return hashedPassword;
   } catch (error) {
     console.error('Error hashing password:', error);
-    throw new Error('فشل في تشفير كلمة المرور');
+    throw new Error('Password encryption failed');
   }
 }
 
@@ -37,23 +37,23 @@ export function validatePasswordStrength(password: string): {
   const errors: string[] = [];
 
   if (password.length < 8) {
-    errors.push('كلمة المرور يجب أن تكون على الأقل 8 أحرف');
+    errors.push('The password must be at least 8 characters long');
   }
 
   if (!/[a-z]/.test(password)) {
-    errors.push('كلمة المرور يجب أن تحتوي على حرف صغير واحد على الأقل');
+    errors.push('The password must contain at least one lowercase letter');
   }
 
   if (!/[A-Z]/.test(password)) {
-    errors.push('كلمة المرور يجب أن تحتوي على حرف كبير واحد على الأقل');
+    errors.push('The password must contain at least one capital letter');
   }
 
   if (!/[0-9]/.test(password)) {
-    errors.push('كلمة المرور يجب أن تحتوي على رقم واحد على الأقل');
+    errors.push('The password must contain at least one number');
   }
 
   if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
-    errors.push('كلمة المرور يجب أن تحتوي على رمز خاص واحد على الأقل');
+    errors.push('The password must contain at least one special character');
   }
 
   return {

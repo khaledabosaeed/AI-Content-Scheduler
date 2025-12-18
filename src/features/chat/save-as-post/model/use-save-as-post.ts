@@ -1,3 +1,4 @@
+import { api } from "@/shared/api/api-client";
 import { useState } from "react";
 
 interface SaveAsPostParams {
@@ -25,23 +26,14 @@ export function useSaveAsPost() {
     setError(null);
 
     try {
-      const res = await fetch(
-        postId ? `/api/posts/${postId}/update` : "/api/posts/from-chat",
-        {
-          method: postId ? "PUT" : "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ prompt, content, platform, status, scheduledAt }),
-        }
-      );
+      const payload = { prompt, content, platform, status, scheduledAt };
 
-      if (!res.ok) {
-        const data = await res.json();
-        throw new Error(data.error || "Failed to save post");
-      }
-
-      const data = await res.json();
-      return data;
-    } catch (err: any) {
+      const res = postId
+        ? await api.put(`posts/${postId}/update`, payload)
+        : await api.post("posts/from-chat", payload);
+      return res;
+    }
+     catch (err: any) {
       setError(err.message);
       console.error("Error saving post:", err);
       throw err;

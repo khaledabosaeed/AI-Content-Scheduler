@@ -17,7 +17,6 @@ async function PrefetchUserData() {
   const queryClient = new QueryClient();
 
   try {
-    // 🔹 prefetch بيانات اليوزر من السيرفر قبل العرض
     await queryClient.prefetchQuery({
       queryKey: userKeys.me(),
       queryFn: getUserServer,
@@ -25,10 +24,11 @@ async function PrefetchUserData() {
 
     // 🔹 تحويل الكاش إلى JSON يمكن إرساله للعميل
     const dehydratedState = dehydrate(queryClient);
-   
+
+
     return dehydratedState;
   } catch (error) {
-    // إرجع undefined وليس throw - سيسمح بالمتابعة بدون بيانات اليوزر
+
     return undefined;
   }
 }

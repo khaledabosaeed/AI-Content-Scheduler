@@ -21,7 +21,6 @@ export const ChatSideBar = () => {
     fetchChatHistory,
   } = useChatStore();
 
-  const [sidebarOpen, setSidebarOpen] = useState(false);
   const [showTheme, setShowTheme] = useState(false);
 
   useEffect(() => {
@@ -46,19 +45,10 @@ export const ChatSideBar = () => {
   return (
     <div className="w-64 h-screen bg-gradient-to-b from-card to-popover text-text-primary flex flex-col border-r border-divider">
       {/* Header */}
-      <div className="flex flex-row-reverse items-center pr-2"
+      <div className="flex p-3 flex-row-reverse items-center pr-2"
 >
-        <Link href="/" className="w-full p-5 ">
-        <Button
-          variant="ghost"
-          className="w-full justify-end gap-2 pl-2 text-text-secondary hover:text-primary hover:bg-action-hover rounded-lg transition-all"
-        >
-          
-          Home
-          <LayoutGrid className="w-4 h-4" />
-        </Button>
-      </Link>
-      <div className="hidden md:block bg-accent rounded-md "><ThemeToggle/></div>
+
+      <div className=" md:block bg-accent rounded-md "><ThemeToggle/></div>
       </div>
 
       <Separator className="bg-divider" />
@@ -102,14 +92,16 @@ export const ChatSideBar = () => {
       {/* Footer */}
       <div className="p-4 space-y-2 ">
           <div className="flex flex-row-reverse items-center gap-2">
-      <Button
-        variant="ghost"
-        className="w-full justify-end gap-2 p-2 text-text-secondary hover:text-primary hover:bg-action-hover rounded-lg transition-all"
-        onClick={() => setShowTheme((prev) => !prev)}
-      >
-        Settings
-        <Settings className="w-4 h-4" />
-      </Button>
+     <Link href="/" className="w-full">
+          <Button
+            variant="ghost"
+            className="w-full justify-end gap-2 p-2 text-text-secondary hover:text-primary hover:bg-action-hover rounded-lg transition-all"
+          >
+            
+            Home
+            <LayoutGrid className="w-4 h-4" />
+          </Button>
+        </Link>
 
       {/* يظهر فقط إذا ضغطنا */}
       {showTheme && (

@@ -1,26 +1,16 @@
 "use client";
 
+import React from "react";
 import type { Post } from "@/entities/user/type/Post";
-import { Button } from "@/shared/components/ui/button";
-import { buttonVariants } from "@/shared/components/ui/button";
+import { Button, buttonVariants } from "@/shared/components/ui/button";
 import SaveButton from "@/features/chat/save-as-post/ui/SaveButton";
 import { cn } from "@/shared/libs/chadcn/utils";
 import { usePostsUI } from "@/app/_providers/PostsUIContext";
 import { usePostsContext } from "@/app/_providers/PostContext";
-// import { toast } from "sonner";
 
 type Props = {
   posts: Post[];
   emptyText?: string;
-  onSchedule: (post: Post) => void;
-  onPublish?: (postId: string) => Promise<void> | void;
-  onCancelSchedule?: (postId: string) => Promise<void> | void;
-
-  onDelete: (postId: string) => Promise<void> | void;
-  publishingId?: string | null;
-
-  setPosts?: React.Dispatch<React.SetStateAction<Post[]>>;
-
 };
 
 export function RecentPostsTable({ posts, emptyText = "No posts." }: Props) {
@@ -43,19 +33,6 @@ export function RecentPostsTable({ posts, emptyText = "No posts." }: Props) {
     );
   };
 
-  const handleScheduleClick = (post: Post) => {
-    updateLocal(post.id, { status: "scheduled" as any });
-    onSchedule?.(post);
-  };
-
-  const markAsScheduled = (postId: string) => {
-  if (!setPosts) return;
-  setPosts(prev =>
-    prev.map(p => (p.id === postId ? { ...p, status: "scheduled" } : p))
-  );
-  // onSchedule?.(postId)
-};
-
   const handlePublishClick = async (postId: string) => {
     try {
       if (!onPublish) return;
@@ -67,7 +44,6 @@ export function RecentPostsTable({ posts, emptyText = "No posts." }: Props) {
         scheduled_at: null as any,
       } as any);
     } catch (err: any) {
-      // toast.error("❌ Publish failed: " + (err?.message || "Unexpected error"));
       alert("❌ Publish failed: " + (err?.message || "Unexpected error"));
     }
   };
@@ -75,10 +51,8 @@ export function RecentPostsTable({ posts, emptyText = "No posts." }: Props) {
   const handleDeleteClick = async (postId: string) => {
     try {
       if (!onDelete) return;
-      await onDelete(postId); //
-      // toast.success("✅ Deleted");
+      await onDelete(postId);
     } catch (err: any) {
-      // toast.error("❌ Delete failed: " + (err?.message || "Unexpected error"));
       alert("❌ Delete failed: " + (err?.message || "Unexpected error"));
     }
   };
@@ -94,7 +68,6 @@ export function RecentPostsTable({ posts, emptyText = "No posts." }: Props) {
         scheduled_at: null as any,
       } as any);
     } catch (err: any) {
-      // toast.error("❌ Cancel failed: " + (err?.message || "Unexpected error"));
       alert("❌ Cancel failed: " + (err?.message || "Unexpected error"));
     }
   };
@@ -140,18 +113,24 @@ export function RecentPostsTable({ posts, emptyText = "No posts." }: Props) {
               const showCancel =
                 isScheduled && typeof onCancelSchedule === "function";
               const showPublish =
-                !isPublished && hasFacebook && typeof onPublish === "function";
+                !isPublished &&
+                !!hasFacebook &&
+                typeof onPublish === "function";
+
+              // ✅ يدعم created_at أو createdAt
+              const created =
+                (post as any).created_at ?? (post as any).createdAt ?? null;
 
               return (
                 <tr key={post.id} className="border-b last:border-0">
                   <td className="p-3 max-w-[600px] line-clamp-2">
-                    {post.content}
+                    {(post as any).content}
                   </td>
 
                   <td className="p-3 text-xs text-muted-foreground">
-                    {post.scheduled_at
-                      ? formatDate(post.scheduled_at)
-                      : formatDate(post.createdAt)}
+                    {(post as any).scheduled_at
+                      ? formatDate((post as any).scheduled_at)
+                      : formatDate(created)}
                   </td>
 
                   <td className="p-3 capitalize">{s}</td>
@@ -159,33 +138,21 @@ export function RecentPostsTable({ posts, emptyText = "No posts." }: Props) {
                   <td className="p-3">
                     <div className="flex justify-end gap-2">
                       {showSchedule && (
-// <<<<<<< HEAD
-//                         <Button asChild size="sm" variant="outline" >
-//                           <SaveButton
-//                             message={{
-//                               id: post.id,
-//                               content: post.content,
-//                               role: "user",
-//                               createdAt: "",
-//                             }}
-//                             prompt={post.prompt}
-//                             buttonText="Scheduale" // يظهر نص "جدولة"
-//                             postId={post.id}
-//                             onSaved={() => handleScheduleClick(post)}
-//                           />
-//                         </Button>
-
                         <SaveButton
                           message={{
                             id: post.id,
-                            content: post.content,
+                            content: (post as any).content,
                             role: "user" as any,
                             createdAt: "",
                           }}
                           postId={post.id}
-                          prompt={post.prompt}
+                          prompt={(post as any).prompt}
                           buttonText="Schedule"
                           onSaved={async () => {
+                            // ✅ إذا عندك مودال schedule بالـ provider
+                            onSchedule?.(post);
+
+                            // ✅ refresh صامت
                             await refreshPosts?.();
                           }}
                           className={cn(
@@ -193,7 +160,6 @@ export function RecentPostsTable({ posts, emptyText = "No posts." }: Props) {
                             "h-9 px-3"
                           )}
                         />
-// >>>>>>> 65ca1fda81728a494f131339c5bffc6050adc06f
                       )}
 
                       {showCancel && (

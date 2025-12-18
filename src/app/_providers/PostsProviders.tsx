@@ -5,8 +5,9 @@ import type { Post } from "@/entities/user/type/Post";
 import { PostsProvider } from "@/app/_providers/PostContext";
 import { PostsUIProvider } from "@/app/_providers/PostsUIContext";
 import ScheduleModal from "@/widgets/scheduler/ScheduleModal";
-// import { toast } from "sonner"; // لو عندك toast من sonner
-// أو لو toast جاهز عندك خليّه زي ما هو بالمشروع
+import { api } from "@/shared/api/api-client";
+import { useCallback, useEffect, useMemo, useState } from "react";
+
 
 async function safeJson(res: Response) {
   try {
@@ -21,21 +22,20 @@ export default function PostsProviders({
 }: {
   children: React.ReactNode;
 }) {
-  const [posts, setPosts] = React.useState<Post[]>([]);
-  const [publishingId, setPublishingId] = React.useState<string | null>(null);
-  const [deletingId, setDeletingId] = React.useState<string | null>(null);
+  const [posts, setPosts] = useState<Post[]>([]);
+  const [publishingId, setPublishingId] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
 
-  const [hasFacebook, setHasFacebook] = React.useState<boolean | null>(() => {
+  const [hasFacebook, setHasFacebook] = useState<boolean | null>(() => {
     if (typeof window === "undefined") return null;
     const v = window.localStorage.getItem("hasFacebook");
     return v === null ? null : v === "1";
   });
 
-  const fetchFacebookStatus = React.useCallback(async () => {
+  const fetchFacebookStatus = useCallback(async () => {
     try {
-      const res = await fetch("/api/facebook/me");
-      const data = await safeJson(res);
-      const ok = !!data?.hasFacebook;
+      const res = await api.post("facebook/me");
+      const ok = !!res?.hasFacebook;
       setHasFacebook(ok);
       window.localStorage.setItem("hasFacebook", ok ? "1" : "0");
     } catch {
@@ -44,24 +44,23 @@ export default function PostsProviders({
     }
   }, []);
 
-  const [isScheduleOpen, setIsScheduleOpen] = React.useState(false);
+  const [isScheduleOpen, setIsScheduleOpen] = useState(false);
   const [scheduleInitialContent, setScheduleInitialContent] =
     React.useState("");
 
-  const fetchPosts = React.useCallback(async () => {
-    const res = await fetch("/api/posts", { cache: "no-store" });
-    const data = await safeJson(res);
+  const fetchPosts = useCallback(async () => {
+    const res = await api.get("posts", { cache: "no-store" });
 
-    const list = data?.posts ?? data ?? [];
+    const list = res?.posts ?? res ?? [];
     setPosts(Array.isArray(list) ? list : []);
   }, []);
 
-  const openScheduleModal = React.useCallback((post: Post) => {
+  const openScheduleModal = useCallback((post: Post) => {
     setScheduleInitialContent(post?.content ?? (post as any)?.prompt ?? "");
     setIsScheduleOpen(true);
   }, []);
 
-  const deletePost = React.useCallback(
+  const deletePost =  useCallback(
     async (postId: string) => {
       const prev = posts; // snapshot للـ rollback
 
@@ -71,14 +70,9 @@ export default function PostsProviders({
         // ✅ optimistic remove
         setPosts((p) => p.filter((x) => x.id !== postId));
 
-        const res = await fetch(`/api/posts/${postId}/delete-post`, {
-          method: "DELETE",
-        });
+         await api.delete(`posts/${postId}/delete-post`);
 
-        const data = await safeJson(res);
-        if (!res.ok) {
-          throw new Error(data?.error || "Delete failed");
-        }
+        
 
       } catch (err: any) {
         // ✅ rollback
@@ -94,28 +88,25 @@ export default function PostsProviders({
 
   const cancelSchedule = React.useCallback(
     async (postId: string) => {
-      await fetch(`/api/posts/${postId}/cancel-schedule`, { method: "POST" });
+      await api.post(`posts/${postId}/cancel-schedule`, { method: "POST" });
       await fetchPosts();
     },
     [fetchPosts]
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     fetchFacebookStatus();
   }, [fetchFacebookStatus]);
 
-  const publishToFacebook = React.useCallback(
+  const publishToFacebook = useCallback(
     async (postId: string) => {
       try {
         setPublishingId(postId);
-        const res = await fetch("/api/facebook/publish", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ postId }),
+        await api.post("facebook/publish", {
+
+           postId 
         });
-        const data = await safeJson(res);
-        if (!res.ok || data?.success === false)
-          throw new Error(data?.error || "Publish failed");
+
         await fetchPosts();
       } finally {
         setPublishingId(null);
@@ -124,7 +115,7 @@ export default function PostsProviders({
     [fetchPosts]
   );
 
-  const uiValue = React.useMemo(
+  const uiValue = useMemo(
     () => ({
       hasFacebook: !!hasFacebook,
       publishingId,
@@ -147,7 +138,7 @@ export default function PostsProviders({
     ]
   );
 
-  React.useEffect(() => {
+  useEffect(() => {
     fetchPosts();
   }, [fetchPosts]);
 
