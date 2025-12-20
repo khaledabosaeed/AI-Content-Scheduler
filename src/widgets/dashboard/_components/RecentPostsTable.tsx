@@ -141,9 +141,6 @@ export function RecentPostsTable({ posts, emptyText = "No posts." }: Props) {
                           prompt={(post as any).prompt}
                           buttonText="Schedule"
                           onSaved={async () => {
-                            // ✅ Open schedule modal
-                            openScheduleModal(post);
-
                             // ✅ Refresh posts
                             await fetchPosts();
                           }}
