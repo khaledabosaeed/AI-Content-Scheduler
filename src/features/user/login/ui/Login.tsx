@@ -150,6 +150,7 @@ export default function StyledLoginForm() {
                 </label>
               </div>
               <button
+                onClick={() => router.push("/forget-password")}
                 type="button"
                 className="text-sm text-primary hover:text-action-hover font-medium hover:underline transition-colors"
               >
