@@ -6,23 +6,22 @@ import ScheduleModal from "@/widgets/scheduler/ScheduleModal";
 
 
 export function ScheduleModalContainer() {
-  const isOpen = usePostsStore((state) => state.isScheduleOpen);
-  const initialContent = usePostsStore((state) => state.scheduleInitialContent);
-  const closeScheduleModal = usePostsStore((state) => state.closeScheduleModal);
-  const fetchPosts = usePostsStore((state) => state.fetchPosts);
+
+
+  const {isScheduleOpen  , scheduleInitialContent  , closeScheduleModal , fetchPosts}= usePostsStore()
 
   const handleConfirm = async () => {
     closeScheduleModal();
     await fetchPosts();
   };
 
-  if (!isOpen) return null;
+  if (!isScheduleOpen) return null;
 
   return (
     <ScheduleModal
-      open={isOpen}
+      open={isScheduleOpen}
       onOpenChange={closeScheduleModal}
-      initialContent={initialContent}
+      initialContent={scheduleInitialContent}
       onConfirm={handleConfirm}
     />
   );

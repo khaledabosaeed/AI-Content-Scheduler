@@ -7,6 +7,8 @@ export function StatsCards({ posts }: { posts: Post[] }) {
   const drafts = posts.filter((p: any) => p.status === "draft").length;
   const published = posts.filter((p: any) => p.status === "published").length;
 
+
+  
   const items = [
     { label: "Total Posts", value: total },
     { label: "Scheduled", value: scheduled },

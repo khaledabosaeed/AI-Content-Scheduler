@@ -19,13 +19,12 @@ import { NextRequest, NextResponse } from "next/server";
   }
  * 
  */
-export async function GET(req: NextRequest) {
+
+  export async function GET(req: NextRequest) {
     return withAuth(req, async (req, user) => {
-  
-  try {
-    
-      const userId = user.userId;
-      
+
+  try {    
+      const userId = user.userId;      
       const data = await supabaseServer.from("social_accounts")
       .select("access_token")
       .eq("user_id", userId)

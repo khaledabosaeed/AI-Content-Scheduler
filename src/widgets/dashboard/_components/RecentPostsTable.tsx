@@ -14,17 +14,11 @@ type Props = {
 };
 
 export function RecentPostsTable({ posts, emptyText = "No posts." }: Props) {
-  // ✅ Get state and actions from store
-  const hasFacebook = usePostsStore((state) => state.hasFacebook);
-  const publishingId = usePostsStore((state) => state.publishingId);
-  const deletingId = usePostsStore((state) => state.deletingId);
 
-  const updatePost = usePostsStore((state) => state.updatePost);
-  const deletePost = usePostsStore((state) => state.deletePost);
-  const publishToFacebook = usePostsStore((state) => state.publishToFacebook);
-  const cancelSchedule = usePostsStore((state) => state.cancelSchedule);
-  const openScheduleModal = usePostsStore((state) => state.openScheduleModal);
-  const fetchPosts = usePostsStore((state) => state.fetchPosts);
+
+  const {hasFacebook , publishingId , deletingId , updatePost , deletePost ,
+     publishToFacebook , cancelSchedule , openScheduleModal , 
+     fetchPosts} = usePostsStore()
 
   const handlePublishClick = async (postId: string) => {
     try {

@@ -207,46 +207,46 @@ export const usePostsStore = create<PostsState>()(
 
 
 
-export const postsSelectors = {
-  // Data
-  posts: (state: PostsState) => state.posts,
-  postsCount: (state: PostsState) => state.posts.length,
+// export const postsSelectors = {
+//   // Data
+//   posts: (state: PostsState) => state.posts,
+//   postsCount: (state: PostsState) => state.posts.length,
 
-  // Loading states
-  isLoading: (state: PostsState) => state.isLoading,
-  isFetching: (state: PostsState) => state.isFetching,
-  isPublishing: (postId: string) => (state: PostsState) =>
-  state.publishingId === postId,
-  isDeleting: (postId: string) => (state: PostsState) =>
-  state.deletingId === postId,
+//   // Loading states
+//   isLoading: (state: PostsState) => state.isLoading,
+//   isFetching: (state: PostsState) => state.isFetching,
+//   isPublishing: (postId: string) => (state: PostsState) =>
+//   state.publishingId === postId,
+//   isDeleting: (postId: string) => (state: PostsState) =>
+//   state.deletingId === postId,
 
-  // Facebook
-  hasFacebook: (state: PostsState) => state.hasFacebook,
+//   // Facebook
+//   hasFacebook: (state: PostsState) => state.hasFacebook,
 
-  // Schedule modal
-  scheduleModal: (state: PostsState) => ({
-    isOpen: state.isScheduleOpen,
-    initialContent: state.scheduleInitialContent,
-  }),
+//   // Schedule modal
+//   scheduleModal: (state: PostsState) => ({
+//     isOpen: state.isScheduleOpen,
+//     initialContent: state.scheduleInitialContent,
+//   }),
 
-  // Error
-  error: (state: PostsState) => state.error,
+//   // Error
+//   error: (state: PostsState) => state.error,
 
-  // Actions
-  actions: (state: PostsState) => ({
-    fetchPosts: state.fetchPosts,
-    addPost: state.addPost,
-    updatePost: state.updatePost,
-    deletePost: state.deletePost,
-    publishToFacebook: state.publishToFacebook,
-    fetchFacebookStatus: state.fetchFacebookStatus,
-    openScheduleModal: state.openScheduleModal,
-    closeScheduleModal: state.closeScheduleModal,
-    cancelSchedule: state.cancelSchedule,
-    setError: state.setError,
-    clearError: state.clearError,
-    reset: state.reset,
-  }),
-};
+//   // Actions
+//   actions: (state: PostsState) => ({
+//     fetchPosts: state.fetchPosts,
+//     addPost: state.addPost,
+//     updatePost: state.updatePost,
+//     deletePost: state.deletePost,
+//     publishToFacebook: state.publishToFacebook,
+//     fetchFacebookStatus: state.fetchFacebookStatus,
+//     openScheduleModal: state.openScheduleModal,
+//     closeScheduleModal: state.closeScheduleModal,
+//     cancelSchedule: state.cancelSchedule,
+//     setError: state.setError,
+//     clearError: state.clearError,
+//     reset: state.reset,
+//   }),
+// };
 
 

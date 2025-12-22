@@ -7,12 +7,11 @@ import { UpcomingQueue } from "./UpcomingQueue";
 import { AlertsPanel } from "./AlertsPanel";
 import { Skeleton } from "@/shared/components/ui/skeleton";
 import { usePostsStore } from "@/entities/posts";
+import { Button } from "@/shared/components/ui/button";
 
 export default function Dashboard() {
-  // ✅ Get data from Zustand store
-  const posts = usePostsStore((state) => state.posts);
-  const isFetching = usePostsStore((state) => state.isFetching);
-  const error = usePostsStore((state) => state.error);
+  //  Zustand store
+  const {posts , hasFacebook, isFetching , error} = usePostsStore();
 
   const normalizedPosts = useMemo(() => {
     return (posts as any[]).map((p) => ({
@@ -48,10 +47,22 @@ export default function Dashboard() {
   }
 
   return (
+    
     <div className="space-y-6">
       {error && (
         <div className="rounded-md border p-3 text-sm text-destructive">
           {error}
+        </div>
+      )}
+
+      {!hasFacebook && (
+        <div className="rounded-md border bg-card p-3 text-sm flex justify-between">
+          <span className="text-muted-foreground">
+            Your Facebook account is not connected.
+          </span>
+          <Button asChild variant="outline">
+            <a href="/api/oauth/facebook/login">Connect</a>
+          </Button>
         </div>
       )}
 

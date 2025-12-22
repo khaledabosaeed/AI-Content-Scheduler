@@ -74,7 +74,7 @@ export async function POST(req: Request) {
         results.push({ id: post?.id, ok: false, error: "Empty content" });
         continue;
       }
-
+      
       // token
       const { data: social } = await supabaseServer
         .from("social_accounts")

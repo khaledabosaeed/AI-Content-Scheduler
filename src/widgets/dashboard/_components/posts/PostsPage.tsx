@@ -9,22 +9,12 @@ export default function PostsPage() {
   const searchParams = useSearchParams();
   const tabFromUrl = searchParams.get("tab") || "all";
 
-  // ✅ Get state from Zustand store
-  const hasFacebook = usePostsStore((state) => state.hasFacebook);
-  const error = usePostsStore((state) => state.error);
+  //  Zustand store
+  const {error} = usePostsStore();
 
   return (
     <div className="space-y-6">
-      {!hasFacebook && (
-        <div className="rounded-md border bg-card p-3 text-sm flex justify-between">
-          <span className="text-muted-foreground">
-            Your Facebook account is not connected.
-          </span>
-          <Button asChild variant="outline">
-            <a href="/api/oauth/facebook/login">Connect</a>
-          </Button>
-        </div>
-      )}
+
 
       {error && (
         <div className="rounded-md border p-3 text-sm text-destructive">

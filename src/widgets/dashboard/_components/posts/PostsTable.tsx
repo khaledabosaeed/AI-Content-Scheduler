@@ -16,6 +16,7 @@ function StatusBadge({ status }: { status: string }) {
   if (s === "published") return <Badge>Published</Badge>;
   if (s === "scheduled") return <Badge variant="secondary">Scheduled</Badge>;
   if (s === "failed") return <Badge variant="destructive">Failed</Badge>;
+
   return <Badge variant="outline">Draft</Badge>;
 }
 
@@ -44,6 +45,7 @@ export function PostsTable({
   onCancelSchedule,
   onOpenSchedule,
 }: Props) {
+  
   const safeOpenSchedule = (post: Post) => {
     if (typeof onOpenSchedule !== "function") {
       console.error("onOpenSchedule is missing or not a function", {

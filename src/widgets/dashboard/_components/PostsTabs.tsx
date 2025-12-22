@@ -17,8 +17,10 @@ interface PostsTabsProps {
 }
 
 export function PostsTabs({ defaultTab = "all", onTabChange }: PostsTabsProps) {
+
+
   const [activeTab, setActiveTab] = useState(defaultTab);
-  const posts = usePostsStore((state) => state.posts);
+  const {posts} = usePostsStore();
 
   useEffect(() => {
     setActiveTab(defaultTab);

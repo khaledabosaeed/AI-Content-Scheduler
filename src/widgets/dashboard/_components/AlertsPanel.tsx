@@ -8,7 +8,7 @@ import {
 import { Badge } from "@/shared/components/ui/badge";
 
 export function AlertsPanel({ posts }: { posts: Post[] }) {
-  // مثال: لو عندك status = "failed"
+  
   const failed = posts.filter((p: any) => p.status === "failed").length;
 
   const items = [
