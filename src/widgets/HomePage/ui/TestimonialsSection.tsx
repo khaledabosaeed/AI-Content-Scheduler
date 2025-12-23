@@ -47,6 +47,7 @@ const TestimonialsSection: FC = () => (
       bg-[hsl(var(--background))]
       text-[hsl(var(--foreground))]
       transition-colors
+      pt-20
     "
     initial="hidden"
     whileInView="show"

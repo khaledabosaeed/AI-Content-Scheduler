@@ -39,9 +39,10 @@ export default function ForgotPasswordPage() {
       setLoading(true);
       mutate(values, {
         onSuccess: (data) => {
+          console.log("Forgot password success data:", data); // للتأكد من الاستجابة
           toast.success("If the email exists, a reset link was sent.");
           // نستخدم token لتوجيه المستخدم مباشرة للـ Reset Password
-          router.push(`/reset-password?token=${data.token}`);
+          // router.push(`/reset-password?token=${data.token}`);
           setLoading(false);  
         },
         onError: (err: any) => {

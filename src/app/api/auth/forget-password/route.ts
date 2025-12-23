@@ -27,9 +27,19 @@ export async function POST(req: Request) {
   // الرابط لإعادة تعيين كلمة المرور
 const resetLink = `http://localhost:3000/reset-password?token=${token}`;
 
+
+
   // هنا ترسل الإيميل فعليًا (مثلاً عبر Supabase Email أو SMTP)
   console.log("Reset password link (send via email):", resetLink);
 
+    await fetch(`${process.env.NEXT_PUBLIC_API_URL}/email/reset-password`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      email: user.email,
+      resetLink,
+    }),
+  });
 
   return NextResponse.json({ success: true,token  });
 }
