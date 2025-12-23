@@ -25,7 +25,7 @@ export async function POST(req: Request) {
   const token = jwt.sign({ userId: user.id }, RESET_PASSWORD_SECRET, { expiresIn: RESET_PASSWORD_EXP });
 
   // الرابط لإعادة تعيين كلمة المرور
-const resetLink = `http://localhost:3000/reset-password?token=${token}`;
+const resetLink = `${process.env.FRONTEND_URL}/reset-password?token=${token}`;
 
 
 
