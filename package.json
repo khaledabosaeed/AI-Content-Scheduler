@@ -71,6 +71,7 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@types/node": "^24.10.1",
+    "@types/nodemailer": "^7.0.4",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "autoprefixer": "^10.4.22",

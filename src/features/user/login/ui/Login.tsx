@@ -142,7 +142,6 @@ return (
 
               {/* Show/Hide Password Button */}
               <button
-                onClick={() => router.push("/forget-password")}
                 type="button"
                 onClick={() => setShowPassword(!showPassword)}
                 className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-muted-foreground hover:text-foreground"
@@ -178,6 +177,7 @@ return (
               </label>
             </div>
             <button
+              onClick={() => router.push("/forget-password")}
               type="button"
               className="text-sm text-primary hover:text-action-hover font-medium hover:underline transition-colors"
             >
