@@ -37,7 +37,7 @@ const AboutSection: FC = () => {
         items-center 
         px-4 sm:px-6 lg:px-8
         snap-start
-        
+        pt-20
         bg-[linear-gradient(to_bottom,hsl(var(--background))_0%,hsl(var(--elevated))_100%)]
         text-[hsl(var(--text-primary))]
       "
