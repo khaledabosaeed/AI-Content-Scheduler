@@ -4,7 +4,7 @@ import * as React from "react";
 import type { Message } from "@/entities/chat";
 import ScheduleModal from "@/widgets/scheduler/ScheduleModal";
 import { useSaveAsPost } from "../model/use-save-as-post";
-import { usePostsStore } from "@/entities/posts";
+import { Post, usePostsStore } from "@/entities/posts";
 import { toast } from "sonner";
 import { useState } from "react";
 
@@ -13,20 +13,21 @@ interface SaveButtonProps
   message: Message;
   postId?: string;
   prompt?: string;
+  post?:Post
   buttonText?: string;
   onSaved?: () => void;
 }
 
 const SaveButton = React.forwardRef<HTMLButtonElement, SaveButtonProps>(
   (
-    { message, prompt, buttonText, onSaved, className, type, postId, ...rest },
+    { message, prompt, buttonText, onSaved, className, type, postId, post,...rest },
     ref
   ) => {
     const { saveAsPost, isSaving } = useSaveAsPost();
     const [isModalOpen, setIsModalOpen] = useState(false);
 
     // ✅ Get fetchPosts from store
-    const fetchPosts = usePostsStore((state) => state.fetchPosts);
+    const {fetchPosts} = usePostsStore();
     
     const handleSave = async (
       scheduledDate?: Date,
@@ -83,6 +84,7 @@ const SaveButton = React.forwardRef<HTMLButtonElement, SaveButtonProps>(
               handleSave(date ?? undefined, platform, content);
               setIsModalOpen(false);
             }}
+            post={post}
           />
         )}
       </>

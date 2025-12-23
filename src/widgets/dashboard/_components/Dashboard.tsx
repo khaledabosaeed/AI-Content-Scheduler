@@ -8,6 +8,7 @@ import { AlertsPanel } from "./AlertsPanel";
 import { Skeleton } from "@/shared/components/ui/skeleton";
 import { usePostsStore } from "@/entities/posts";
 import { Button } from "@/shared/components/ui/button";
+import { PostsLoader } from "@/features/posts";
 
 export default function Dashboard() {
   //  Zustand store
@@ -47,7 +48,7 @@ export default function Dashboard() {
   }
 
   return (
-    
+    <PostsLoader>
     <div className="space-y-6">
       {error && (
         <div className="rounded-md border p-3 text-sm text-destructive">
@@ -79,5 +80,6 @@ export default function Dashboard() {
         </div>
       </div>
     </div>
+    </PostsLoader>
   );
 }

@@ -1,11 +1,10 @@
 "use client";
 
-import React from "react";
-import type { Post } from "@/entities/user/type/Post";
+
 import { Button, buttonVariants } from "@/shared/components/ui/button";
 import SaveButton from "@/features/chat/save-as-post/ui/SaveButton";
 import { cn } from "@/shared/libs/chadcn/utils";
-import { usePostsStore } from "@/entities/posts";
+import { Post, usePostsStore } from "@/entities/posts";
 import { toast } from "sonner";
 
 type Props = {
@@ -19,6 +18,7 @@ export function RecentPostsTable({ posts, emptyText = "No posts." }: Props) {
   const {hasFacebook , publishingId , deletingId , updatePost , deletePost ,
      publishToFacebook , cancelSchedule , openScheduleModal , 
      fetchPosts} = usePostsStore()
+     
 
   const handlePublishClick = async (postId: string) => {
     try {
@@ -103,24 +103,24 @@ export function RecentPostsTable({ posts, emptyText = "No posts." }: Props) {
               const showCancel = isScheduled;
               const showPublish = !isPublished && !!hasFacebook;
 
-              // ✅ يدعم created_at أو createdAt
+              // ✅ يدعم created_at أو createdAtpost
               const created =
                 (post as any).created_at ?? (post as any).createdAt ?? null;
 
               return (
-                <tr key={post.id} className="border-b last:border-0">
-                  <td className="p-3 max-w-[600px] line-clamp-2">
+
+                <tr key={post.id} className="border-b last:border-0 cursor-pointer transition-colors duration-200
+                  hover:bg-muted/50" 
+                  >
+                  <td className="p-3 max-w-[600px] line-clamp-2 truncate whitespace-nowrap overflow-hidden hover hover:">
                     {(post as any).content}
                   </td>
-
                   <td className="p-3 text-xs text-muted-foreground">
                     {(post as any).scheduled_at
                       ? formatDate((post as any).scheduled_at)
                       : formatDate(created)}
                   </td>
-
                   <td className="p-3 capitalize">{s}</td>
-
                   <td className="p-3">
                     <div className="flex justify-end gap-2">
                       {showSchedule && (
@@ -178,7 +178,7 @@ export function RecentPostsTable({ posts, emptyText = "No posts." }: Props) {
                       )}
                     </div>
                   </td>
-                </tr>
+                  </tr>
               );
             })}
           </tbody>

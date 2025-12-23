@@ -1,5 +1,3 @@
-"use client";
-
 import Dashboard from "@/widgets/dashboard/_components/Dashboard";
 
 

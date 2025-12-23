@@ -1,4 +1,3 @@
-"use client";
 
 import LoginForm from '@/features/user/login/ui/Login';
 

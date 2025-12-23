@@ -8,7 +8,7 @@ import {
   TabsTrigger,
 } from "@/shared/components/ui/tabs";
 
-import { RecentPostsTable } from "./RecentPostsTable";
+import { RecentPostsTable } from "./posts/RecentPostsTable";
 import { usePostsStore } from "@/entities/posts";
 
 interface PostsTabsProps {

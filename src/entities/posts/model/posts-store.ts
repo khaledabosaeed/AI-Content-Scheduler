@@ -1,21 +1,12 @@
 // src/entities/posts/model/posts-store.ts
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import type { PostsState } from "./types";
-import type { Post } from "@/entities/user/type/Post";
+import type { Post, PostsState } from "./types";
+
 import { api } from "@/shared/api/api-client";
 
-/**
- * Posts Store - إدارة حالة المنشورات باستخدام Zustand
- *
- * Features:
- * - ✅ Optimistic updates للـ delete
- * - ✅ Facebook integration
- * - ✅ Schedule modal management
- * - ✅ Error handling
- * - ✅ Persistent hasFacebook status
- */
 export const usePostsStore = create<PostsState>()(
+
   persist(
     (set, get) => ({
       // Initial State 
@@ -28,6 +19,7 @@ export const usePostsStore = create<PostsState>()(
       hasFacebook: null,
       isScheduleOpen: false,
       scheduleInitialContent: "",
+      schedulePost:{},
 
       //  Data Management Actions 
 
@@ -146,6 +138,7 @@ export const usePostsStore = create<PostsState>()(
         set({
           scheduleInitialContent: content,
           isScheduleOpen: true,
+          post:post
         });
       },
 
@@ -207,46 +200,5 @@ export const usePostsStore = create<PostsState>()(
 
 
 
-// export const postsSelectors = {
-//   // Data
-//   posts: (state: PostsState) => state.posts,
-//   postsCount: (state: PostsState) => state.posts.length,
-
-//   // Loading states
-//   isLoading: (state: PostsState) => state.isLoading,
-//   isFetching: (state: PostsState) => state.isFetching,
-//   isPublishing: (postId: string) => (state: PostsState) =>
-//   state.publishingId === postId,
-//   isDeleting: (postId: string) => (state: PostsState) =>
-//   state.deletingId === postId,
-
-//   // Facebook
-//   hasFacebook: (state: PostsState) => state.hasFacebook,
-
-//   // Schedule modal
-//   scheduleModal: (state: PostsState) => ({
-//     isOpen: state.isScheduleOpen,
-//     initialContent: state.scheduleInitialContent,
-//   }),
-
-//   // Error
-//   error: (state: PostsState) => state.error,
-
-//   // Actions
-//   actions: (state: PostsState) => ({
-//     fetchPosts: state.fetchPosts,
-//     addPost: state.addPost,
-//     updatePost: state.updatePost,
-//     deletePost: state.deletePost,
-//     publishToFacebook: state.publishToFacebook,
-//     fetchFacebookStatus: state.fetchFacebookStatus,
-//     openScheduleModal: state.openScheduleModal,
-//     closeScheduleModal: state.closeScheduleModal,
-//     cancelSchedule: state.cancelSchedule,
-//     setError: state.setError,
-//     clearError: state.clearError,
-//     reset: state.reset,
-//   }),
-// };
 
 

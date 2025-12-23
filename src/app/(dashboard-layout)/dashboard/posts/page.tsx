@@ -1,4 +1,3 @@
-"use client";
 
 import PostsPage from "@/widgets/dashboard/_components/posts/PostsPage";
 

@@ -1,17 +1,28 @@
 // src/entities/posts/model/types.ts
-import type { Post } from "@/entities/user/type/Post";
+
+
+export interface Post {
+  created_at: string | null | undefined;
+  scheduled_at: any;
+  id: string;
+  content: string;
+  prompt?: string;
+  platform: string;
+  status: string;
+  createdAt: string;
+}
 
 
 export interface PostsState {
 
   posts: Post[];
-
   //  Loading
   isLoading: boolean;
   isFetching: boolean;
   publishingId: string | null;
   deletingId: string | null;
-
+  post?:Post
+  
   //  Error State 
   error: string | null;
 

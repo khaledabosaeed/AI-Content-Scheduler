@@ -1,4 +1,3 @@
-import type { Post } from "@/entities/user/type/Post";
 import {
   Card,
   CardContent,
@@ -6,6 +5,7 @@ import {
   CardTitle,
 } from "@/shared/components/ui/card";
 import { Badge } from "@/shared/components/ui/badge";
+import { Post } from "@/entities/posts";
 
 export function UpcomingQueue({ posts }: { posts: Post[] }) {
   const upcoming = posts

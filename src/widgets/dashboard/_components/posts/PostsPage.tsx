@@ -1,6 +1,5 @@
 "use client";
 
-import { Button } from "@/shared/components/ui/button";
 import { PostsTabs } from "../PostsTabs";
 import { useSearchParams } from "next/navigation";
 import { usePostsStore } from "@/entities/posts";

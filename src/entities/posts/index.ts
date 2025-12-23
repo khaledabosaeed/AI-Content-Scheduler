@@ -7,10 +7,10 @@
  */
 
 // Store
-export { usePostsStore, postsSelectors } from "./model/posts-store";
+export { usePostsStore } from "./model/posts-store";
 
 // Types
 export type { PostsState } from "./model/types";
 
 // Re-export Post type for convenience
-export type { Post } from "@/entities/user/type/Post";
+export type { Post } from  "./model/types";

@@ -10,23 +10,8 @@ interface PostsLoaderProps {
   errorFallback?: (error: string, retry: () => void) => React.ReactNode;
 }
 
-/**
- * PostsLoader - مكون لإدارة تحميل المنشورات
- *
- * يجلب المنشورات تلقائياً ويعرض loading أو error states
- *
- * @example
- * ```tsx
- * <PostsLoader
- *   loadingFallback={<Spinner />}
- *   errorFallback={(error, retry) => (
- *     <ErrorMessage error={error} onRetry={retry} />
- *   )}
- * >
- *   <PostsGrid />
- * </PostsLoader>
- * ```
- */
+
+
 export function PostsLoader({
   children,
   loadingFallback,

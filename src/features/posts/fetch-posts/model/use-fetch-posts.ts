@@ -1,4 +1,5 @@
-// src/features/posts/fetch-posts/model/use-fetch-posts.ts
+
+
 import { useEffect } from "react";
 import { usePostsStore } from "@/entities/posts";
 
@@ -6,11 +7,10 @@ import { usePostsStore } from "@/entities/posts";
 
 export function useFetchPosts(autoFetch: boolean = true) {
   
-  const isFetching = usePostsStore((state) => state.isFetching);
 
-  const error = usePostsStore((state) => state.error);
+  const {isFetching , error , fetchPosts} = usePostsStore()
 
-  const fetchPosts = usePostsStore((state) => state.fetchPosts);
+
 
   const fetchFacebookStatus = usePostsStore(
     (state) => state.fetchFacebookStatus
