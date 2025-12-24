@@ -179,7 +179,7 @@ return (
             <button
               onClick={() => router.push("/forget-password")}
               type="button"
-              className="text-sm text-primary hover:text-action-hover font-medium hover:underline transition-colors"
+              className="text-sm text-primary font-medium hover:underline transition-colors"
             >
               Forgot your password?
             </button>
@@ -188,7 +188,7 @@ return (
           {/* Submit Button */}
           <Button
             type="submit"
-            className="w-full h-12 rounded-xl bg-[hsl(var(--primary))] hover:bg-action-hover hover:text-background text-primary-foreground font-semibold shadow-lg shadow-primary/30 transition-all duration-300 hover:shadow-xl hover:shadow-primary/40 hover:scale-[1.01]"
+            className="w-full h-12 rounded-xl bg-[hsl(var(--primary))] hover:bg-primary hover:text-background text-primary-foreground font-semibold shadow-lg shadow-primary/30 transition-all duration-300 hover:shadow-xl hover:shadow-primary/40 hover:scale-[1.01]"
             disabled={submitting}
           >
             {submitting ? "Signing In..." : "Sign In"}
@@ -235,7 +235,7 @@ return (
           <button
             type="button"
             onClick={() => router.push("/register")}
-            className="text-primary font-semibold hover:text-action-hover hover:underline transition-colors"
+            className="text-primary font-semibold hover:underline transition-colors"
           >
             Sign Up
           </button>

@@ -14,16 +14,19 @@ import {
   CardTitle,
   CardContent,
 } from "@/shared/components/ui/card";
-import { Lock } from "lucide-react";
+import { Eye, EyeOff, Lock } from "lucide-react";
 import { toast } from "sonner";
 import { resetPasswordSchema } from "../libs/validation";
 import { useResetPasswordMutation } from "../api/useRestPass";
 
 type ResetPasswordForm = {
   password: string;
+  confirmPassword: string;
 };
 
 export default function ResetPasswordPage() {
+    const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -60,7 +63,7 @@ export default function ResetPasswordPage() {
     }
 
     mutate(
-    { token, password: values.password },
+    { token, password: values.password,confirmPassword:values.confirmPassword },
     {
       onSuccess: (data) => {
         if (data.success) {
@@ -125,23 +128,84 @@ export default function ResetPasswordPage() {
             className="flex flex-col gap-5"
             onSubmit={handleSubmit(onSubmit)}
           >
+            {/* Password */}
             <div className="flex flex-col gap-2">
               <label className="font-medium text-sm text-foreground text-left">
-                New Password
+                Password
               </label>
-              <Input
-                type="password"
-                placeholder="••••••"
-                {...register("password")}
-                className={`rounded-xl h-12 bg-input border-2 ${
-                  errors.password
-                    ? "border-destructive"
-                    : "border-input focus:border-primary"
-                }`}
-              />
+              <div className="relative">
+                <Input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="•••••••"
+                  // Applying register and error styles
+                  className={`rounded-xl pl-10 pr-10 h-12 bg-input border-2 ${
+                    errors.password
+                      ? "border-destructive"
+                      : "border-input focus:border-primary"
+                  } transition-colors text-left`}
+                  dir="ltr"
+                  {...register("password")}
+                />
+                {/* Icons position changed for LTR/English */}
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+
+                {/* Show/Hide Password Button */}
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-muted-foreground hover:text-foreground"
+                >
+                  {showPassword ? (
+                    <EyeOff className="w-5 h-5" />
+                  ) : (
+                    <Eye className="w-5 h-5" />
+                  )}
+                </button>
+              </div>
+              {/* Error message */}
               {errors.password && (
-                <p className="text-xs text-destructive">
+                <p className="text-xs text-destructive text-left">
                   {errors.password.message}
+                </p>
+              )}
+            </div>
+
+            <div className="flex flex-col gap-2">
+              <label className="font-medium text-sm text-foreground text-left">
+                Confirm Password
+              </label>
+
+              <div className="relative">
+                <Input
+                  type={showConfirmPassword ? "text" : "password"}
+                  placeholder="•••••••"
+                  className={`rounded-xl pl-10 pr-10 h-12 bg-input border-2 ${
+                    errors.confirmPassword
+                      ? "border-destructive"
+                      : "border-input focus:border-primary"
+                  } transition-colors text-left`}
+                  dir="ltr"
+                  {...register("confirmPassword")}
+                />
+
+                <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 p-1 text-muted-foreground hover:text-foreground"
+                >
+                  {showConfirmPassword ? (
+                    <EyeOff className="w-5 h-5" />
+                  ) : (
+                    <Eye className="w-5 h-5" />
+                  )}
+                </button>
+              </div>
+
+              {errors.confirmPassword && (
+                <p className="text-xs text-destructive text-left">
+                  {errors.confirmPassword.message}
                 </p>
               )}
             </div>

@@ -200,7 +200,7 @@
               className={`w-full py-2.5 text-base rounded-xl text-[hsl(var(--primary-foreground))] ${
                 isDisabled
                   ? "bg-[hsl(var(--muted))] cursor-not-allowed"
-                  : "bg-[hsl(var(--primary))] hover:bg-[hsl(var(--action-hover))]"
+                  : "bg-[hsl(var(--primary))] hover:bg-[hsl(var(--orimary))]"
               }`}
             >{postStatues === "published"
               ? "Resave the post"

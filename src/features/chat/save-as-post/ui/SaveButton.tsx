@@ -66,7 +66,7 @@ const SaveButton = React.forwardRef<HTMLButtonElement, SaveButtonProps>(
           type={type ?? "button"}
           className={
             className ??
-            "mt-2 text-xs bg-black text-white px-3 py-1 rounded hover:bg-action-hover disabled:opacity-50 transition-colors"
+            "mt-2 text-xs bg-black text-white px-3 py-1 rounded disabled:opacity-50 transition-colors"
           }
           onClick={() => setIsModalOpen(true)}
           disabled={isSaving}

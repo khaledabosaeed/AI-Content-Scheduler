@@ -74,7 +74,7 @@ export default function NotFound() {
             <Button
               variant="outline"
               size="lg"
-              className="min-w-[200px] border-2 hover:bg-action-hover hover:border-primary transition-all duration-300"
+              className="min-w-[200px] border-2 hover:border-primary transition-all duration-300"
             >
               <svg
                 className="w-5 h-5 mr-2"
