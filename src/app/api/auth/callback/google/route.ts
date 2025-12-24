@@ -66,6 +66,7 @@ export async function GET(req: NextRequest) {
 
     if (error) {
       console.error("Supabase signInWithIdToken error:", error);
+
     } else if (data.session) {
       cookieStore.set("sb-access-token", data.session.access_token, {
         httpOnly: true,
