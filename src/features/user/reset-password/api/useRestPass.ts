@@ -15,7 +15,7 @@ export const useResetPasswordMutation = ({
 }: ResetPasswordOptions = {}) => {
   return useMutation({
     mutationFn: async (values: ResetPasswordValues) => {
-      const response = await api.post("/auth/reset-password", values, {
+      const response = await api.post("auth/reset-password", values, {
         requiresAuth: false, // المستخدم غير مسجل دخول
       });
       console.log("Reset password response:", response); // للتأكد من الاستجابة

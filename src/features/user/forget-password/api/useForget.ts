@@ -13,7 +13,7 @@ export const useForgotPasswordMutation = ({
 }: ForgotPasswordOptions = {}) => {
   return useMutation({
     mutationFn: async (values: ForgotPasswordValues) => {
-      const response = await api.post("/auth/forget-password", values, {
+      const response = await api.post("auth/forget-password", values, {
         requiresAuth: false, // مهم لأنه المستخدم غير مسجل دخول
       });
       console.log("Forgot password response:", response); // للتأكد من الاستجابة
