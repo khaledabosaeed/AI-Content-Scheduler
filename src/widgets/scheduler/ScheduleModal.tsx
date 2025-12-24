@@ -22,7 +22,7 @@
 
     const [selectedDate, setSelectedDate] = useState<Date>();
     const [selectedTime, setSelectedTime] = useState<string>("12:00");
-    const [platform, setPlatform] = useState("twitter");
+    const [platform, setPlatform] = useState("facebook");
     const [content, setContent] = useState(initialContent);
     const [postStatues , setPostStatues]= useState('');
 

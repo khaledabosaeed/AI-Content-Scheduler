@@ -31,7 +31,7 @@ export function UpcomingQueue({ posts }: { posts: Post[] }) {
             <div key={p.id} className="flex items-start justify-between gap-3">
               <div className="min-w-0">
                 <p className="text-sm font-medium">
-                  {(p.platform || "twitter").toString().toUpperCase()}
+                  {(p.platform || "facebook").toString().toUpperCase()}
                 </p>
                 <p className="text-xs text-muted-foreground line-clamp-2">
                   {p.content}
