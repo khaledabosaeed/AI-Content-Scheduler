@@ -41,7 +41,7 @@ export default function StyledRegisterForm() {
     mutate(values, {
       onSuccess: () => {
         toast.success("Account created successfully!");
-        router.push("/login");
+        router.push("/login?skipAuthRedirect=true");
       },
       onError: (err: any) => {
         toast.error(err?.message || "Registration failed"); // ✅ هنا التوست للخطأ

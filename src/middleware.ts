@@ -38,7 +38,7 @@ export async function middleware(request: NextRequest) {
   // Auth routes (login/register)
   const isAuthRoute = AUTH_ROUTES.some((route) => pathname.startsWith(route));
 
-  if (isAuthRoute && isAuthenticated) {
+  if (isAuthRoute && isAuthenticated && !request.nextUrl.searchParams.has("skipAuthRedirect")) {
     return NextResponse.redirect(new URL("/dashboard", request.url));
   }
 
