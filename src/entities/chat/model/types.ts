@@ -8,17 +8,6 @@ export type Message = {
 
 
 
-/****
- * 
- * load the caht from the chat session
- * add this arry to the cahthistru 
- * loop on the caht arry to display the messages
- * click on titel load the session messages
- * tow endpoint 
- * api/chat/get-chat 
- * api/chat/add-chat
- * 
- */
 
 
 export type ChatSession = {

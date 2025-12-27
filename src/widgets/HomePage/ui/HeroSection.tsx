@@ -136,6 +136,7 @@ const HeroSection: FC = () => {
                 </Button>
               </Link>
 
+              <Link href="https://www.youtube.com/watch?v=0eeD8Umb9B4" className="w-full sm:w-auto" target="_blank" rel="noopener noreferrer">
               <Button
                 variant="outline"
                 size="lg"
@@ -144,6 +145,7 @@ const HeroSection: FC = () => {
                 <Play className="w-4 h-4 mr-2 group-hover:scale-110 transition-transform" />
                 Watch Demo
               </Button>
+              </Link>
             </motion.div>
 
             {/* Stats */}

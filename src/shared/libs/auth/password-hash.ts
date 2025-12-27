@@ -3,6 +3,13 @@ import bcrypt from 'bcrypt';
 
 const SALT_ROUNDS = 12;
 
+
+export type PasswordValidationResult = {
+  isValid: boolean;
+  errors: string[];
+};
+
+
 export async function hashPassword(password: string): Promise<string> {
   try {
     // hash
@@ -30,30 +37,36 @@ export async function verifyPassword(
 }
 
 
-export function validatePasswordStrength(password: string): {
-  isValid: boolean;
-  errors: string[];
-} {
+export function validatePasswordStrength(
+  password: string
+): PasswordValidationResult {
   const errors: string[] = [];
 
+  if (!password) {
+    return {
+      isValid: false,
+      errors: ['Password is required'],
+    };
+  }
+
   if (password.length < 8) {
-    errors.push('The password must be at least 8 characters long');
+    errors.push('Password must be at least 8 characters long');
   }
 
   if (!/[a-z]/.test(password)) {
-    errors.push('The password must contain at least one lowercase letter');
+    errors.push('Password must contain at least one lowercase letter');
   }
 
   if (!/[A-Z]/.test(password)) {
-    errors.push('The password must contain at least one capital letter');
+    errors.push('Password must contain at least one uppercase letter');
   }
 
   if (!/[0-9]/.test(password)) {
-    errors.push('The password must contain at least one number');
+    errors.push('Password must contain at least one number');
   }
 
   if (!/[!@#$%^&*(),.?":{}|<>]/.test(password)) {
-    errors.push('The password must contain at least one special character');
+    errors.push('Password must contain at least one special character');
   }
 
   return {
@@ -61,4 +74,3 @@ export function validatePasswordStrength(password: string): {
     errors,
   };
 }
-

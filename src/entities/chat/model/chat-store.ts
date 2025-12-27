@@ -249,7 +249,6 @@ export const useChatStore = create<ChatState>()(
         try {
           const res = await api.get("chat/history");
 
-
           const safeSessions = (res.sessions || []).filter(
             (s: any) => s.id !== null && s.id !== undefined
           );

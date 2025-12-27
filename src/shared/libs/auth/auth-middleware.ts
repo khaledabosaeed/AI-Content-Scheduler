@@ -1,18 +1,9 @@
-/**
- * Authentication Middleware Utilities
- * يوفر دوال للتحقق من المصادقة في Middleware و API Routes
- */
+
 
 import { NextRequest, NextResponse } from "next/server";
 import { getSessionToken } from "./cookies";
 import { verifyToken, JWTPayload } from "./jwt";
-/**
- * التحقق من وجود جلسة صالحة
- * يستخدم في Middleware لحماية الصفحات
- * 
- * @param request - NextRequest
- * @returns object - { isAuthenticated, user, error }
- */
+
 export async function checkAuth(request: NextRequest): Promise<{
   isAuthenticated: boolean;
   user: JWTPayload | null;
@@ -25,7 +16,7 @@ export async function checkAuth(request: NextRequest): Promise<{
     return {
       isAuthenticated: false,
       user: null,
-      error: "لا توجد جلسة نشطة",
+      error: "No session token found",
     };
   }
 
@@ -36,7 +27,7 @@ export async function checkAuth(request: NextRequest): Promise<{
     return {
       isAuthenticated: false,
       user: null,
-      error: "جلسة غير صالحة أو منتهية",
+      error: "Invalid or expired session",
     };
   }
 
@@ -52,7 +43,7 @@ export async function withAuth(
   const { isAuthenticated, user, error } = await checkAuth(request);
   if (!isAuthenticated || !user) {
     return NextResponse.json(
-      { error: error || "غير مصرح" },
+      { error: error || "Not authorized" },
       { status: 401 }
     );
   }

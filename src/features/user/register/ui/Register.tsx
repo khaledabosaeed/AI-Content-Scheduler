@@ -19,7 +19,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { toast } from "sonner";
 import { FloatingIcons } from "../../../../shared/ui/floating-icons";
-import { Eye, EyeOff, Lock, Mail } from "lucide-react";
+import { Eye, EyeOff, Lock, Mail, User } from "lucide-react";
 
 export default function StyledRegisterForm() {
   const [showPassword, setShowPassword] = useState(false);
@@ -30,9 +30,10 @@ export default function StyledRegisterForm() {
   const {
     register,
     handleSubmit,
-    formState: { errors },
+    formState: { errors, isSubmitting },
   } = useForm<RegisterFormInputs>({
     resolver: yupResolver(registerSchema),
+    mode: "onBlur",
   });
 
   const { mutate, isPending, error, data } = useRegisterMutation();
@@ -40,18 +41,24 @@ export default function StyledRegisterForm() {
   const onSubmit = (values: RegisterFormInputs) => {
     mutate(values, {
       onSuccess: () => {
-        toast.success("Account created successfully!");
-        router.push("/login?skipAuthRedirect=true");
+        toast.success("Account created successfully! Please login to continue.");
+        router.push("/login");
       },
       onError: (err: any) => {
-        toast.error(err?.message || "Registration failed"); // ✅ هنا التوست للخطأ
+        console.error("Registration error:", err);
+
+        const errorMessage =
+          err?.response?.data?.message ||
+          err?.message ||
+          "Registration failed. Please try again.";
+
+        toast.error(errorMessage);
       },
     });
   };
 
   return (
     <div className="min-h-screen flex items-center justify-center px-4 bg-[hsl(var(--background))]">
-      {/* 👈 استخدام مكون الأيقونات العائمة */}
       <FloatingIcons />
 
       <Card className="w-full max-w-md rounded-2xl shadow-xl backdrop-blur-xl bg-[hsl(var(--paper)/90)] border border-[hsl(var(--border)/50)]">
@@ -66,17 +73,25 @@ export default function StyledRegisterForm() {
             onSubmit={handleSubmit(onSubmit)}
           >
             {/* Full Name */}
-            <div className="flex flex-col">
-              <label className="text-sm font-medium text-[hsl(var(--foreground))] text-end">
+            <div className="flex flex-col gap-2">
+              <label className="font-medium text-sm text-foreground text-left">
                 Full Name
               </label>
-              <Input
-                placeholder="John Doe"
-                {...register("name")}
-                className="rounded-xl bg-[hsl(var(--input))] text-[hsl(var(--foreground))] placeholder:text-[hsl(var(--text-disabled))] text-end"
-              />
+              <div className="relative">
+                <Input
+                  placeholder="John Doe"
+                  {...register("name")}
+                  className={`rounded-xl pl-10 h-12 bg-input border-2 ${
+                    errors.name
+                      ? "border-destructive"
+                      : "border-input focus:border-primary"
+                  } transition-colors text-left`}
+                  dir="ltr"
+                />
+                <User className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-muted-foreground" />
+              </div>
               {errors.name && (
-                <p className="text-sm text-[hsl(var(--destructive))]">
+                <p className="text-xs text-destructive text-left">
                   {errors.name.message}
                 </p>
               )}
@@ -213,9 +228,9 @@ export default function StyledRegisterForm() {
             <Button
               type="submit"
               className="w-full py-3 bg-[hsl(var(--primary))] hover:text-[hsl(var(--foreground))] text-[hsl(var(--primary-foreground))] rounded-xl shadow-md hover:shadow-lg transition-all duration-500"
-              disabled={isPending}
+              disabled={isPending || isSubmitting}
             >
-              {isPending ? "Creating..." : "Create Account"}
+              {isPending || isSubmitting ? "Creating..." : "Create Account"}
             </Button>
             {/* Divider */}
             <div className="relative my-4">
