@@ -2,12 +2,7 @@ import { withAuth } from "@/shared/libs/auth/auth-middleware";
 import { supabaseServer } from "@/shared/libs/suapabase/supabaseServer";
 import { NextRequest, NextResponse } from "next/server";
 
-/****
- *
- * GET /api/chat/get-chat?sessionId=...
- * يرجّع الرسائل المخزّنة في chat_content لسيشن واحدة
- *
- */
+
 
 export const GET = (req: NextRequest) =>
   withAuth(req, async (req, user) => {

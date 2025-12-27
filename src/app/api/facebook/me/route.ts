@@ -7,19 +7,6 @@ import { NextRequest, NextResponse } from "next/server";
 
 
 
-/****
- * 
-  return withAuth(req, async (req, user) => {
-  const userId = user.id; // المستخدم المصادق عليه
-  rq => subabaseServer.from('posts').select('*').eq('user_id', userId);
-  
-
-  
-}
-  }
- * 
- */
-
   export async function GET(req: NextRequest) {
     return withAuth(req, async (req, user) => {
 

@@ -21,8 +21,8 @@ async function PrefetchUserData() {
       queryKey: userKeys.me(),
       queryFn: getUserServer,
     });
+    
 
-    // 🔹 تحويل الكاش إلى JSON يمكن إرساله للعميل
     const dehydratedState = dehydrate(queryClient);
 
 
